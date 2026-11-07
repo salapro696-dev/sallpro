@@ -1,0 +1,1141 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b8fd6">
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/icon-512.png">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+</head><body>
+<title>SallPro</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&family=Barlow+Condensed:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: sky-blue sidebar app shell (Pipedrive-like). Today = sessions + plan checklists; kanban for fees and prospects; week grid; automatic WhatsApp message log */
+:root{
+  --sky:#0b8fd6; --sky-d:#0873ad; --sky-soft:#e3f4fd; --pale:#f4faff;
+  --bg:#f4faff; --surface:#ffffff; --line:#d7e9f5; --fg:#0c2a3e; --muted:#587389;
+  --ok:#14915a; --ok-soft:#e3f6ec; --bad:#d23b3b; --bad-soft:#fde8e8; --warn:#b7790a; --warn-soft:#fff3dc; --wa:#1fa855; --wa-bub:#dcf8c6;
+  --side:#0b8fd6; --side-fg:#ffffff; --side-mut:#d4ecfb;
+  --f-d:"Barlow Condensed","Arial Narrow",sans-serif; --f-b:"Manrope","Segoe UI",system-ui,sans-serif; --f-a:"IBM Plex Sans Arabic","Segoe UI",Tahoma,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--sky:#38bdf8;--sky-d:#7dd3fc;--sky-soft:#0d2e44;--pale:#0b1f2e;--bg:#06141f;--surface:#0b1f2e;--line:#173449;--fg:#e6f4fc;--muted:#8fb0c6;--ok:#3ccf8a;--ok-soft:#0f2e22;--bad:#ff6b6b;--bad-soft:#3a1618;--warn:#f2b441;--warn-soft:#33270b;--wa-bub:#173d2a;--side:#0a3a57;--side-mut:#9fc7df;color-scheme:dark}}
+:root[data-theme="dark"]{--sky:#38bdf8;--sky-d:#7dd3fc;--sky-soft:#0d2e44;--pale:#0b1f2e;--bg:#06141f;--surface:#0b1f2e;--line:#173449;--fg:#e6f4fc;--muted:#8fb0c6;--ok:#3ccf8a;--ok-soft:#0f2e22;--bad:#ff6b6b;--bad-soft:#3a1618;--warn:#f2b441;--warn-soft:#33270b;--wa-bub:#173d2a;--side:#0a3a57;--side-mut:#9fc7df;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-b);font-size:14px;line-height:1.5}
+[dir="rtl"] body,[dir="rtl"] button,[dir="rtl"] input,[dir="rtl"] select{font-family:var(--f-a)}
+button,input,select{font:inherit;color:inherit}
+a{color:var(--sky)}
+:focus-visible{outline:2px solid var(--sky);outline-offset:2px}
+.num{font-variant-numeric:tabular-nums}
+#root{height:100%}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--line);border-radius:9px;padding:9px 14px;font-weight:700;cursor:pointer;text-decoration:none;background:var(--surface);color:var(--fg);white-space:nowrap}
+.btn:hover{filter:brightness(1.04)}
+.btn-p{background:var(--sky);border-color:var(--sky);color:#fff}
+.btn-g{background:var(--wa);border-color:var(--wa);color:#fff}
+.btn-sm{padding:5px 10px;font-size:12px;border-radius:7px}
+.btn-ghost{background:transparent;border-color:#ffffff55;color:#fff}
+.pill{display:inline-flex;align-items:center;gap:4px;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:700;white-space:nowrap}
+.p-ok{background:var(--ok-soft);color:var(--ok)}.p-bad{background:var(--bad-soft);color:var(--bad)}.p-warn{background:var(--warn-soft);color:var(--warn)}.p-sky{background:var(--sky-soft);color:var(--sky-d)}
+.belt{display:inline-block;width:24px;height:8px;border-radius:2px;border:1px solid #00000022;vertical-align:middle}
+.fld{display:flex;flex-direction:column;gap:5px;margin-top:12px}
+.fld label{font-size:12px;font-weight:700;color:var(--muted)}
+.fld input,.fld select{border:1px solid var(--line);background:var(--bg);border-radius:9px;padding:10px 12px;width:100%}
+.err{color:var(--bad);font-size:13px;min-height:18px;margin-top:6px}
+.note{color:var(--muted);font-size:12px}
+.mark{width:34px;height:34px;border-radius:9px;background:#fff;display:grid;place-items:center;flex:none}
+.mark i{display:block;width:19px;height:5px;border-radius:2px;background:#0c2a3e;box-shadow:0 -6px 0 #0b8fd6,0 6px 0 #0b8fd6}
+.logo{display:flex;align-items:center;gap:10px;font-family:var(--f-d);font-weight:800;font-size:26px;color:#fff}
+.auth{min-height:100%;background:#0b8fd6;display:grid;place-items:center;padding-block:24px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.card{background:var(--surface);color:var(--fg);border-radius:18px;padding:28px;width:100%;max-width:440px;box-shadow:0 30px 60px #04324f40}
+.card.wide{max-width:720px}
+.card h2{margin:0 0 4px;font-family:var(--f-d);font-size:28px;text-wrap:balance;text-transform:uppercase;line-height:1.1}
+[dir="rtl"] .card h2{font-family:var(--f-a);text-transform:none;font-size:26px}
+.card .logo{color:var(--fg);margin-bottom:16px}.card .mark{background:var(--sky)}.card .mark i{box-shadow:0 -6px 0 #fff,0 6px 0 #fff}
+.steps{display:flex;gap:6px;margin:0 0 18px}.steps span{flex:1;height:5px;border-radius:3px;background:var(--line)}.steps span.on{background:var(--sky)}
+.choices{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:14px}
+.choice{border:2px solid var(--line);background:var(--surface);border-radius:14px;padding:14px;cursor:pointer;text-align:start;display:flex;flex-direction:column;gap:6px}
+.choice.on{border-color:var(--sky);background:var(--sky-soft)}
+.choice b{font-size:15px}.choice span{color:var(--muted);font-size:12px}
+.choice .ic{font-size:26px;line-height:1}
+.card.wide{max-height:none}
+.row-end{display:flex;justify-content:space-between;gap:8px;margin-top:20px;flex-wrap:wrap}
+.langsw{display:flex;gap:4px}.langsw button{border:1px solid var(--line);background:var(--surface);border-radius:7px;padding:4px 9px;cursor:pointer;font-weight:700;font-size:12px}.langsw button.on{background:var(--sky);color:#fff;border-color:var(--sky)}
+.app{display:grid;grid-template-columns:236px 1fr;height:100%}
+.side{background:var(--side);color:var(--side-fg);display:flex;flex-direction:column;gap:3px;padding:16px 12px;overflow-y:auto}
+.side .logo{padding:0 6px 16px}
+.club{background:#ffffff1f;border-radius:10px;padding:10px 12px;margin-bottom:10px}
+.club b{display:block}.club span{font-size:12px;color:var(--side-mut)}
+.nav-i{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:9px;border:0;background:transparent;color:var(--side-fg);cursor:pointer;font-weight:700;text-align:start;width:100%}
+.nav-i svg{width:18px;height:18px;flex:none}
+.nav-i:hover{background:#ffffff1a}
+.nav-i.on{background:#fff;color:#0873ad}
+:root[data-theme="dark"] .nav-i.on{background:var(--sky);color:#06141f}
+.nav-i .cnt{margin-inline-start:auto;background:var(--bad);color:#fff;border-radius:999px;font-size:11px;padding:0 7px}
+.side-foot{margin-top:auto;display:flex;gap:6px;padding-top:12px;border-top:1px solid #ffffff2a}
+.side-foot .btn{flex:1}
+.main{display:flex;flex-direction:column;min-width:0;overflow:hidden}
+.topbar{display:flex;align-items:center;gap:10px;padding:12px 22px;background:var(--surface);border-bottom:1px solid var(--line);flex-wrap:wrap}
+.topbar h1{margin:0;font-size:19px}
+.topbar .sub{color:var(--muted);font-size:13px}
+.topbar .grow{flex:1}
+.search{min-width:170px;width:300px;max-width:100%;border:1px solid var(--line);background:var(--bg);border-radius:9px;padding:8px 12px}
+.content{padding:20px 22px;overflow:auto;flex:1}
+.tabbar{display:none}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.kpi small{color:var(--muted);font-weight:700;font-size:12px}
+.kpi div{font-family:var(--f-d);font-size:32px;font-weight:800;line-height:1.1}
+.kpi div span{font-size:15px;color:var(--muted);font-family:var(--f-b);font-weight:600}
+.bar{height:6px;border-radius:3px;background:var(--bad-soft);margin-top:8px;overflow:hidden}.bar i{display:block;height:100%;background:var(--ok)}
+.grid2{display:grid;grid-template-columns:1.5fr 1fr;gap:16px;align-items:start}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden;min-width:0}
+.panel>h3{margin:0;padding:12px 16px;font-size:14px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:8px}
+.lrow{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--line)}
+.lrow:last-child{border-bottom:0}
+.lrow .who{flex:1;min-width:0}.lrow .who b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.lrow .who span{color:var(--muted);font-size:12px}
+.av{width:34px;height:34px;border-radius:50%;background:var(--sky-soft);color:var(--sky-d);display:grid;place-items:center;font-weight:800;font-size:12px;flex:none}
+.empty{padding:22px 16px;color:var(--muted)}
+.stack{display:flex;flex-direction:column;gap:14px}
+.sess{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.sess-h{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.time{font-family:var(--f-d);font-weight:800;font-size:22px;color:var(--sky);line-height:1;min-width:84px}
+.sess-h .who{flex:1;min-width:120px}.sess-h .who b{display:block}.sess-h .who span{color:var(--muted);font-size:12px}
+.now{background:var(--sky);color:#fff}
+.prog{font-size:12px;color:var(--muted);font-weight:700}
+.plan{padding:8px 16px 14px}
+.item{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px dashed var(--line)}
+.item input{width:18px;height:18px;accent-color:var(--ok);flex:none}
+.item span{flex:1;min-width:0}
+.item.done span{text-decoration:line-through;color:var(--muted)}
+.item .x{border:0;background:transparent;color:var(--muted);cursor:pointer;font-size:16px}
+.add{display:flex;gap:8px;margin-top:8px}
+.add input{flex:1;min-width:0;border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:8px 10px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.chips button{border:1px dashed var(--line);background:transparent;border-radius:999px;padding:3px 10px;font-size:12px;cursor:pointer;color:var(--muted)}
+.tools{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center}
+.tools select{border:1px solid var(--line);background:var(--surface);border-radius:9px;padding:8px 10px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;background:var(--surface)}
+.seg button{border:0;background:transparent;padding:7px 12px;cursor:pointer;font-weight:700;color:var(--muted)}
+.seg button.on{background:var(--sky-soft);color:var(--sky-d)}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:900px}
+th,td{padding:10px 14px;text-align:start;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-size:12px;color:var(--muted);font-weight:700;background:var(--pale)}
+tr:hover td{background:var(--pale)}
+.acts{display:flex;gap:6px}
+.board{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(250px,1fr);gap:12px;overflow-x:auto;padding-bottom:8px}
+.col{background:var(--pale);border:1px solid var(--line);border-radius:12px;display:flex;flex-direction:column;min-height:320px}
+.col-h{padding:12px 14px;border-bottom:1px solid var(--line)}
+.col-h b{display:block;font-size:15px}.col-h span{color:var(--muted);font-size:12px}
+.stripe{height:3px;border-radius:2px;margin-top:8px}
+.col-b{padding:10px;display:flex;flex-direction:column;gap:8px;flex:1}
+.col-b.over{background:var(--sky-soft)}
+.kc{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;cursor:grab}
+.kc b{display:block}.kc .meta{display:flex;justify-content:space-between;gap:6px;margin-top:4px;color:var(--muted);font-size:12px}
+.kc .acts{margin-top:8px;flex-wrap:wrap}
+.week{display:grid;grid-template-columns:repeat(7,minmax(130px,1fr));gap:10px;overflow-x:auto}
+.day{background:var(--surface);border:1px solid var(--line);border-radius:12px;min-height:200px;display:flex;flex-direction:column}
+.day.today{border:2px solid var(--sky)}
+.day-h{padding:10px 12px;border-bottom:1px solid var(--line);font-weight:800;display:flex;justify-content:space-between}
+.day-b{padding:8px;display:flex;flex-direction:column;gap:6px}
+.slot{background:var(--sky-soft);border-radius:8px;padding:7px 9px;font-size:12px;cursor:pointer;border:0;text-align:start;color:var(--fg)}
+.slot b{display:block;color:var(--sky-d)}
+.coachs{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.cc{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px}
+.cc h3{margin:0;font-size:16px}.cc .sp{color:var(--muted);font-size:13px}
+.cc .nums{display:flex;gap:18px;margin-top:12px}
+.cc .nums div b{display:block;font-family:var(--f-d);font-size:26px;line-height:1}.cc .nums div small{color:var(--muted);font-size:12px}
+/* auto messages */
+.rules{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+.rule{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.rule-h{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.rule-h b{font-size:15px}
+.rule p{margin:0;color:var(--muted);font-size:13px}
+.sw{position:relative;width:42px;height:24px;flex:none}
+.sw input{position:absolute;opacity:0;inset:0;cursor:pointer;margin:0}
+.sw span{position:absolute;inset:0;border-radius:999px;background:var(--line);transition:.2s;pointer-events:none}
+.sw span::after{content:"";position:absolute;top:3px;inset-inline-start:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:.2s}
+.sw input:checked+span{background:var(--wa)}
+.sw input:checked+span::after{inset-inline-start:21px}
+.sw input:focus-visible+span{outline:2px solid var(--sky);outline-offset:2px}
+.mrow{display:grid;grid-template-columns:92px 1fr auto;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line);align-items:start}
+.mrow:last-child{border-bottom:0}
+.mdate{font-weight:800;font-size:13px}.mdate small{display:block;color:var(--muted);font-weight:600}
+.mbody b{display:block}
+.bub{background:var(--wa-bub);border-radius:10px;padding:8px 10px;margin-top:6px;font-size:13px;max-width:60ch;white-space:pre-line;unicode-bidi:plaintext;text-align:start}
+.mst{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.ov{position:fixed;inset:0;background:#04324fa6;display:grid;place-items:center;z-index:50;padding:16px}
+.modal{background:var(--surface);border-radius:16px;width:100%;max-width:580px;max-height:90vh;overflow:auto}
+.modal-h{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+.modal-h h3{margin:0}
+.modal-b{padding:4px 20px 18px;display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+.modal-b .full{grid-column:1/-1}
+.modal-f{padding:14px 20px;border-top:1px solid var(--line);display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+.xb{border:0;background:var(--sky-soft);color:var(--sky);width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:18px}
+.toast{position:fixed;bottom:calc(84px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:#0c2a3e;color:#fff;padding:10px 16px;border-radius:9px;z-index:60;font-weight:700}
+.set{max-width:680px;display:flex;flex-direction:column;gap:14px}
+.set .panel{padding:16px}.set .panel h3{margin:0 0 4px;font-size:15px}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.tag{border:1px solid var(--line);border-radius:999px;padding:4px 12px;background:var(--surface);font-weight:700;font-size:13px}
+.tag.on{background:var(--sky);color:#fff;border-color:var(--sky)}
+@media (max-width:1000px){.kpis{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}.rules{grid-template-columns:1fr}}
+@media (max-width:760px){
+  .app{grid-template-columns:1fr;grid-template-rows:1fr auto}
+  .side{display:none}
+  .tabbar{display:flex;overflow-x:auto;background:var(--side);padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px));padding-left:max(4px,env(safe-area-inset-left,0px));padding-right:max(4px,env(safe-area-inset-right,0px))}
+  .tabbar .nav-i{flex:1 0 74px;flex-direction:column;gap:2px;font-size:11px;padding:6px 4px;align-items:center;text-align:center}
+  .tabbar .nav-i .cnt{display:none}
+  .content{padding:14px max(16px,env(safe-area-inset-right,0px)) 14px max(16px,env(safe-area-inset-left,0px))}
+  .topbar{padding:10px 16px}.topbar .grow{display:none}
+  .search{width:100%;order:5}
+  .modal-b{grid-template-columns:1fr}
+  .kpi div{font-size:26px}
+  .time{font-size:19px;min-width:70px}
+  .mrow{grid-template-columns:1fr}.mst{flex-direction:row;align-items:center}
+}
+
+/* dashboard */
+.dcards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.dc{border:2px solid transparent;border-radius:14px;padding:16px;text-align:start;cursor:pointer;display:flex;flex-direction:column;gap:4px;background:var(--surface)}
+.dc small{font-weight:800;font-size:12px}
+.dc b{font-family:var(--f-d);font-size:40px;line-height:1}
+.dc span{font-weight:700;font-size:14px}
+.dc em{font-style:normal;font-size:12px;color:var(--muted);margin-top:4px}
+.dc.g{background:var(--ok-soft);color:var(--ok)}.dc.r{background:var(--bad-soft);color:var(--bad)}.dc.a{background:var(--warn-soft);color:var(--warn)}.dc.s{background:var(--sky-soft);color:var(--sky-d)}
+.dc.on{border-color:currentColor;box-shadow:0 8px 24px #0b8fd622}
+.total{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;background:#0b8fd6;color:#fff;border-radius:14px;padding:16px 20px;margin-bottom:16px}
+.total b{font-family:var(--f-d);font-size:40px;line-height:1}
+.total .parts{display:flex;gap:18px;flex-wrap:wrap;font-weight:700;font-size:13px}
+.total .parts i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-inline-end:6px}
+.chart{display:flex;align-items:flex-end;gap:14px;height:180px;padding:16px 16px 0}
+.chart .c{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end}
+.chart .stk{width:100%;max-width:46px;display:flex;flex-direction:column-reverse;border-radius:6px 6px 0 0;overflow:hidden}
+.chart .stk i{display:block}
+.chart .c small{color:var(--muted);font-size:11px;font-weight:700}
+.chart .c em{font-style:normal;font-size:11px;font-weight:800}
+.ccrow{display:grid;grid-template-columns:1fr auto;gap:4px 10px;padding:10px 16px;border-bottom:1px solid var(--line)}
+.ccrow:last-child{border-bottom:0}
+.paygrid{display:flex;flex-direction:column;gap:10px;grid-column:1/-1;margin-top:12px}
+.payopt{display:grid;grid-template-columns:auto 1fr 110px;gap:10px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.payopt input[type=checkbox]{width:18px;height:18px;accent-color:var(--ok)}
+.payopt input[type=number]{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:6px 8px;width:100%}
+.payopt small{display:block;color:var(--muted)}
+@media (max-width:1000px){.dcards{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:760px){.dc b{font-size:32px}.chart{gap:8px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+.grid2.eq{grid-template-columns:1fr 1fr}
+td .sm{display:none}
+.more{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:16px 20px}
+.more-i{display:flex;align-items:center;gap:10px;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:14px;cursor:pointer;font-weight:700;text-align:start}
+.more-i svg{width:20px;height:20px;color:var(--sky);flex:none}
+.more-i.on{border-color:var(--sky);background:var(--sky-soft)}
+@media (max-width:1000px){.grid2.eq{grid-template-columns:1fr}}
+@media (max-width:760px){
+ .tabbar .nav-i{flex:1 1 0}
+ .hm{display:none}td .sm{display:block}table{min-width:0}th,td{padding:10px 10px}
+ .board{grid-auto-columns:84%;scroll-snap-type:x mandatory}.col{scroll-snap-align:start}
+ .week{grid-template-columns:repeat(7,76%);scroll-snap-type:x mandatory}.day{scroll-snap-align:start}
+ .ov.sheet{align-items:end;padding:0}.ov.sheet .modal{border-radius:18px 18px 0 0;max-width:none;padding-bottom:env(safe-area-inset-bottom,0px)}
+}
+
+.fiche{max-width:440px}
+.phonecard{margin:16px auto;width:min(340px,100%);border:8px solid #0c2a3e;border-radius:30px;overflow:hidden;background:var(--surface)}
+.pc-top{background:#0b8fd6;color:#fff;padding:10px 16px 14px}
+.pc-url{background:#ffffff26;border-radius:999px;padding:3px 10px;font-size:11px;margin-bottom:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pc-top b{display:block;font-size:17px}.pc-top span{font-size:12px;color:#e3f4fd}
+.pc-body{padding:14px 16px 18px}
+.pc-name{display:flex;gap:12px;align-items:center;margin-bottom:12px}.pc-name b{display:block;font-size:16px}
+.pc-status{border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:2px;margin-bottom:10px;background:var(--warn-soft);color:var(--warn)}
+.pc-status.paid{background:var(--ok-soft);color:var(--ok)}.pc-status.late{background:var(--bad-soft);color:var(--bad)}.pc-status.frozen{background:var(--sky-soft);color:var(--sky-d)}
+.pc-status small{font-weight:700;font-size:11px}.pc-status b{font-family:var(--f-d);font-size:28px;line-height:1}.pc-status span{font-size:12px;font-weight:700}
+.pc-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pc-grid div{border:1px solid var(--line);border-radius:10px;padding:8px 10px;display:flex;flex-direction:column;gap:2px;align-items:flex-start}
+.pc-grid small{color:var(--muted);font-size:11px;font-weight:700}
+.fiche h4{margin:14px 0 6px;font-size:13px}
+.pc-h{display:grid;grid-template-columns:auto 1fr auto;gap:10px;padding:6px 0;border-bottom:1px dashed var(--line);font-size:13px}
+
+.net{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:800;border-radius:999px;padding:4px 10px;white-space:nowrap}
+.net i{width:8px;height:8px;border-radius:50%;background:currentColor}
+.net.on{background:var(--ok-soft);color:var(--ok)}.net.off{background:var(--warn-soft);color:var(--warn)}
+.card.lock{max-width:360px;text-align:center}.card.lock .logo{justify-content:center}
+.dots{display:flex;justify-content:center;gap:14px;margin:18px 0 4px}
+.dots span{width:16px;height:16px;border-radius:50%;border:2px solid var(--sky)}.dots span.f{background:var(--sky)}
+.pad{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:260px;margin:8px auto 0}
+.pad button{height:62px;border-radius:50%;border:1px solid var(--line);background:var(--pale);font-size:24px;font-weight:800;cursor:pointer;color:var(--fg);width:62px;justify-self:center}
+.pad button:active{background:var(--sky-soft)}
+
+.sub-head{border-radius:12px;padding:14px 18px;margin-bottom:14px;font-size:15px}
+.bill-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;align-items:start}
+.plans{display:flex;flex-direction:column;gap:10px}
+.plan{border:2px solid var(--line);background:var(--surface);border-radius:12px;padding:12px 14px;text-align:start;cursor:pointer;display:flex;flex-direction:column;gap:2px}
+.plan.on{border-color:var(--sky);background:var(--sky-soft)}
+.plan .amt{font-family:var(--f-d);font-size:30px;font-weight:800;line-height:1.1}.plan .amt small{font-family:var(--f-b);font-size:13px;color:var(--muted)}
+.methods{display:flex;flex-direction:column;gap:8px;margin:10px 0}
+.mth{border:2px solid var(--line);background:var(--surface);border-radius:10px;padding:10px 12px;font-weight:700;text-align:start;cursor:pointer}
+.mth.on{border-color:var(--sky);background:var(--sky-soft)}
+.pay-info{background:var(--pale);border:1px dashed var(--line);border-radius:10px;padding:12px}
+.kv{display:flex;justify-content:space-between;gap:10px;padding:5px 0;font-size:13px}.kv span{color:var(--muted)}
+.drop{display:grid;place-items:center;min-height:150px;border:2px dashed var(--line);border-radius:12px;cursor:pointer;color:var(--muted);font-weight:700;overflow:hidden;background:var(--pale)}
+.drop img{max-width:100%;max-height:220px;display:block}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+@media (max-width:1100px){.bill-grid{grid-template-columns:1fr}}
+
+.mark{background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2216%22%20fill%3D%22%23ffffff%22/%3E%3Ccircle%20cx%3D%2217%22%20cy%3D%2217%22%20r%3D%224.5%22%20fill%3D%22none%22%20stroke%3D%22%230b8fd6%22%20stroke-width%3D%223%22/%3E%3Cpath%20d%3D%22M20%2020.5%20L24%2024.5%22%20stroke%3D%22%230b8fd6%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22/%3E%3Cpath%20d%3D%22M30%2019%20H52%20a3%203%200%200%201%203%203%20v7%20a3%203%200%200%201%20-3%203%20H44%20A15%2015%200%201%201%2030%2019%20Z%22%20fill%3D%22%230b8fd6%22/%3E%3Crect%20x%3D%2234%22%20y%3D%2222.5%22%20width%3D%226%22%20height%3D%224%22%20rx%3D%221.5%22%20fill%3D%22%23ffffff%22/%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2235%22%20r%3D%225.5%22%20fill%3D%22%230c2a3e%22/%3E%3C/svg%3E") center/100% no-repeat!important;box-shadow:none!important;border-radius:9px}
+.mark i{display:none!important}
+.card .mark{background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2216%22%20fill%3D%22%230b8fd6%22/%3E%3Ccircle%20cx%3D%2217%22%20cy%3D%2217%22%20r%3D%224.5%22%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-width%3D%223%22/%3E%3Cpath%20d%3D%22M20%2020.5%20L24%2024.5%22%20stroke%3D%22%23ffffff%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22/%3E%3Cpath%20d%3D%22M30%2019%20H52%20a3%203%200%200%201%203%203%20v7%20a3%203%200%200%201%20-3%203%20H44%20A15%2015%200%201%201%2030%2019%20Z%22%20fill%3D%22%23ffffff%22/%3E%3Crect%20x%3D%2234%22%20y%3D%2222.5%22%20width%3D%226%22%20height%3D%224%22%20rx%3D%221.5%22%20fill%3D%22%230b8fd6%22/%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2235%22%20r%3D%225.5%22%20fill%3D%22%230c2a3e%22/%3E%3C/svg%3E")!important}
+.logo{font-family:"Poppins","Manrope",system-ui,sans-serif!important;font-weight:700!important;letter-spacing:-.5px;font-size:24px!important}
+.logo b.pro{color:#bfe6fb;font-weight:800}
+.card .logo b.pro{color:var(--sky)}
+
+</style>
+
+<div id="root"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+const SB_URL="https://bqaabislojlebfpuvtxq.supabase.co",SB_KEY="sb_publishable_e-ibQ_7thrb3sRV2EmqPsw_oXbOy2XI";
+const sb=(window.supabase&&window.supabase.createClient)?window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true}}):null;
+const SITE="https://claude.ai/artifact/4DRrtyMHPDNpY8N64YDjhd";
+const KEY="sallpro_live_v1";
+
+const MART=[{fr:"Poussins",ar:"الكتاكيت",en:"Little kids"},{fr:"Benjamins",ar:"الصغار",en:"Kids"},{fr:"Minimes",ar:"الفتيان",en:"Minimes"},{fr:"Cadets",ar:"الشبان",en:"Cadets"},{fr:"Juniors",ar:"الأواسط",en:"Juniors"},{fr:"Seniors",ar:"الكبار",en:"Seniors"}];
+const U=a=>a.map(x=>({fr:x,ar:x,en:x}));
+const AGE=MART;
+const NIV=[{fr:"Débutant",ar:"مبتدئ",en:"Beginner"},{fr:"Intermédiaire",ar:"متوسط",en:"Intermediate"},{fr:"Avancé",ar:"متقدّم",en:"Advanced"},{fr:"Compétition",ar:"منافسة",en:"Competition"}];
+const COMBAT=[{fr:"Enfants",ar:"الأطفال",en:"Kids"},{fr:"Ados",ar:"المراهقون",en:"Teens"},{fr:"Adultes",ar:"الكبار",en:"Adults"},{fr:"Compétition",ar:"المنافسة",en:"Competition"}];
+const FIT=[{fr:"Hommes",ar:"الرجال",en:"Men"},{fr:"Femmes",ar:"النساء",en:"Women"},{fr:"Ados",ar:"المراهقون",en:"Teens"}];
+const UFOOT=U(["U7","U9","U11","U13","U15","U17","U19","Seniors"]),UTEAM=U(["U11","U13","U15","U17","U19","Seniors"]);
+const P=a=>a.map(x=>({fr:x[0],ar:x[1],en:x[2]}));
+const POS={
+ foot:P([["Gardien","حارس","Goalkeeper"],["Défenseur","مدافع","Defender"],["Milieu","وسط","Midfielder"],["Attaquant","مهاجم","Forward"]]),
+ basket:P([["Meneur","صانع ألعاب","Point guard"],["Arrière","مدافع خلفي","Shooting guard"],["Ailier","جناح","Small forward"],["Ailier fort","جناح قوي","Power forward"],["Pivot","ارتكاز","Center"]]),
+ hand:P([["Gardien","حارس","Goalkeeper"],["Ailier","جناح","Wing"],["Arrière","ظهير","Back"],["Demi-centre","وسط","Centre back"],["Pivot","ارتكاز","Pivot"]]),
+ volley:P([["Passeur","معدّ","Setter"],["Attaquant","ضارب","Hitter"],["Central","وسط","Middle blocker"],["Libéro","ليبرو","Libero"]]),
+ rugby:P([["Avant","مهاجم أمامي","Forward"],["Demi","نصف","Half-back"],["Trois-quarts","خلفي","Back"]])
+};
+/* [key, icon, group, fr, ar, en, kind, cats, pos] */
+const SPORT_LIST=[
+ ["tkd","🥋","mart","Taekwondo","تايكواندو","Taekwondo","belt",AGE],
+ ["karate","🥋","mart","Karaté","كاراتيه","Karate","belt",AGE],
+ ["kyoku","🥋","mart","Kyokushin","كيوكوشين","Kyokushin","belt",AGE],
+ ["judo","🥋","mart","Judo","جودو","Judo","belt",AGE],
+ ["jjb","🥋","mart","Jiu-jitsu brésilien","جيو جيتسو برازيلي","Brazilian jiu-jitsu","belt",AGE],
+ ["aikido","🥋","mart","Aïkido","أيكيدو","Aikido","belt",AGE],
+ ["kungfu","🥋","mart","Kung-fu / Wushu","كونغ فو / ووشو","Kung fu / Wushu","belt",AGE],
+ ["hapkido","🥋","mart","Hapkido","هابكيدو","Hapkido","belt",AGE],
+ ["vovi","🥋","mart","Viet vo dao","فيات فو داو","Vovinam","belt",AGE],
+ ["boxe","🥊","combat","Boxe anglaise","الملاكمة","Boxing","weight",COMBAT],
+ ["kick","🥊","combat","Kickboxing","كيك بوكسينغ","Kickboxing","weight",COMBAT],
+ ["muay","🥊","combat","Muay thaï","مواي تاي","Muay Thai","weight",COMBAT],
+ ["full","🥊","combat","Full contact","فول كونتاكت","Full contact","weight",COMBAT],
+ ["mma","🥊","combat","MMA","فنون القتال المختلطة","MMA","weight",COMBAT],
+ ["lutte","🤼","combat","Lutte","المصارعة","Wrestling","weight",COMBAT],
+ ["grap","🤼","combat","Grappling","غرابلينغ","Grappling","weight",COMBAT],
+ ["sambo","🤼","combat","Sambo","سامبو","Sambo","weight",COMBAT],
+ ["krav","🛡️","combat","Krav maga / Self-défense","كراف ماغا / دفاع عن النفس","Krav maga / Self-defence","level",NIV],
+ ["escrime","🤺","combat","Escrime","المبارزة","Fencing","level",AGE],
+ ["foot","⚽","team","Football","كرة القدم","Football","pos",UFOOT,"foot"],
+ ["futsal","⚽","team","Futsal","كرة القدم المصغّرة","Futsal","pos",UTEAM,"foot"],
+ ["basket","🏀","team","Basket","كرة السلة","Basketball","pos",UTEAM,"basket"],
+ ["hand","🤾","team","Handball","كرة اليد","Handball","pos",UTEAM,"hand"],
+ ["volley","🏐","team","Volley-ball","الكرة الطائرة","Volleyball","pos",UTEAM,"volley"],
+ ["beach","🏐","team","Beach-volley","الكرة الطائرة الشاطئية","Beach volleyball","level",NIV],
+ ["rugby","🏉","team","Rugby","الرغبي","Rugby","pos",UTEAM,"rugby"],
+ ["muscu","🏋️","fit","Musculation (accès libre)","كمال الأجسام (ولوج حر)","Weight training (open gym)","plan",FIT,null,true],
+ ["fitness","💪","fit","Fitness / Cardio (accès libre)","لياقة / كارديو (ولوج حر)","Fitness / Cardio (open gym)","plan",FIT,null,true],
+ ["cross","🏋️","fit","CrossFit","كروسفيت","CrossFit","plan",FIT],
+ ["cali","🤸","fit","Street workout","ستريت وركاوت","Calisthenics","plan",FIT,null,true],
+ ["zumba","💃","fit","Zumba / Aérobic","زومبا / إيروبيك","Zumba / Aerobics","plan",FIT],
+ ["yoga","🧘","fit","Yoga","يوغا","Yoga","plan",FIT],
+ ["pilates","🧘","fit","Pilates","بيلاتس","Pilates","plan",FIT],
+ ["tennis","🎾","racket","Tennis","التنس","Tennis","level",NIV],
+ ["padel","🎾","racket","Padel","البادل","Padel","level",NIV],
+ ["badm","🏸","racket","Badminton","الريشة الطائرة","Badminton","level",NIV],
+ ["tt","🏓","racket","Tennis de table","كرة الطاولة","Table tennis","level",NIV],
+ ["squash","🎾","racket","Squash","الإسكواش","Squash","level",NIV],
+ ["swim","🏊","water","Natation","السباحة","Swimming","level",AGE],
+ ["wpolo","🤽","water","Water-polo","كرة الماء","Water polo","level",UTEAM],
+ ["surf","🏄","water","Surf / Bodyboard","ركوب الأمواج","Surf / Bodyboard","level",NIV],
+ ["athle","🏃","other","Athlétisme","ألعاب القوى","Athletics","level",AGE],
+ ["gym","🤸","other","Gymnastique","الجمباز","Gymnastics","level",AGE],
+ ["danse","💃","other","Danse","الرقص","Dance","level",NIV],
+ ["equi","🏇","other","Équitation","الفروسية","Horse riding","level",NIV],
+ ["escal","🧗","other","Escalade","التسلق","Climbing","level",NIV],
+ ["velo","🚴","other","Cyclisme","الدراجات","Cycling","level",NIV],
+ ["skate","🛹","other","Skate / Roller","التزلج / الرولر","Skate / Roller","level",NIV],
+ ["echecs","♟️","other","Échecs","الشطرنج","Chess","level",AGE]
+];
+const GROUPS={mart:{fr:"Arts martiaux",ar:"الفنون القتالية",en:"Martial arts"},combat:{fr:"Sports de combat",ar:"رياضات النزال",en:"Combat sports"},team:{fr:"Sports collectifs",ar:"الرياضات الجماعية",en:"Team sports"},fit:{fr:"Fitness et musculation",ar:"اللياقة وكمال الأجسام",en:"Fitness and gym"},racket:{fr:"Sports de raquette",ar:"رياضات المضرب",en:"Racket sports"},water:{fr:"Sports aquatiques",ar:"الرياضات المائية",en:"Water sports"},other:{fr:"Autres sports",ar:"رياضات أخرى",en:"Other sports"},custom:{fr:"Mes sports",ar:"رياضاتي",en:"My sports"}};
+const SP={};
+SPORT_LIST.forEach(x=>{SP[x[0]]={ic:x[1],group:x[2],name:{fr:x[3],ar:x[4],en:x[5]},kind:x[6],cats:x[7],pos:x[8]?POS[x[8]]:undefined,open:!!x[9]}});
+function regCustom(key){const name=key.slice(2);if(!SP[key])SP[key]={ic:"🏅",group:"custom",name:{fr:name,ar:name,en:name},kind:"level",cats:AGE,custom:true}}
+function addCustomSport(name){const key="c:"+name.trim().slice(0,40);regCustom(key);return key}
+const BELTS=[{fr:"Blanche",ar:"أبيض",en:"White",c:"#f4f4f4"},{fr:"Jaune",ar:"أصفر",en:"Yellow",c:"#f5cf1d"},{fr:"Orange",ar:"برتقالي",en:"Orange",c:"#f08a1c"},{fr:"Verte",ar:"أخضر",en:"Green",c:"#2aa34a"},{fr:"Bleue",ar:"أزرق",en:"Blue",c:"#2f5bff"},{fr:"Rouge",ar:"أحمر",en:"Red",c:"#d62d2d"},{fr:"Noire",ar:"أسود",en:"Black",c:"#111"}];
+const WEIGHT=U(["-45 kg","-54 kg","-63 kg","-71 kg","-80 kg","+80 kg"]);
+const PLANS=[{fr:"Mensuel",ar:"شهري",en:"Monthly"},{fr:"3 mois",ar:"3 أشهر",en:"3 months"},{fr:"Annuel",ar:"سنوي",en:"Yearly"}];
+const TPL={
+ belt:{fr:["Échauffement 10 min","Étirements","Techniques de pied","Poomsae / Kata","Combat","Retour au calme"],ar:["إحماء 10 دقائق","تمديد","تقنيات الأرجل","بومسي / كاتا","نزال","تهدئة"],en:["Warm-up 10 min","Stretching","Kicking drills","Poomsae / Kata","Sparring","Cool-down"]},
+ weight:{fr:["Corde à sauter","Shadow boxing","Pattes d'ours","Sac","Gainage"],ar:["نط الحبل","ملاكمة الظل","وسادات المدرب","الكيس","تمارين البطن"],en:["Jump rope","Shadow boxing","Pad work","Heavy bag","Core"]},
+ plan:{fr:["Cardio 15 min","Haut du corps","Bas du corps","Abdos","Étirements"],ar:["كارديو 15 دقيقة","الجزء العلوي","الجزء السفلي","البطن","تمديد"],en:["Cardio 15 min","Upper body","Lower body","Abs","Stretching"]},
+ level:{fr:["Échauffement","Technique","Exercices","Mise en situation","Retour au calme"],ar:["إحماء","التقنية","تمارين","تطبيق","تهدئة"],en:["Warm-up","Technique","Drills","Practice","Cool-down"]},
+ pos:{fr:["Échauffement avec ballon","Passes","Conduite de balle","Tactique","Match","Retour au calme"],ar:["إحماء بالكرة","التمريرات","المراوغة","خطة اللعب","مباراة","تهدئة"],en:["Ball warm-up","Passing","Dribbling","Tactics","Game","Cool-down"]}
+};
+
+const T={
+fr:{dir:"ltr",
+ login:"Créer un compte ou se connecter",email:"E-mail",pass:"Mot de passe",enter:"Continuer",demo:"Essayer la démo",hint:"Démo : n'importe quel e-mail et 4 caractères minimum.",bad:"Entre un e-mail valide et un mot de passe de 4 caractères minimum.",site:"Voir le site",
+ ob1:"Vous êtes ?",ob1s:"L'application s'adapte à votre organisation.",coach:"Coach indépendant",coachS:"Je gère mes élèves seul",salle:"Gérant de salle",salleS:"Plusieurs coachs dans ma salle",
+ ob2:"Quels sports ?",ob2s:"Choisissez vos sports parmi plus de 45. Catégories, ceintures, poids, postes et niveaux s'adaptent.",
+ ob3:"Votre club",club:"Nom de la salle ou du club",you:"Votre nom",fee:"Cotisation par défaut (DH)",next:"Continuer",back:"Retour",finish:"Créer mon espace",pick:"Choisissez au moins un sport.",
+ nav:{billing:"Abonnement",today:"Aujourd'hui",students:"Élèves",pay:"Cotisations",auto:"Messages auto",sessions:"Séances",coachs:"Coachs",leads:"Prospects",settings:"Réglages"},
+ k:{active:"Élèves actifs",paid:"À jour",unpaid:"Échéance passée",income:"Cotisations encaissées"},of:"sur",
+ todayS:"Séances du jour",noSess:"Aucune séance aujourd'hui. Ajoutez votre planning dans « Séances ».",addItem:"Ajouter un exercice…",add:"Ajouter",reuse:"Reprendre le dernier plan",done:"fait",students:"élèves",live:"En cours",
+ remind:"Échéance passée",noUnpaid:"Tout le monde est à jour.",alerts:"Assurances à renouveler",noAlerts:"Aucune assurance n'expire dans 30 jours.",
+ search:"Rechercher un élève…",addSt:"Ajouter un élève",editSt:"Modifier l'élève",name:"Nom complet",phone:"Téléphone de l'élève",parent:"WhatsApp du parent",sport:"Sport",cat:"Catégorie",coachL:"Coach",belt:"Ceinture",pos:"Poste",weight:"Poids",formule:"Formule",detail:"Détail",feeL:"Cotisation (DH)",ins:"Fin d'assurance",reg:"Renouvellement inscription",save:"Enregistrer",cancel:"Annuler",del:"Supprimer",sure:"Confirmer ?",
+ status:"Statut",due:"Prochaine échéance",paidS:"À jour",unpaidS:"À payer",lateS:"En retard",frozenS:"Gelé",markPaid:"Encaisser",undo:"Annuler",rem:"WhatsApp",all:"Tous",allC:"Tous les coachs",allCat:"Toutes catégories",
+ insOk:"OK",insSoon:"Bientôt",insExp:"Expirée",
+ board:{unpaid:"À payer",late:"En retard (+3 j)",paid:"À jour",frozen:"Gelé"},freeze:"Geler",unfreeze:"Réactiver",
+ week:"Planning de la semaine",addSess:"Ajouter une séance",day:"Jour",start:"Début",end:"Fin",days:["Dim","Lun","Mar","Mer","Jeu","Ven","Sam"],
+ addCoach:"Ajouter un coach",collected:"encaissé",expected:"attendu",
+ leadCols:{trial:"Séance d'essai",contact:"Recontacté",won:"Inscrit",lost:"Perdu"},addLead:"Nouveau prospect",convert:"Inscrire",
+ setClub:"Club",setSports:"Sports",setLang:"Langue",setTheme:"Thème",light:"Jour",dark:"Nuit",auto:"Auto",logout:"Déconnexion",reset:"Recommencer la configuration",
+ demoNote:"Démo : les données restent dans ce navigateur. La version en ligne synchronisera téléphone et PC et enverra les messages via WhatsApp Business.",
+ saved:"Enregistré",paidT:"Paiement encaissé · prochaine échéance le ",dh:"DH",ex:"Exemples",
+ months:["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"],
+ autoIntro:"Chaque élève a sa propre date d'échéance : le jour où il a payé, chaque mois. Le message part tout seul : à l'adhérent pour les adultes, au parent pour les enfants.",
+ rCot:"Cotisation mensuelle",rCotS:"3 jours avant, le jour même, puis 3 jours après si rien n'est payé.",
+ rIns:"Assurance",rInsS:"30 jours avant l'expiration, puis le jour même.",
+ rReg:"Inscription annuelle",rRegS:"15 jours avant la date de renouvellement.",
+ sent:"Envoyés (7 derniers jours)",sched:"Programmés (30 prochains jours)",stSent:"Envoyé ✓✓",stSched:"Programmé",noMsg:"Aucun message.",to:"À",
+ tCot:"Cotisation",tIns:"Assurance",tReg:"Inscription",
+ m:{pre:(n,d,f,c)=>`Bonjour, la cotisation mensuelle de ${n} (${f} DH) à ${c} arrive à échéance le ${d}. Merci.`,
+    due:(n,d,f,c)=>`Bonjour, la cotisation mensuelle de ${n} (${f} DH) à ${c} est à régler aujourd'hui, ${d}. Merci.`,
+    late:(n,d,f,c)=>`Bonjour, la cotisation de ${n} (${f} DH) à ${c} est en retard depuis le ${d}. Merci de la régler au plus vite.`,
+    ins:(n,d,f,c)=>`Bonjour, l'assurance de ${n} expire le ${d}. Merci de la renouveler auprès de ${c}.`,
+    reg:(n,d,f,c)=>`Bonjour, l'inscription annuelle de ${n} à ${c} est à renouveler avant le ${d}.`}},
+ar:{dir:"rtl",
+ login:"إنشاء حساب أو تسجيل الدخول",email:"البريد الإلكتروني",pass:"كلمة المرور",enter:"متابعة",demo:"جرّب العرض",hint:"عرض تجريبي: أي بريد وكلمة مرور من 4 أحرف على الأقل.",bad:"أدخل بريدًا صحيحًا وكلمة مرور من 4 أحرف على الأقل.",site:"زيارة الموقع",
+ ob1:"من أنت؟",ob1s:"يتكيّف التطبيق مع طريقة عملك.",coach:"مدرّب مستقل",coachS:"أسيّر تلاميذي وحدي",salle:"مسيّر قاعة",salleS:"عدة مدرّبين في قاعتي",
+ ob2:"ما الرياضات؟",ob2s:"اختر رياضاتك من بين أكثر من 45 رياضة، وتتكيّف الفئات والأحزمة والأوزان والمراكز والمستويات.",
+ ob3:"ناديك",club:"اسم القاعة أو النادي",you:"اسمك",fee:"الاشتراك الافتراضي (درهم)",next:"متابعة",back:"رجوع",finish:"إنشاء فضائي",pick:"اختر رياضة واحدة على الأقل.",
+ nav:{billing:"الاشتراك",today:"اليوم",students:"التلاميذ",pay:"الاشتراكات",auto:"الرسائل التلقائية",sessions:"الحصص",coachs:"المدرّبون",leads:"الزوار",settings:"الإعدادات"},
+ k:{active:"تلاميذ نشطون",paid:"مؤدّى",unpaid:"تجاوزوا الموعد",income:"الاشتراكات المحصَّلة"},of:"من",
+ todayS:"حصص اليوم",noSess:"لا حصص اليوم. أضف برنامجك في «الحصص».",addItem:"أضف تمرينًا…",add:"إضافة",reuse:"استعمال آخر خطة",done:"منجز",students:"تلميذ",live:"جارية",
+ remind:"تجاوزوا الموعد",noUnpaid:"الجميع أدّى اشتراكه.",alerts:"تأمين يجب تجديده",noAlerts:"لا تأمين ينتهي خلال 30 يومًا.",
+ search:"ابحث عن تلميذ…",addSt:"إضافة تلميذ",editSt:"تعديل التلميذ",name:"الاسم الكامل",phone:"هاتف التلميذ",parent:"واتساب الوالد",sport:"الرياضة",cat:"الفئة",coachL:"المدرّب",belt:"الحزام",pos:"المركز",weight:"الوزن",formule:"الصيغة",detail:"التفاصيل",feeL:"الاشتراك (درهم)",ins:"نهاية التأمين",reg:"تجديد الانخراط",save:"حفظ",cancel:"إلغاء",del:"حذف",sure:"تأكيد؟",
+ status:"الحالة",due:"الاستحقاق القادم",paidS:"مؤدّى",unpaidS:"للأداء",lateS:"متأخر",frozenS:"مجمّد",markPaid:"تحصيل",undo:"تراجع",rem:"واتساب",all:"الكل",allC:"كل المدرّبين",allCat:"كل الفئات",
+ insOk:"سليم",insSoon:"قريبًا",insExp:"منتهٍ",
+ board:{unpaid:"للأداء",late:"متأخر (+3 أيام)",paid:"مؤدّى",frozen:"مجمّد"},freeze:"تجميد",unfreeze:"إعادة تفعيل",
+ week:"برنامج الأسبوع",addSess:"إضافة حصة",day:"اليوم",start:"البداية",end:"النهاية",days:["الأحد","الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"],
+ addCoach:"إضافة مدرّب",collected:"محصَّل",expected:"منتظر",
+ leadCols:{trial:"حصة تجربة",contact:"تمّ الاتصال",won:"مسجَّل",lost:"لم يلتحق"},addLead:"زائر جديد",convert:"تسجيل",
+ setClub:"النادي",setSports:"الرياضات",setLang:"اللغة",setTheme:"المظهر",light:"نهاري",dark:"ليلي",auto:"تلقائي",logout:"تسجيل الخروج",reset:"إعادة الإعداد",
+ demoNote:"عرض تجريبي: تبقى البيانات في هذا المتصفح. ستربط النسخة الإلكترونية بين الهاتف والحاسوب وترسل الرسائل عبر واتساب للأعمال.",
+ saved:"تمّ الحفظ",paidT:"تمّ التحصيل · الاستحقاق القادم يوم ",dh:"درهم",ex:"أمثلة",
+ months:["يناير","فبراير","مارس","أبريل","ماي","يونيو","يوليوز","غشت","شتنبر","أكتوبر","نونبر","دجنبر"],
+ autoIntro:"لكل تلميذ تاريخ استحقاق خاص به: يوم أدائه، كل شهر. وتُرسَل الرسالة وحدها: إلى المنخرط إن كان راشدًا، وإلى الوالد إن كان طفلًا.",
+ rCot:"الاشتراك الشهري",rCotS:"قبل 3 أيام، ثم يوم الاستحقاق، ثم بعد 3 أيام إن لم يُؤدَّ.",
+ rIns:"التأمين",rInsS:"قبل 30 يومًا من الانتهاء، ثم يوم الانتهاء.",
+ rReg:"الانخراط السنوي",rRegS:"قبل 15 يومًا من تاريخ التجديد.",
+ sent:"المُرسَلة (آخر 7 أيام)",sched:"المبرمجة (30 يومًا القادمة)",stSent:"أُرسلت ✓✓",stSched:"مبرمجة",noMsg:"لا رسائل.",to:"إلى",
+ tCot:"الاشتراك",tIns:"التأمين",tReg:"الانخراط",
+ m:{pre:(n,d,f,c)=>`السلام عليكم، يحلّ موعد الاشتراك الشهري لـ${n} (${f} درهمًا) في ${c} يوم ${d}. شكرًا لكم.`,
+    due:(n,d,f,c)=>`السلام عليكم، يُستحَق اليوم ${d} الاشتراك الشهري لـ${n} (${f} درهمًا) في ${c}. شكرًا لكم.`,
+    late:(n,d,f,c)=>`السلام عليكم، اشتراك ${n} (${f} درهمًا) في ${c} متأخر منذ ${d}. نرجو أداءه في أقرب وقت.`,
+    ins:(n,d,f,c)=>`السلام عليكم، ينتهي تأمين ${n} يوم ${d}. نرجو تجديده لدى ${c}.`,
+    reg:(n,d,f,c)=>`السلام عليكم، يجب تجديد الانخراط السنوي لـ${n} في ${c} قبل ${d}.`}},
+en:{dir:"ltr",
+ login:"Create an account or log in",email:"Email",pass:"Password",enter:"Continue",demo:"Try the demo",hint:"Demo: any email and at least 4 characters.",bad:"Enter a valid email and a password of at least 4 characters.",site:"View the website",
+ ob1:"Who are you?",ob1s:"The app adapts to how you work.",coach:"Independent coach",coachS:"I manage my students alone",salle:"Gym owner",salleS:"Several coaches in my gym",
+ ob2:"Which sports?",ob2s:"Pick your sports from more than 45. Categories, belts, weights, positions and levels adapt.",
+ ob3:"Your club",club:"Gym or club name",you:"Your name",fee:"Default fee (MAD)",next:"Continue",back:"Back",finish:"Create my space",pick:"Pick at least one sport.",
+ nav:{billing:"Subscription",today:"Today",students:"Students",pay:"Fees",auto:"Auto messages",sessions:"Sessions",coachs:"Coaches",leads:"Prospects",settings:"Settings"},
+ k:{active:"Active students",paid:"Up to date",unpaid:"Past due",income:"Fees collected"},of:"of",
+ todayS:"Today's sessions",noSess:"No session today. Add your timetable in “Sessions”.",addItem:"Add an exercise…",add:"Add",reuse:"Reuse last plan",done:"done",students:"students",live:"Now",
+ remind:"Past due",noUnpaid:"Everyone is up to date.",alerts:"Insurance to renew",noAlerts:"No insurance expires within 30 days.",
+ search:"Search a student…",addSt:"Add a student",editSt:"Edit student",name:"Full name",phone:"Student's phone",parent:"Parent's WhatsApp",sport:"Sport",cat:"Category",coachL:"Coach",belt:"Belt",pos:"Position",weight:"Weight",formule:"Plan",detail:"Detail",feeL:"Fee (MAD)",ins:"Insurance ends",reg:"Membership renewal",save:"Save",cancel:"Cancel",del:"Delete",sure:"Confirm?",
+ status:"Status",due:"Next due date",paidS:"Up to date",unpaidS:"To pay",lateS:"Late",frozenS:"Frozen",markPaid:"Collect",undo:"Undo",rem:"WhatsApp",all:"All",allC:"All coaches",allCat:"All categories",
+ insOk:"OK",insSoon:"Soon",insExp:"Expired",
+ board:{unpaid:"To pay",late:"Late (+3 days)",paid:"Up to date",frozen:"Frozen"},freeze:"Freeze",unfreeze:"Reactivate",
+ week:"Weekly timetable",addSess:"Add a session",day:"Day",start:"Start",end:"End",days:["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],
+ addCoach:"Add a coach",collected:"collected",expected:"expected",
+ leadCols:{trial:"Trial session",contact:"Followed up",won:"Signed up",lost:"Lost"},addLead:"New prospect",convert:"Sign up",
+ setClub:"Club",setSports:"Sports",setLang:"Language",setTheme:"Theme",light:"Light",dark:"Dark",auto:"Auto",logout:"Log out",reset:"Restart setup",
+ demoNote:"Demo: data stays in this browser. The online version will sync phone and computer and send messages through WhatsApp Business.",
+ saved:"Saved",paidT:"Payment collected · next due on ",dh:"MAD",ex:"Examples",
+ months:["January","February","March","April","May","June","July","August","September","October","November","December"],
+ autoIntro:"Each student has their own due date: the day they paid, every month. The message goes out on its own: to the member for adults, to the parent for children.",
+ rCot:"Monthly fee",rCotS:"3 days before, on the day, then 3 days after if still unpaid.",
+ rIns:"Insurance",rInsS:"30 days before it expires, then on the day.",
+ rReg:"Yearly membership",rRegS:"15 days before the renewal date.",
+ sent:"Sent (last 7 days)",sched:"Scheduled (next 30 days)",stSent:"Sent ✓✓",stSched:"Scheduled",noMsg:"No messages.",to:"To",
+ tCot:"Fee",tIns:"Insurance",tReg:"Membership",
+ m:{pre:(n,d,f,c)=>`Hello, ${n}'s monthly fee (${f} MAD) at ${c} is due on ${d}. Thank you.`,
+    due:(n,d,f,c)=>`Hello, ${n}'s monthly fee (${f} MAD) at ${c} is due today, ${d}. Thank you.`,
+    late:(n,d,f,c)=>`Hello, ${n}'s fee (${f} MAD) at ${c} has been overdue since ${d}. Please pay as soon as possible.`,
+    ins:(n,d,f,c)=>`Hello, ${n}'s insurance expires on ${d}. Please renew it with ${c}.`,
+    reg:(n,d,f,c)=>`Hello, ${n}'s yearly membership at ${c} must be renewed before ${d}.`}}
+};
+
+/* ---------- dates & state ---------- */
+const now=new Date();
+const iso=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+const TODAY=iso(now);
+const pd=s=>new Date(s+"T12:00:00");
+const plusDays=(s,n)=>{const d=pd(s);d.setDate(d.getDate()+n);return iso(d)};
+const addDays=n=>plusDays(TODAY,n);
+const plusMonth=s=>{const d=pd(s),day=d.getDate();d.setDate(1);d.setMonth(d.getMonth()+1);const last=new Date(d.getFullYear(),d.getMonth()+1,0).getDate();d.setDate(Math.min(day,last));return iso(d)};
+const diffDays=(a,b)=>Math.round((pd(a)-pd(b))/864e5);
+const MONTH=TODAY.slice(0,7);
+const fmt=s=>{const d=pd(s);return String(d.getDate()).padStart(2,"0")+"/"+String(d.getMonth()+1).padStart(2,"0")+"/"+d.getFullYear()};
+const uid=()=>(crypto.randomUUID?crypto.randomUUID():"xxxxxxxx-xxxx-4xxx-8xxx-xxxxxxxxxxxx".replace(/x/g,()=>(Math.random()*16|0).toString(16)));
+const load=()=>{try{return JSON.parse(localStorage.getItem(KEY))}catch(e){return null}};
+let S0=load();(S0&&S0.setup&&S0.setup.sports||[]).forEach(k=>{if(String(k).startsWith('c:'))regCustom(k)});(S0&&S0.customs||[]).forEach(c=>{SP[c.k]={ic:"🏅",group:"custom",name:{fr:c.name,ar:c.name,en:c.name},kind:"level",cats:AGE,custom:true}});
+let S=S0||{lang:"fr",theme:"auto",user:null,setup:null,data:null,tab:"today",ob:{step:1,role:"salle",sports:["tkd"]}};
+let UNLOCK=false,PINBUF="";
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){};if(S.mode==="live")queueFlush()};
+const t=()=>T[S.lang];
+const lab=o=>o?(o[S.lang]||o.fr):"";
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+/* ---------- sample data ---------- */
+const FIRST=["Yassine","Salma","Ilyas","Nour","Hamza","Imane","Othmane","Rania","Mehdi","Aya","Anas","Hiba","Adam","Lina","Zakaria","Kenza","Omar","Sara","Ayoub","Malak"];
+const LAST=["Benali","El Idrissi","Tahiri","Alaoui","Berrada","Chraibi","Kettani","Fassi","Lahlou","Bennani","Amrani","Saidi","Naji","Rami","Ouazzani","Tazi"];
+const COACHN=["Karim","Nadia","Samir","Youssef","Hind","Rachid","Soukaina"];
+function buildData(setup){
+  const sports=setup.sports;
+  const coachs=setup.role==="coach"?[{id:uid(),name:setup.you||"Coach",sport:sports[0]}]:sports.map((s,i)=>({id:uid(),name:"Coach "+COACHN[i%COACHN.length],sport:s}));
+  const members=[],sessions=[],payments=[];let n=0;
+  const pairs=setup.role==="coach"?sports.map(s=>[coachs[0],s]):coachs.map(c=>[c,c.sport]);
+  const OFF=[2,31,8,34,15,29,40,5,22,30,12,37,19,27,1,33,10,24];
+  pairs.forEach(([c,sid],ci)=>{const sp=SP[sid];
+    sp.cats.slice(0,3).forEach((cat,k)=>{
+      for(let j=0;j<3;j++){const i=n++;const id=uid();const off=OFF[i%OFF.length];
+        members.push({id,name:FIRST[i%FIRST.length]+" "+LAST[(i*3)%LAST.length],phone:"066"+String(1000000+i*7919).slice(0,7),parent:"067"+String(2000000+i*6271).slice(0,7),coach:c.id,sport:sid,cat:k,belt:sp.kind==="belt"?Math.min(6,k*2+j%2):0,pos:j%((sp.pos||[1]).length),weight:k,formule:j%3,fee:Number(setup.fee)||150,ins:addDays([200,22,-4,90,140,12,300,60,170][i%9]),reg:addDays([120,9,200,60,14,300][i%6]),frozen:i%13===12,sample:true});
+        payments.push({id:uid(),mid:id,type:"cot",date:addDays(-off),amount:Number(setup.fee)||150});
+        if(off<20)payments.push({id:uid(),mid:id,type:"cot",date:plusDays(addDays(-off),-31),amount:Number(setup.fee)||150});
+        for(let b=2;b<=5;b++)if((i+b)%3)payments.push({id:uid(),mid:id,type:"cot",date:plusDays(addDays(-off),-31*b),amount:Number(setup.fee)||150});
+        if(i%4===0)payments.push({id:uid(),mid:id,type:"ins",date:addDays(-(i%5)),amount:100});
+        if(i%7===0)payments.push({id:uid(),mid:id,type:"reg",date:addDays(-(i%6)),amount:200});
+      }
+      const days=ci%2?[2,4,6]:[1,3,5];if(ci===0&&!days.includes(now.getDay()))days.push(now.getDay());
+      if(!sp.open)days.forEach(d=>sessions.push({id:uid(),day:d,start:String(17+k+ci%2).padStart(2,"0")+":00",end:String(18+k+ci%2).padStart(2,"0")+":00",coach:c.id,sport:sid,cat:k}));
+    });
+  });
+  const plans={};const first=sessions.find(s=>s.day===now.getDay());
+  if(first){plans[TODAY+"|"+first.id]=TPL[SP[first.sport].kind][S.lang].slice(0,4).map((x,i)=>({id:uid(),t:x,done:i<1}))}
+  const leads=[["Karim Saidi","0671000001","trial"],["Lina Amrani","0671000002","trial"],["Adam Rami","0671000003","contact"],["Sara Naji","0671000004","won"]].map((a,i)=>({id:uid(),name:a[0],phone:a[1],sport:sports[i%sports.length],stage:a[2]}));
+  return {coachs,members,payments,sessions,plans,leads};
+}
+
+/* ---------- payment logic: each student's own monthly due date ---------- */
+const lastPay=id=>S.data.payments.filter(p=>p.mid===id&&(p.type||"cot")==="cot").sort((a,b)=>a.date.localeCompare(b.date)).pop();
+const nMonths=m=>SP[m.sport]?.kind==="plan"?[1,3,12][m.formule||0]:1;
+const dueOf=m=>{const lp=lastPay(m.id);if(!lp)return m.joined||TODAY;let d=lp.date;for(let i=0;i<nMonths(m);i++)d=plusMonth(d);return d};
+const ADULT=["Seniors","Adultes","Juniors","Compétition","Hommes","Femmes"];
+const isSelf=m=>!!(SP[m.sport]?.open||ADULT.includes((SP[m.sport]?.cats||[])[m.cat]?.fr));
+const recip=m=>isSelf(m)?(m.phone||m.parent):(m.parent||m.phone);
+const isPaid=id=>{const m=S.data.members.find(x=>x.id===id);return m&&dueOf(m)>TODAY};
+const stage=m=>{if(m.frozen)return"frozen";const d=dueOf(m);if(d>TODAY)return"paid";return diffDays(TODAY,d)>3?"late":"unpaid"};
+
+const coachOf=id=>S.data.coachs.find(c=>c.id===id)||S.data.coachs[0];
+const ini=n=>n.split(" ").map(x=>x[0]).slice(0,2).join("").toUpperCase();
+const waNum=p=>{let d=(p||"").replace(/\D/g,"");if(d.startsWith("0"))d="212"+d.slice(1);return d};
+const monthName=()=>t().months[now.getMonth()];
+const MT=(lg,type,m,date)=>(isSelf(m)?T[lg].mA:T[lg].m)[type](m.name.split(" ")[0],fmt(date),m.fee,S.setup.club);
+const cardURL=m=>"sallpro.ma/e/"+m.id;
+const msgText=(type,m,date)=>{const ml=S.setup.msgLang||"both";const link="\n\n"+(ml==="ar"?"فيشتك: ":ml==="fr"?"Votre fiche : ":"فيشتك / Votre fiche : ")+cardURL(m);return (ml==="both"?MT("ar",type,m,date)+"\n\n"+MT("fr",type,m,date):MT(ml,type,m,date))+link};
+const waLink=(m,text)=>"https://wa.me/"+waNum(recip(m))+"?text="+encodeURIComponent(text||msgText(stage(m)==="late"?"late":"due",m,dueOf(m)));
+function insState(d){if(!d)return null;const x=diffDays(d,TODAY);if(x<0)return["p-bad",t().insExp];if(x<=30)return["p-warn",t().insSoon];return["p-ok",t().insOk]}
+function detail(m){const sp=SP[m.sport];if(!sp)return"—";
+  if(sp.kind==="belt"){const b=BELTS[m.belt]||BELTS[0];return `<span class="belt" style="background:${b.c}"></span> ${lab(b)}`}
+  if(sp.kind==="pos")return lab(sp.pos[m.pos]||sp.pos[0]);
+  if(sp.kind==="weight")return lab(WEIGHT[m.weight]||WEIGHT[0]);
+  if(sp.kind==="level")return lab(NIV[m.formule]||NIV[0]);
+  return lab(PLANS[m.formule]||PLANS[0]);}
+const catName=(sid,k)=>lab((SP[sid]?.cats||[])[k]);
+function toast(x){const el=document.createElement("div");el.className="toast";el.textContent=x;document.body.appendChild(el);setTimeout(()=>el.remove(),2200)}
+const isSalle=()=>S.setup.role==="salle";
+const statusPill=m=>{const L=t(),s=stage(m);return s==="frozen"?`<span class="pill p-sky">${L.frozenS}</span>`:s==="paid"?`<span class="pill p-ok">${L.paidS}</span>`:s==="late"?`<span class="pill p-bad">${L.lateS}</span>`:`<span class="pill p-warn">${L.unpaidS}</span>`};
+
+const ic={
+ dash:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>',
+ billing:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/></svg>',
+ today:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4M8 14l2 2 4-4"/></svg>',
+ students:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="4"/><path d="M2 21c0-4 3-6 7-6s7 2 7 6M16 4a4 4 0 0 1 0 8M22 21c0-3-2-5-4-5.5"/></svg>',
+ pay:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="13" rx="2"/><path d="M2 10h20M6 15h4"/></svg>',
+ auto:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.4 8.4 0 0 1-12.6 7.3L3 20l1.3-5.2A8.5 8.5 0 1 1 21 11.5z"/><path d="M12 7v5l3 2"/></svg>',
+ sessions:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+ coachs:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 6 6 .9-4.5 4.3 1 6.3L12 16.6 6.5 19.5l1-6.3L3 8.9 9 8z"/></svg>',
+ leads:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/></svg>',
+ settings:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg>',
+ wa:'<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.3 14.2c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.1-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.9s.7-2 1-2.3c.3-.3.6-.3.8-.3h.6c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.4 0 .6l-.3.5-.4.5c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1c.2-.3.4-.2.6-.1l2 1c.3.1.5.2.5.3.1.2.1.7-.1 1.4z"/></svg>'
+};
+function applyPrefs(){document.documentElement.lang=S.lang;document.documentElement.dir=t().dir;if(S.theme==="auto")document.documentElement.removeAttribute("data-theme");else document.documentElement.setAttribute("data-theme",S.theme)}
+const langSw=()=>`<div class="langsw">${[["fr","FR"],["ar","ع"],["en","EN"]].map(([k,v])=>`<button data-lang="${k}" class="${S.lang===k?"on":""}">${v}</button>`).join("")}</div>`;
+
+/* ---------- auth / onboarding ---------- */
+function vLogin(){const L=t();return `<div class="auth"><form class="card" id="loginF" novalidate>
+ <div class="logo"><span class="mark"><i></i></span><span>Sall<b class="pro">Pro</b></span></div><h2>${L.login}</h2>
+ <div class="fld"><label for="lg-e">${L.email}</label><input id="lg-e" type="email" autocomplete="email" placeholder="coach@salle.ma"></div>
+ <div class="fld"><label for="lg-p">${L.pass}</label><input id="lg-p" type="password" autocomplete="current-password"></div>
+ <div class="err" id="lg-err"></div>
+ <button class="btn btn-p" style="width:100%" type="submit">${L.enter}</button>
+ <button class="btn" style="width:100%;margin-top:8px" type="button" data-act="demo">${L.demo}</button>
+ <p class="note">${L.hint}</p>
+ <div class="row-end" style="margin-top:8px"><a class="btn btn-sm" href="${SITE}" target="_blank" rel="noopener">${L.site}</a>${langSw()}</div></form></div>`}
+function vOnboard(){const L=t(),o=S.ob;
+ const steps=`<div class="steps">${[1,2,3].map(i=>`<span class="${o.step>=i?"on":""}"></span>`).join("")}</div>`;let body="";
+ if(o.step===1)body=`<h2>${L.ob1}</h2><p class="note">${L.ob1s}</p><div class="choices">
+   <button type="button" class="choice ${o.role==="coach"?"on":""}" data-role="coach"><span class="ic">🧑‍🏫</span><b>${L.coach}</b><span>${L.coachS}</span></button>
+   <button type="button" class="choice ${o.role==="salle"?"on":""}" data-role="salle"><span class="ic">🏟️</span><b>${L.salle}</b><span>${L.salleS}</span></button></div>`;
+ if(o.step===2){const q=(o.q||"").toLowerCase();const keys=Object.keys(SP).filter(k=>!q||lab(SP[k].name).toLowerCase().includes(q)||SP[k].name.fr.toLowerCase().includes(q));
+   body=`<h2>${L.ob2}</h2><p class="note">${L.ob2s}</p>
+   <div class="fld"><input id="ob-q" placeholder="${L.findSport}" value="${esc(o.q||"")}" aria-label="${L.findSport}"></div>
+   ${o.sports.length?`<div class="tags" style="margin-top:10px">${o.sports.map(k=>`<button type="button" class="tag on" data-sp="${k}">${SP[k].ic} ${esc(lab(SP[k].name))} ×</button>`).join("")}</div>`:""}
+   ${Object.keys(GROUPS).map(g=>{const ks=keys.filter(k=>SP[k].group===g);return ks.length?`<h3 style="margin:18px 0 0;font-size:14px;color:var(--muted)">${lab(GROUPS[g])}</h3><div class="choices">${ks.map(k=>`<button type="button" class="choice ${o.sports.includes(k)?"on":""}" data-sp="${k}"><span class="ic">${SP[k].ic}</span><b>${esc(lab(SP[k].name))}</b><span>${SP[k].open?L.openAcc:SP[k].cats.slice(0,3).map(lab).join(" · ")+"…"}</span></button>`).join("")}</div>`:""}).join("")}
+   <form class="add" id="ob-custom" style="margin-top:18px"><input id="ob-cname" placeholder="${L.otherSport}" aria-label="${L.otherSport}"><button class="btn btn-sm btn-p">${L.add}</button></form>
+   <div class="err" id="ob-err"></div>`}
+ if(o.step===3)body=`<h2>${L.ob3}</h2>
+   <div class="fld"><label for="ob-club">${L.club}</label><input id="ob-club" value="${esc(o.club||"Salle Atlas")}"></div>
+   <div class="fld"><label for="ob-you">${L.you}</label><input id="ob-you" value="${esc(o.you||"")}" placeholder="Karim"></div>
+   <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 12px"><div class="fld"><label for="ob-phone">${L.waL}</label><input id="ob-phone" inputmode="tel" placeholder="06…" value="${esc(o.phone||"")}"></div>
+   <div class="fld"><label for="ob-city">${L.cityL}</label><input id="ob-city" value="${esc(o.city||"")}" placeholder="Casablanca"></div></div>
+   <div class="fld"><label for="ob-addr">${L.addrL}</label><input id="ob-addr" value="${esc(o.addr||"")}" placeholder="${L.addrPh}"></div>
+   <div class="fld"><label for="ob-fee">${L.fee}</label><input id="ob-fee" type="number" min="0" step="10" value="${o.fee||150}"></div><div class="err" id="ob3-err"></div>`;
+ return `<div class="auth"><div class="card wide"><div class="logo"><span class="mark"><i></i></span><span>Sall<b class="pro">Pro</b></span></div>${steps}${body}
+ <div class="row-end">${o.step>1?`<button class="btn" data-act="ob-back">${L.back}</button>`:langSw()}<button class="btn btn-p" data-act="ob-next">${o.step<3?L.next:L.finish}</button></div></div></div>`}
+
+/* ---------- app shell ---------- */
+const Q={q:"",coach:"",cat:"",st:"all"};
+const hasClasses=()=>S.setup.sports.some(k=>SP[k]&&!SP[k].open);
+const tabs=()=>["dash",...(hasClasses()?["today"]:[]),"students","pay","auto",...(hasClasses()?["sessions"]:[]),...(isSalle()?["coachs"]:[]),"leads","billing","settings"];
+function navHTML(){const L=t();const un=S.data.members.filter(m=>["unpaid","late"].includes(stage(m))).length;
+ return tabs().map(k=>`<button class="nav-i ${S.tab===k?"on":""}" data-tab="${k}">${ic[k]}<span>${L.nav[k]}</span>${k==="pay"&&un?`<span class="cnt num">${un}</span>`:""}</button>`).join("")}
+function vApp(){const L=t(),st=S.setup;
+ const right={students:`<input class="search" id="q" placeholder="${L.search}" value="${esc(Q.q)}"><button class="btn btn-sm btn-p" data-act="add-st">+ ${L.addSt}</button>`,pay:`<input class="search" id="q" placeholder="${L.search}" value="${esc(Q.q)}">`,sessions:`<button class="btn btn-sm btn-p" data-act="add-sess">+ ${L.addSess}</button>`,coachs:`<button class="btn btn-sm btn-p" data-act="add-coach">+ ${L.addCoach}</button>`,leads:`<button class="btn btn-sm btn-p" data-act="add-lead">+ ${L.addLead}</button>`}[S.tab]||"";
+ const sub=["dash","today","auto","pay"].includes(S.tab)?`${L.days[now.getDay()]} ${fmt(TODAY)}`:"";
+ return `<div class="app"><aside class="side"><div class="logo"><span class="mark"><i></i></span><span>Sall<b class="pro">Pro</b></span></div>
+  <div class="club"><b>${esc(st.club)}</b><span>${st.sports.map(s=>lab(SP[s].name)).join(" · ")}</span></div>${navHTML()}
+  <div class="side-foot"><button class="btn btn-sm btn-ghost" data-act="lang-cycle">${S.lang==="fr"?"ع":S.lang==="ar"?"EN":"FR"}</button><button class="btn btn-sm btn-ghost" data-act="theme">☾ / ☀</button></div></aside>
+  <div class="main"><div class="topbar"><div><h1>${L.nav[S.tab]}</h1>${sub?`<div class="sub num">${sub}</div>`:""}</div><span class="grow"></span>${subBadge()}${netBadge()}${right}</div>
+  <div class="content" id="content">${({billing:tBilling,dash:tDash,today:tToday,students:tStudents,pay:tPay,auto:tAuto,sessions:tSessions,coachs:tCoachs,leads:tLeads,settings:tSettings})[S.tab]()}</div></div>
+  <nav class="tabbar">${navMobile()}</nav></div>`}
+
+function kpis(){const L=t(),act=S.data.members.filter(m=>!m.frozen),ok=act.filter(m=>stage(m)==="paid");
+ const inc=S.data.payments.filter(p=>p.date.slice(0,7)===MONTH&&(p.type||"cot")==="cot").reduce((a,p)=>a+ +p.amount,0),exp=act.reduce((a,m)=>a+ +m.fee,0);
+ const pct=act.length?Math.round(ok.length/act.length*100):0;
+ return `<div class="kpis"><div class="kpi"><small>${L.k.active}</small><div class="num">${act.length}</div></div>
+ <div class="kpi"><small>${L.k.paid}</small><div class="num">${ok.length} <span>${L.of} ${act.length}</span></div><div class="bar"><i style="width:${pct}%"></i></div></div>
+ <div class="kpi"><small>${L.k.unpaid}</small><div class="num" style="color:var(--bad)">${act.length-ok.length}</div></div>
+ <div class="kpi"><small>${L.k.income}</small><div class="num">${inc.toLocaleString()} <span>/ ${exp.toLocaleString()} ${L.dh}</span></div></div></div>`}
+
+/* ---------- today ---------- */
+function tToday(){const L=t();
+ const ss=S.data.sessions.filter(s=>s.day===now.getDay()).sort((a,b)=>a.start.localeCompare(b.start));
+ const hm=String(now.getHours()).padStart(2,"0")+":"+String(now.getMinutes()).padStart(2,"0");
+ const sessHTML=ss.length?ss.map(s=>{const key=TODAY+"|"+s.id,items=S.data.plans[key]||[],dn=items.filter(i=>i.done).length;
+  const cnt=S.data.members.filter(m=>m.coach===s.coach&&m.sport===s.sport&&m.cat===s.cat&&!m.frozen).length;
+  const live=hm>=s.start&&hm<s.end,kind=SP[s.sport].kind;
+  return `<div class="sess"><div class="sess-h"><div class="time num">${s.start}<div class="note" style="font-family:var(--f-b);font-size:12px">→ ${s.end}</div></div>
+   <div class="who"><b>${catName(s.sport,s.cat)} · ${lab(SP[s.sport].name)}</b><span>${esc(coachOf(s.coach).name)} · ${cnt} ${L.students}</span></div>
+   ${live?`<span class="pill now">${L.live}</span>`:""}<span class="prog num">${dn}/${items.length} ${L.done}</span></div>
+   <div class="plan">${items.map(i=>`<label class="item ${i.done?"done":""}"><input type="checkbox" data-chk="${key}|${i.id}" ${i.done?"checked":""}><span>${esc(i.t)}</span><button class="x" data-rm="${key}|${i.id}" aria-label="${L.del}">×</button></label>`).join("")}
+   <form class="add" data-addto="${key}"><input placeholder="${L.addItem}" aria-label="${L.addItem}"><button class="btn btn-sm btn-p">${L.add}</button></form>
+   <div class="chips"><button data-reuse="${s.id}">↺ ${L.reuse}</button>${TPL[kind][S.lang].filter(x=>!items.some(i=>i.t===x)).slice(0,4).map(x=>`<button data-tplk="${key}" data-tplv="${esc(x)}">+ ${esc(x)}</button>`).join("")}</div></div></div>`}).join(""):`<div class="panel"><div class="empty">${L.noSess}</div></div>`;
+ const un=S.data.members.filter(m=>["unpaid","late"].includes(stage(m))).sort((a,b)=>dueOf(a).localeCompare(dueOf(b)));
+ const ins=S.data.members.filter(m=>{const x=insState(m.ins);return x&&x[0]!=="p-ok"}).sort((a,b)=>a.ins.localeCompare(b.ins));
+ return kpis()+`<div class="grid2"><div class="stack"><h3 style="margin:0">${L.todayS}</h3>${sessHTML}</div>
+ <div class="stack"><div class="panel"><h3>${L.remind} <span class="pill p-bad num">${un.length}</span></h3>${un.length?un.slice(0,8).map(rowUnpaid).join(""):`<div class="empty">${L.noUnpaid}</div>`}</div>
+ <div class="panel"><h3>${L.alerts} <span class="pill p-warn num">${ins.length}</span></h3>${ins.length?ins.slice(0,6).map(m=>{const x=insState(m.ins);return `<div class="lrow"><div class="av">${ini(m.name)}</div><div class="who"><b>${esc(m.name)}</b><span class="num">${fmt(m.ins)}</span></div><span class="pill ${x[0]}">${x[1]}</span></div>`}).join(""):`<div class="empty">${L.noAlerts}</div>`}</div></div></div>
+ ${S.mode!=="live"&&S.data.members.some(m=>m.sample)?`<p class="note" style="margin-top:14px">${L.ex} · ${L.demoNote}</p>`:""}`}
+function rowUnpaid(m){const L=t();return `<div class="lrow"><div class="av">${ini(m.name)}</div><div class="who"><b>${esc(m.name)}</b><span><span class="num">${fmt(dueOf(m))}</span> · <span class="num">${m.fee} ${L.dh}</span></span></div>${statusPill(m)}<button class="btn btn-sm" data-act="pay" data-id="${m.id}">${L.markPaid}</button></div>`}
+
+/* ---------- students ---------- */
+function filtered(){const q=Q.q.trim().toLowerCase();return S.data.members.filter(m=>(!q||m.name.toLowerCase().includes(q)||(m.parent||"").includes(q))&&(!Q.coach||m.coach===Q.coach)&&(Q.cat===""||(m.sport+"|"+m.cat)===Q.cat)&&(Q.st==="all"||(Q.st==="paid"?stage(m)==="paid":["unpaid","late"].includes(stage(m)))))}
+function tStudents(){const L=t(),rows=filtered();
+ const catOpts=S.setup.sports.flatMap(s=>SP[s].cats.map((c,k)=>`<option value="${s}|${k}" ${Q.cat===s+"|"+k?"selected":""}>${S.setup.sports.length>1?lab(SP[s].name)+" · ":""}${lab(c)}</option>`)).join("");
+ return `<div class="tools">${isSalle()?`<select id="f-coach" aria-label="${L.coachL}"><option value="">${L.allC}</option>${S.data.coachs.map(c=>`<option value="${c.id}" ${Q.coach===c.id?"selected":""}>${esc(c.name)}</option>`).join("")}</select>`:""}
+ <select id="f-cat" aria-label="${L.cat}"><option value="">${L.allCat}</option>${catOpts}</select>
+ <div class="seg">${[["all",L.all],["paid",L.paidS],["unpaid",L.unpaidS]].map(x=>`<button data-st="${x[0]}" class="${Q.st===x[0]?"on":""}">${x[1]}</button>`).join("")}</div>
+ <span class="note num" style="margin-inline-start:auto">${rows.length} ${L.students}</span></div>
+ <div class="panel"><div class="tw"><table><thead><tr><th>${L.name}</th>${isSalle()?`<th class="hm">${L.coachL}</th>`:""}<th class="hm">${L.sport}</th><th>${L.cat}</th><th class="hm">${L.detail}</th><th class="hm">${L.feeL}</th><th>${L.status}</th><th class="hm">${L.due}</th><th class="hm">${L.ins}</th><th></th></tr></thead>
+ <tbody>${rows.map(m=>{const s=stage(m),x=insState(m.ins);return `<tr><td><b>${esc(m.name)}</b><div class="note num">${esc(m.parent||m.phone)}</div></td>${isSalle()?`<td class="hm">${esc(coachOf(m.coach).name)}</td>`:""}<td class="hm">${lab(SP[m.sport].name)}</td><td>${catName(m.sport,m.cat)}</td><td class="hm">${detail(m)}</td><td class="num hm">${m.fee}</td>
+ <td>${statusPill(m)}<div class="note num sm">${m.frozen?"":fmt(dueOf(m))}</div></td><td class="num hm">${m.frozen?"—":fmt(dueOf(m))}</td><td class="hm">${x?`<span class="pill ${x[0]} num">${fmt(m.ins)}</span>`:"—"}</td>
+ <td><div class="acts">${s==="unpaid"||s==="late"?`<button class="btn btn-sm btn-p" data-act="pay" data-id="${m.id}">${L.markPaid}</button>`:""}<a class="btn btn-sm btn-g" target="_blank" rel="noopener" href="${waLink(m)}" aria-label="WhatsApp">${ic.wa}</a><button class="btn btn-sm" data-act="card" data-id="${m.id}">${L.cardBtn}</button><button class="btn btn-sm" data-act="edit-st" data-id="${m.id}" aria-label="${L.editSt}">✎</button></div></td></tr>`}).join("")}</tbody></table></div></div>`}
+
+/* ---------- fees board ---------- */
+function tPay(){const L=t(),q=Q.q.trim().toLowerCase();const ms=S.data.members.filter(m=>!q||m.name.toLowerCase().includes(q));
+ return `<div class="board">${[["unpaid","var(--warn)"],["late","var(--bad)"],["paid","var(--ok)"],["frozen","var(--sky)"]].map(([k,c])=>{const it=ms.filter(m=>stage(m)===k).sort((a,b)=>dueOf(a).localeCompare(dueOf(b))),sum=it.reduce((a,m)=>a+ +m.fee,0);
+ return `<div class="col"><div class="col-h"><b>${L.board[k]}</b><span class="num">${sum.toLocaleString()} ${L.dh} · ${it.length} ${L.students}</span><div class="stripe" style="background:${c}"></div></div>
+ <div class="col-b" data-drop="${k}">${it.map(m=>`<div class="kc" draggable="true" data-drag="${m.id}"><b>${esc(m.name)}</b><div class="meta"><span>${catName(m.sport,m.cat)}${isSalle()?" · "+esc(coachOf(m.coach).name):""}</span><span class="num">${m.fee} ${L.dh}</span></div><div class="meta"><span>${L.due}</span><span class="num">${fmt(dueOf(m))}</span></div>
+ <div class="acts">${k==="paid"?`<button class="btn btn-sm" data-act="unpay" data-id="${m.id}">${L.undo}</button>`:k==="frozen"?`<button class="btn btn-sm" data-act="freeze" data-id="${m.id}">${L.unfreeze}</button>`:`<button class="btn btn-sm btn-p" data-act="pay" data-id="${m.id}">${L.markPaid}</button><a class="btn btn-sm btn-g" target="_blank" rel="noopener" href="${waLink(m)}" aria-label="WhatsApp">${ic.wa}</a><button class="btn btn-sm" data-act="freeze" data-id="${m.id}">${L.freeze}</button>`}</div></div>`).join("")}</div></div>`}).join("")}</div>`}
+
+/* ---------- automatic messages ---------- */
+function messages(){const A=S.setup.autoRules,out=[];
+ S.data.members.filter(m=>!m.frozen).forEach(m=>{
+  if(A.cot){const d=dueOf(m),paid=d>TODAY;
+    out.push({date:plusDays(d,-3),type:"cot",tpl:"pre",ref:d,m});out.push({date:d,type:"cot",tpl:"due",ref:d,m});
+    if(!paid||plusDays(d,3)>TODAY)out.push({date:plusDays(d,3),type:"cot",tpl:"late",ref:d,m,cond:paid});}
+  if(A.ins&&m.ins){out.push({date:plusDays(m.ins,-30),type:"ins",tpl:"ins",ref:m.ins,m});out.push({date:m.ins,type:"ins",tpl:"ins",ref:m.ins,m})}
+  if(A.reg&&m.reg)out.push({date:plusDays(m.reg,-15),type:"reg",tpl:"reg",ref:m.reg,m});
+ });
+ const past=out.filter(x=>x.date<=TODAY&&x.date>=addDays(-7)&&!(x.tpl==="pre"&&false)).filter(x=>!(x.type==="cot"&&x.tpl!=="pre"&&x.ref>TODAY)).sort((a,b)=>b.date.localeCompare(a.date));
+ const fut=out.filter(x=>x.date>TODAY&&x.date<=addDays(30)).sort((a,b)=>a.date.localeCompare(b.date));
+ return {past,fut}}
+function mRow(x,sent){const L=t(),typeP={cot:["p-sky",L.tCot],ins:["p-warn",L.tIns],reg:["p-ok",L.tReg]}[x.type];const text=msgText(x.tpl,x.m,x.ref);
+ return `<div class="mrow"><div class="mdate num">${fmt(x.date)}<small>${L.days[pd(x.date).getDay()]} · 09:00</small></div>
+ <div class="mbody"><b>${esc(x.m.name)} <span class="pill ${typeP[0]}">${typeP[1]}</span></b><span class="note num">${L.to} : ${isSelf(x.m)?L.toSelf:L.toParent} · ${esc(recip(x.m))}</span><div class="bub">${esc(text)}</div></div>
+ <div class="mst"><span class="pill ${sent?"p-ok":"p-sky"}">${sent?L.stSent:L.stSched}</span><a class="btn btn-sm btn-g" target="_blank" rel="noopener" href="${waLink(x.m,text)}" aria-label="WhatsApp">${ic.wa}</a></div></div>`}
+function tAuto(){const L=t(),A=S.setup.autoRules,{past,fut}=messages();
+ const rule=(k,title,sub)=>`<div class="rule"><div class="rule-h"><b>${title}</b><label class="sw"><input type="checkbox" data-rule="${k}" ${A[k]?"checked":""} aria-label="${title}"><span></span></label></div><p>${sub}</p></div>`;
+ const ml=S.setup.msgLang||"both";
+ return `<p style="margin:0 0 14px;max-width:70ch">${L.autoIntro}</p>
+ <div class="panel" style="padding:14px 16px;margin-bottom:12px;display:flex;align-items:center;gap:12px;flex-wrap:wrap"><b>${L.msgLangL}</b><div class="seg">${[["ar","العربية"],["fr","Français"],["both",L.both]].map(x=>`<button data-ml="${x[0]}" class="${ml===x[0]?"on":""}">${x[1]}</button>`).join("")}</div><span class="note">${L.msgLangS}</span></div>
+ <div class="rules">${rule("cot",L.rCot,L.rCotS)}${rule("ins",L.rIns,L.rInsS)}${rule("reg",L.rReg,L.rRegS)}</div>
+ <div class="grid2 eq"><div class="panel"><h3>${L.sent} <span class="pill p-ok num">${past.length}</span></h3>${past.length?past.slice(0,25).map(x=>mRow(x,true)).join(""):`<div class="empty">${L.noMsg}</div>`}</div>
+ <div class="panel"><h3>${L.sched} <span class="pill p-sky num">${fut.length}</span></h3>${fut.length?fut.slice(0,25).map(x=>mRow(x,false)).join(""):`<div class="empty">${L.noMsg}</div>`}</div></div>
+ <p class="note" style="margin-top:14px">${L.demoNote}</p>`}
+
+/* ---------- sessions / coachs / leads / settings ---------- */
+function tSessions(){const L=t();return `<h3 style="margin:0 0 12px">${L.week}</h3><div class="week">${[1,2,3,4,5,6,0].map(d=>{const ss=S.data.sessions.filter(s=>s.day===d).sort((a,b)=>a.start.localeCompare(b.start));
+ return `<div class="day ${d===now.getDay()?"today":""}"><div class="day-h"><span>${L.days[d]}</span><span class="note num">${ss.length}</span></div><div class="day-b">${ss.map(s=>`<button class="slot" data-act="edit-sess" data-id="${s.id}"><b class="num">${s.start}–${s.end}</b>${catName(s.sport,s.cat)} · ${lab(SP[s.sport].name)}${isSalle()?`<br><span class="note">${esc(coachOf(s.coach).name)}</span>`:""}</button>`).join("")}</div></div>`}).join("")}</div>`}
+function tCoachs(){const L=t();return `<div class="coachs">${S.data.coachs.map(c=>{const ms=S.data.members.filter(m=>m.coach===c.id&&!m.frozen);const col=S.data.payments.filter(p=>p.date.slice(0,7)===MONTH&&ms.some(m=>m.id===p.mid)).reduce((a,p)=>a+ +p.amount,0),exp=ms.reduce((a,m)=>a+ +m.fee,0);
+ return `<div class="cc"><div style="display:flex;gap:10px;align-items:center"><div class="av">${ini(c.name)}</div><div><h3>${esc(c.name)}</h3><div class="sp">${SP[c.sport].ic} ${lab(SP[c.sport].name)}</div></div></div>
+ <div class="nums"><div><b class="num">${ms.length}</b><small>${L.students}</small></div><div><b class="num">${col.toLocaleString()}</b><small>${L.dh} ${L.collected}</small></div><div><b class="num">${exp.toLocaleString()}</b><small>${L.expected}</small></div></div>
+ <div class="bar"><i style="width:${exp?Math.min(100,Math.round(col/exp*100)):0}%"></i></div><div class="acts" style="margin-top:12px"><button class="btn btn-sm" data-act="coach-view" data-id="${c.id}">${L.nav.students}</button></div></div>`}).join("")}</div>`}
+function tLeads(){const L=t();return `<div class="board">${[["trial","var(--warn)"],["contact","var(--sky)"],["won","var(--ok)"],["lost","var(--muted)"]].map(([k,c])=>{const it=S.data.leads.filter(l=>l.stage===k);
+ return `<div class="col"><div class="col-h"><b>${L.leadCols[k]}</b><span class="num">${it.length}</span><div class="stripe" style="background:${c}"></div></div><div class="col-b" data-ldrop="${k}">${it.map(l=>`<div class="kc" draggable="true" data-ldrag="${l.id}"><b>${esc(l.name)}</b><div class="meta"><span>${lab(SP[l.sport]?.name)}</span><span class="num">${esc(l.phone)}</span></div><div class="acts"><a class="btn btn-sm btn-g" target="_blank" rel="noopener" href="https://wa.me/${waNum(l.phone)}" aria-label="WhatsApp">${ic.wa}</a>${k!=="won"?`<button class="btn btn-sm btn-p" data-act="convert" data-id="${l.id}">${L.convert}</button>`:""}<button class="btn btn-sm" data-act="del-lead" data-id="${l.id}" aria-label="${L.del}">×</button></div></div>`).join("")}</div></div>`}).join("")}</div>`}
+function tSettings(){const L=t(),st=S.setup;return `<div class="set">
+ <div class="panel"><h3>${L.accT}</h3><p class="note" style="margin:0">${L.accS}</p>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 12px"><div class="fld"><label for="s-club">${L.club}</label><input id="s-club" value="${esc(st.club)}"></div>
+  <div class="fld"><label for="s-you">${L.you}</label><input id="s-you" value="${esc(st.you||"")}"></div>
+  <div class="fld"><label for="s-phone">${L.waL}</label><input id="s-phone" inputmode="tel" value="${esc(st.phone||"")}" placeholder="06…"></div>
+  <div class="fld"><label for="s-mail">${L.email}</label><input id="s-mail" value="${esc(S.user||"")}" disabled></div>
+  <div class="fld"><label for="s-city">${L.cityL}</label><input id="s-city" value="${esc(st.city||"")}"></div>
+  <div class="fld"><label for="s-addr">${L.addrL}</label><input id="s-addr" value="${esc(st.addr||"")}"></div></div></div>
+ <div class="panel"><h3>${L.setFees}</h3><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px"><div class="fld"><label for="s-fee">${L.feeL}</label><input id="s-fee" type="number" min="0" step="10" value="${st.fee}"></div><div class="fld"><label for="s-insfee">${L.insFee}</label><input id="s-insfee" type="number" min="0" step="10" value="${st.insFee}"></div><div class="fld"><label for="s-regfee">${L.regFee}</label><input id="s-regfee" type="number" min="0" step="10" value="${st.regFee}"></div></div></div>
+ <div class="panel"><h3>${L.setSports}</h3><div class="tags">${st.sports.map(s=>`<span class="tag on">${SP[s].ic} ${lab(SP[s].name)}</span>`).join("")}</div></div>
+ <div class="panel"><h3>${L.pinT}</h3><p class="note" style="margin:0 0 6px">${L.pinS}</p><div class="add"><input id="s-pin" inputmode="numeric" maxlength="4" pattern="[0-9]*" placeholder="••••" value="" aria-label="${L.pinT}" style="max-width:140px;letter-spacing:6px;font-weight:800"><button class="btn btn-sm btn-p" data-act="set-pin">${S.pin?L.pinChange:L.pinSet}</button>${S.pin?`<button class="btn btn-sm" data-act="del-pin">${L.pinDel}</button>`:""}</div>${S.pin?`<p class="note" style="color:var(--ok);font-weight:700;margin:8px 0 0">✓ ${L.pinOn}</p>`:""}</div>
+ <div class="panel"><h3>${L.setLang}</h3><div class="seg">${[["fr","Français"],["ar","العربية"],["en","English"]].map(x=>`<button data-lang="${x[0]}" class="${S.lang===x[0]?"on":""}">${x[1]}</button>`).join("")}</div></div>
+ <div class="panel"><h3>${L.setTheme}</h3><div class="seg">${[["light",L.light],["dark",L.dark],["auto",L.auto]].map(x=>`<button data-themeset="${x[0]}" class="${S.theme===x[0]?"on":""}">${x[1]}</button>`).join("")}</div></div>
+ <div class="panel"><p class="note" style="margin-top:0">${L.demoNote}</p><div class="acts" style="flex-wrap:wrap"><a class="btn" href="${SITE}" target="_blank" rel="noopener">${L.site}</a>${S.mode==="live"?"":`<button class="btn" data-act="reset">${L.reset}</button>`}<button class="btn" data-act="logout">${L.logout}</button></div></div></div>`}
+
+/* ---------- modals ---------- */
+let arm=false;
+function modal(title,body,onSave,delId){const L=t();arm=false;const ov=document.createElement("div");ov.className="ov";ov.id="ov";
+ ov.innerHTML=`<form class="modal" novalidate><div class="modal-h"><h3>${title}</h3><button type="button" class="xb" data-act="close" aria-label="${L.cancel}">×</button></div><div class="modal-b">${body}<div class="err full" id="m-err"></div></div>
+ <div class="modal-f">${delId?`<button type="button" class="btn" style="color:var(--bad);margin-inline-end:auto" data-act="${delId[0]}" data-id="${delId[1]}">${L.del}</button>`:""}<button type="button" class="btn" data-act="close">${L.cancel}</button><button class="btn btn-p">${L.save}</button></div></form>`;
+ document.body.appendChild(ov);
+ ov.querySelector("form").addEventListener("submit",e=>{e.preventDefault();if(onSave(k=>ov.querySelector("#m-"+k)?.value.trim()??"",ov)!==false){ov.remove();save();render();toast(L.saved)}});
+ setTimeout(()=>ov.querySelector("input,select")?.focus(),30);return ov}
+const opt=(arr,sel)=>arr.map((x,i)=>`<option value="${i}" ${+sel===i?"selected":""}>${lab(x)}</option>`).join("");
+function dynFields(sid,m){const L=t(),sp=SP[sid];let det="";
+ if(sp.kind==="belt")det=`<div class="fld"><label for="m-belt">${L.belt}</label><select id="m-belt">${opt(BELTS,m.belt)}</select></div>`;
+ if(sp.kind==="pos")det=`<div class="fld"><label for="m-pos">${L.pos}</label><select id="m-pos">${opt(sp.pos,m.pos)}</select></div>`;
+ if(sp.kind==="weight")det=`<div class="fld"><label for="m-weight">${L.weight}</label><select id="m-weight">${opt(WEIGHT,m.weight)}</select></div>`;
+ if(sp.kind==="plan")det=`<div class="fld"><label for="m-formule">${L.formule}</label><select id="m-formule">${opt(PLANS,m.formule)}</select></div>`;
+ if(sp.kind==="level")det=`<div class="fld"><label for="m-formule">${L.level}</label><select id="m-formule">${opt(NIV,m.formule)}</select></div>`;
+ return `<div class="fld"><label for="m-cat">${L.cat}</label><select id="m-cat">${opt(sp.cats,m.cat)}</select></div>${det}`}
+const sportOpts=(sel,cls)=>S.setup.sports.filter(k=>!cls||!SP[k].open).map(s=>`<option value="${s}" ${sel===s?"selected":""}>${lab(SP[s].name)}</option>`).join("");
+const coachOpts=sel=>S.data.coachs.map(c=>`<option value="${c.id}" ${sel===c.id?"selected":""}>${esc(c.name)} · ${lab(SP[c.sport].name)}</option>`).join("");
+function openStudent(id){const L=t();const m=S.data.members.find(x=>x.id===id)||{name:"",phone:"",parent:"",coach:S.data.coachs[0].id,sport:S.setup.sports[0],cat:0,belt:0,pos:0,weight:0,formule:0,fee:S.setup.fee,ins:"",reg:""};
+ const ov=modal(id?L.editSt:L.addSt,`<div class="fld full"><label for="m-name">${L.name}</label><input id="m-name" value="${esc(m.name)}"></div>
+ <div class="fld"><label for="m-phone">${L.phone}</label><input id="m-phone" inputmode="tel" placeholder="06…" value="${esc(m.phone)}"></div>
+ <div class="fld"><label for="m-parent">${L.parentOpt}</label><input id="m-parent" inputmode="tel" placeholder="06…" value="${esc(m.parent)}"></div>
+ ${isSalle()?`<div class="fld"><label for="m-coach">${L.coachL}</label><select id="m-coach">${coachOpts(m.coach)}</select></div>`:""}
+ <div class="fld"><label for="m-sport">${L.sport}</label><select id="m-sport">${sportOpts(m.sport)}</select></div>
+ <div id="dyn" class="full" style="display:grid;grid-template-columns:1fr 1fr;gap:0 14px">${dynFields(m.sport,m)}</div>
+ <div class="fld"><label for="m-fee">${L.feeL}</label><input id="m-fee" type="number" min="0" step="10" value="${m.fee}"></div>
+ <div class="fld"><label for="m-ins">${L.ins}</label><input id="m-ins" type="date" value="${m.ins||""}"></div>
+ <div class="fld"><label for="m-reg">${L.reg}</label><input id="m-reg" type="date" value="${m.reg||""}"></div>`,
+ (v,ov)=>{if(!v("name")){ov.querySelector("#m-err").textContent=L.name+" ?";return false}
+  const d={name:v("name"),parent:v("parent"),phone:v("phone"),coach:isSalle()?v("coach"):S.data.coachs[0].id,sport:v("sport"),cat:+v("cat")||0,belt:+(v("belt")||0),pos:+(v("pos")||0),weight:+(v("weight")||0),formule:+(v("formule")||0),fee:+v("fee")||0,ins:v("ins"),reg:v("reg")};
+  if(id)Object.assign(S.data.members.find(x=>x.id===id),d);else S.data.members.unshift({id:uid(),frozen:false,joined:TODAY,...d})},id?["del-st",id]:null);
+ ov.querySelector("#m-sport").addEventListener("change",e=>{ov.querySelector("#dyn").innerHTML=dynFields(e.target.value,{cat:0,belt:0,pos:0,weight:0,formule:0})});}
+function openSession(id){const L=t();const s=S.data.sessions.find(x=>x.id===id)||{day:now.getDay(),start:"18:00",end:"19:00",coach:S.data.coachs[0].id,sport:S.setup.sports.find(k=>!SP[k].open)||S.setup.sports[0],cat:0};
+ const ov=modal(id?L.nav.sessions:L.addSess,`<div class="fld"><label for="m-day">${L.day}</label><select id="m-day">${[1,2,3,4,5,6,0].map(d=>`<option value="${d}" ${s.day===d?"selected":""}>${L.days[d]}</option>`).join("")}</select></div>
+ ${isSalle()?`<div class="fld"><label for="m-coach">${L.coachL}</label><select id="m-coach">${coachOpts(s.coach)}</select></div>`:""}
+ <div class="fld"><label for="m-start">${L.start}</label><input id="m-start" type="time" value="${s.start}"></div><div class="fld"><label for="m-end">${L.end}</label><input id="m-end" type="time" value="${s.end}"></div>
+ <div class="fld"><label for="m-sport">${L.sport}</label><select id="m-sport">${sportOpts(s.sport,true)}</select></div>
+ <div class="fld"><label for="m-cat">${L.cat}</label><select id="m-cat">${opt(SP[s.sport].cats,s.cat)}</select></div>`,
+ v=>{const d={day:+v("day"),start:v("start")||"18:00",end:v("end")||"19:00",coach:isSalle()?v("coach"):S.data.coachs[0].id,sport:v("sport"),cat:+v("cat")||0};
+  if(id)Object.assign(S.data.sessions.find(x=>x.id===id),d);else S.data.sessions.push({id:uid(),...d})},id?["del-sess",id]:null);
+ ov.querySelector("#m-sport").addEventListener("change",e=>{ov.querySelector("#m-cat").innerHTML=opt(SP[e.target.value].cats,0)});}
+function openCoach(){const L=t();modal(L.addCoach,`<div class="fld full"><label for="m-name">${L.name}</label><input id="m-name" placeholder="Coach …"></div><div class="fld full"><label for="m-sport">${L.sport}</label><select id="m-sport">${Object.keys(GROUPS).map(g=>{const ks=Object.keys(SP).filter(k=>SP[k].group===g);return ks.length?`<optgroup label="${lab(GROUPS[g])}">${ks.map(k=>`<option value="${k}">${esc(lab(SP[k].name))}</option>`).join("")}</optgroup>`:""}).join("")}</select></div>`,
+ (v,ov)=>{if(!v("name")){ov.querySelector("#m-err").textContent=L.name+" ?";return false}S.data.coachs.push({id:uid(),name:v("name"),sport:v("sport")});if(!S.setup.sports.includes(v("sport")))S.setup.sports.push(v("sport"))})}
+function openLead(){const L=t();modal(L.addLead,`<div class="fld full"><label for="m-name">${L.name}</label><input id="m-name"></div><div class="fld"><label for="m-phone">${L.phone}</label><input id="m-phone" inputmode="tel" placeholder="06…"></div><div class="fld"><label for="m-sport">${L.sport}</label><select id="m-sport">${sportOpts()}</select></div>`,
+ (v,ov)=>{if(!v("name")){ov.querySelector("#m-err").textContent=L.name+" ?";return false}S.data.leads.unshift({id:uid(),name:v("name"),phone:v("phone"),sport:v("sport"),stage:"trial"})})}
+
+
+/* ---------- dashboard & multi-type payments ---------- */
+const T2={
+ fr:{mA:{pre:(n,d,f,c)=>`Bonjour ${n}, votre abonnement à ${c} (${f} DH) arrive à échéance le ${d}. Merci.`,due:(n,d,f,c)=>`Bonjour ${n}, votre abonnement à ${c} (${f} DH) est à renouveler aujourd'hui, ${d}. Merci.`,late:(n,d,f,c)=>`Bonjour ${n}, votre abonnement à ${c} (${f} DH) a expiré le ${d}. Merci de le renouveler à votre prochaine venue.`,ins:(n,d,f,c)=>`Bonjour ${n}, votre assurance à ${c} expire le ${d}. Merci de la renouveler.`,reg:(n,d,f,c)=>`Bonjour ${n}, votre inscription annuelle à ${c} est à renouveler avant le ${d}.`},toSelf:"l'adhérent",toParent:"le parent",toSelfL:"À l'adhérent lui-même (adultes)",toParentL:"Au parent (enfants)",sendTo:"Les messages WhatsApp sont envoyés",parentOpt:"WhatsApp du parent (enfants)",openAcc:"Accès libre · abonnement mensuel, 3 mois ou annuel",msgLangL:"Langue des messages WhatsApp",both:"Arabe + français",msgLangS:"« Arabe + français » envoie les deux langues dans le même message.",cardBtn:"Fiche",cardT:"Fiche de l'élève",cardS:"Ce que l'élève voit en ouvrant le lien reçu sur WhatsApp. Sans compte, sans mot de passe.",hist:"Derniers paiements",contactClub:"Contacter la salle",cardNote:"Lien personnel, envoyé dans chaque message.",copyL:"Copier le lien",copied:"Lien copié",online:"En ligne",offline:"Hors ligne",pendingL:"modif. en attente",synced:"Synchronisé : {n} modifications envoyées",lockL:"Verrouiller",pinT:"Code rapide (sans internet)",pinS:"Après la première connexion, entrez seulement ce code pour ouvrir l'app, même sans internet. Les changements sont envoyés au retour de la connexion.",pinSet:"Activer",pinChange:"Changer",pinDel:"Désactiver",pinOn:"Code rapide activé",pinBad:"Le code doit contenir 4 chiffres.",pinEnter:"Entrez votre code à 4 chiffres",pinWrong:"Code incorrect. Réessayez.",waL:"Votre WhatsApp",cityL:"Ville",addrL:"Adresse de la salle",addrPh:"Quartier, rue…",needInfo:"Ajoutez votre WhatsApp et votre ville pour continuer.",accT:"Mon compte et ma salle",accS:"Ces informations servent à vous contacter et à activer votre abonnement.",
+trialL:"Essai",activeL:"Abonnement actif",expiredL:"Essai terminé",pendingSub:"Activation en attente",
+trialH:"Essai gratuit : encore {d} jours (jusqu'au {date}). Activez votre abonnement pour continuer après.",pendH:"Votre demande d'activation est envoyée. Elle sera validée sous 24 h.",paidH:"Abonnement actif jusqu'au {date}.",expH:"Votre essai est terminé. Activez votre abonnement pour continuer à utiliser SallPro.",
+choosePlan:"Choisissez votre formule",monthly:"Mensuel",yearly:"Annuel",twoFree:"2 mois offerts",mo:"mois",yr:"an",planCoach:"1 coach · jusqu'à 80 élèves",planSalle:"Jusqu'à 5 coachs · élèves illimités",
+payHow:"Payez",m_vir:"Virement bancaire",m_cash:"CashPlus / Wafacash",m_card:"Carte bancaire",virT:"Virement vers le compte SallPro",benef:"Bénéficiaire",motif:"Motif",cashT:"Envoi CashPlus ou Wafacash",phoneL:"Téléphone",cashS:"Gardez le code de l'envoi, il figure sur le reçu.",cardT2:"Paiement par carte",cardSoon:"Bientôt disponible : l'abonnement s'activera tout seul après le paiement.",
+sendProof:"Envoyez le reçu",proofS:"Une photo du reçu de virement ou CashPlus suffit.",addPhoto:"Ajouter la photo du reçu",total:"Total",sendReq:"Envoyer la demande d'activation",needProof:"Ajoutez la photo du reçu.",
+reqSent:"Demande envoyée",planL:"Formule",methodL:"Paiement",sentOn:"Envoyée le",receiptL:"Reçu",reqWait:"Nous vérifions le paiement et activons votre compte. Vous recevrez une confirmation sur WhatsApp.",sendWa:"Envoyer aussi sur WhatsApp",waReq:"Bonjour, j'ai payé l'abonnement SallPro de {c} ({a} DH). Voici le reçu.",demoApprove:"Simuler la validation (démo)",activated:"Abonnement activé",dash:"Tableau de bord",moreL:"Plus",findSport:"Rechercher un sport…",otherSport:"Autre sport ? Écrivez son nom",level:"Niveau",dTot:"Total encaissé ce mois",dCot:"Cotisations",dIns:"Assurances",dReg:"Inscriptions",
+  cPaid:"À jour",cUnp:"À payer / en retard",cIns:"Assurances payées",cReg:"Inscriptions payées",
+  stud:"élèves",exp:"attendus",clickHint:"Cliquez sur une carte pour voir la liste.",six:"Encaissements des 6 derniers mois",byCoach:"Par coach",
+  payT:"Encaisser",payWhat:"Ce que l'élève paie aujourd'hui",cotL:"Cotisation du mois",insL:"Assurance (1 an)",regL:"Inscription annuelle",confirm:"Valider le paiement",
+  setFees:"Tarifs",insFee:"Assurance (DH / an)",regFee:"Inscription (DH / an)",list:"Liste",paidOn:"Payé le",amount:"Montant"},
+ ar:{mA:{pre:(n,d,f,c)=>`مرحبًا ${n}، يحلّ موعد تجديد اشتراكك في ${c} (${f} درهمًا) يوم ${d}. شكرًا.`,due:(n,d,f,c)=>`مرحبًا ${n}، يجب تجديد اشتراكك في ${c} (${f} درهمًا) اليوم ${d}. شكرًا.`,late:(n,d,f,c)=>`مرحبًا ${n}، انتهى اشتراكك في ${c} (${f} درهمًا) يوم ${d}. نرجو تجديده في زيارتك القادمة.`,ins:(n,d,f,c)=>`مرحبًا ${n}، ينتهي تأمينك في ${c} يوم ${d}. نرجو تجديده.`,reg:(n,d,f,c)=>`مرحبًا ${n}، يجب تجديد انخراطك السنوي في ${c} قبل ${d}.`},toSelf:"المنخرط",toParent:"الوالد",toSelfL:"إلى المنخرط نفسه (الكبار)",toParentL:"إلى الوالد (الأطفال)",sendTo:"تُرسَل رسائل واتساب",parentOpt:"واتساب الوالد (للأطفال)",openAcc:"ولوج حر · اشتراك شهري أو 3 أشهر أو سنوي",msgLangL:"لغة رسائل واتساب",both:"العربية + الفرنسية",msgLangS:"«العربية + الفرنسية» ترسل اللغتين في الرسالة نفسها.",cardBtn:"البطاقة",cardT:"بطاقة التلميذ",cardS:"ما يراه التلميذ عند فتح الرابط المرسل عبر واتساب، دون حساب ولا كلمة مرور.",hist:"آخر الأداءات",contactClub:"التواصل مع القاعة",cardNote:"رابط شخصي يُرسَل في كل رسالة.",copyL:"نسخ الرابط",copied:"تمّ نسخ الرابط",online:"متّصل",offline:"غير متّصل",pendingL:"تعديلات في الانتظار",synced:"تمّت المزامنة: أُرسل {n} تعديل",lockL:"قفل",pinT:"رمز سريع (بدون إنترنت)",pinS:"بعد أول تسجيل دخول، يكفي إدخال هذا الرمز لفتح التطبيق، حتى دون إنترنت. وتُرسَل التعديلات عند عودة الاتصال.",pinSet:"تفعيل",pinChange:"تغيير",pinDel:"إلغاء",pinOn:"تمّ تفعيل الرمز السريع",pinBad:"يجب أن يتكوّن الرمز من 4 أرقام.",pinEnter:"أدخل رمزك المكوّن من 4 أرقام",pinWrong:"رمز غير صحيح. أعد المحاولة.",waL:"واتساب ديالك",cityL:"المدينة",addrL:"عنوان القاعة",addrPh:"الحي، الشارع…",needInfo:"أضف رقم واتساب والمدينة للمتابعة.",accT:"حسابي وقاعتي",accS:"تُستعمل هذه المعلومات للتواصل معك وتفعيل اشتراكك.",
+trialL:"تجربة",activeL:"اشتراك مفعّل",expiredL:"انتهت التجربة",pendingSub:"التفعيل قيد المراجعة",
+trialH:"تجربة مجانية: بقي {d} أيام (حتى {date}). فعّل اشتراكك للمتابعة بعدها.",pendH:"أُرسل طلب التفعيل، وسيتمّ قبوله خلال 24 ساعة.",paidH:"الاشتراك مفعّل حتى {date}.",expH:"انتهت تجربتك. فعّل اشتراكك لمواصلة استعمال SallPro.",
+choosePlan:"اختر صيغتك",monthly:"شهري",yearly:"سنوي",twoFree:"شهران مجانًا",mo:"شهر",yr:"سنة",planCoach:"مدرّب واحد · حتى 80 تلميذًا",planSalle:"حتى 5 مدرّبين · تلاميذ بلا حدود",
+payHow:"ادفع",m_vir:"تحويل بنكي",m_cash:"كاش بلوس / وفاكاش",m_card:"بطاقة بنكية",virT:"تحويل إلى حساب SallPro",benef:"المستفيد",motif:"السبب",cashT:"إرسال عبر كاش بلوس أو وفاكاش",phoneL:"الهاتف",cashS:"احتفظ برمز الإرسال، فهو مكتوب على الوصل.",cardT2:"الدفع بالبطاقة",cardSoon:"قريبًا: سيتفعّل الاشتراك وحده بعد الدفع.",
+sendProof:"أرسل الوصل",proofS:"تكفي صورة وصل التحويل أو كاش بلوس.",addPhoto:"أضف صورة الوصل",total:"المجموع",sendReq:"إرسال طلب التفعيل",needProof:"أضف صورة الوصل.",
+reqSent:"تمّ إرسال الطلب",planL:"الصيغة",methodL:"الدفع",sentOn:"أُرسل يوم",receiptL:"الوصل",reqWait:"نتحقّق من الدفع ونفعّل حسابك، وستصلك رسالة تأكيد عبر واتساب.",sendWa:"أرسل أيضًا عبر واتساب",waReq:"السلام عليكم، دفعت اشتراك SallPro لـ{c} ({a} درهمًا). هذا هو الوصل.",demoApprove:"محاكاة القبول (عرض)",activated:"تمّ تفعيل الاشتراك",dash:"لوحة القيادة",moreL:"المزيد",findSport:"ابحث عن رياضة…",otherSport:"رياضة أخرى؟ اكتب اسمها",level:"المستوى",dTot:"مجموع المحصَّل هذا الشهر",dCot:"الاشتراكات",dIns:"التأمين",dReg:"الانخراط",
+  cPaid:"مؤدّون",cUnp:"للأداء / متأخرون",cIns:"تأمينات مؤدّاة",cReg:"انخراطات مؤدّاة",
+  stud:"تلميذ",exp:"منتظرة",clickHint:"اضغط على بطاقة لعرض اللائحة.",six:"التحصيل خلال آخر 6 أشهر",byCoach:"حسب المدرّب",
+  payT:"تحصيل",payWhat:"ما يؤدّيه التلميذ اليوم",cotL:"اشتراك الشهر",insL:"التأمين (سنة)",regL:"الانخراط السنوي",confirm:"تأكيد الأداء",
+  setFees:"الأسعار",insFee:"التأمين (درهم / سنة)",regFee:"الانخراط (درهم / سنة)",list:"اللائحة",paidOn:"أُدّي يوم",amount:"المبلغ"},
+ en:{mA:{pre:(n,d,f,c)=>`Hello ${n}, your membership at ${c} (${f} MAD) is due on ${d}. Thank you.`,due:(n,d,f,c)=>`Hello ${n}, your membership at ${c} (${f} MAD) is due today, ${d}. Thank you.`,late:(n,d,f,c)=>`Hello ${n}, your membership at ${c} (${f} MAD) expired on ${d}. Please renew it on your next visit.`,ins:(n,d,f,c)=>`Hello ${n}, your insurance at ${c} expires on ${d}. Please renew it.`,reg:(n,d,f,c)=>`Hello ${n}, your yearly membership at ${c} must be renewed before ${d}.`},toSelf:"the member",toParent:"the parent",toSelfL:"To the member (adults)",toParentL:"To the parent (children)",sendTo:"WhatsApp messages go",parentOpt:"Parent's WhatsApp (children)",openAcc:"Open gym · monthly, 3-month or yearly plan",msgLangL:"WhatsApp message language",both:"Arabic + French",msgLangS:"“Arabic + French” sends both languages in the same message.",cardBtn:"Card",cardT:"Student card",cardS:"What the student sees when opening the link received on WhatsApp. No account, no password.",hist:"Latest payments",contactClub:"Contact the gym",cardNote:"Personal link, sent in every message.",copyL:"Copy link",copied:"Link copied",online:"Online",offline:"Offline",pendingL:"changes pending",synced:"Synced: {n} changes sent",lockL:"Lock",pinT:"Quick code (no internet needed)",pinS:"After the first login, just enter this code to open the app, even offline. Changes are sent when the connection is back.",pinSet:"Turn on",pinChange:"Change",pinDel:"Turn off",pinOn:"Quick code is on",pinBad:"The code must be 4 digits.",pinEnter:"Enter your 4-digit code",pinWrong:"Wrong code. Try again.",waL:"Your WhatsApp",cityL:"City",addrL:"Gym address",addrPh:"Area, street…",needInfo:"Add your WhatsApp and city to continue.",accT:"My account and gym",accS:"We use this to contact you and activate your subscription.",
+trialL:"Trial",activeL:"Subscription active",expiredL:"Trial ended",pendingSub:"Activation pending",
+trialH:"Free trial: {d} days left (until {date}). Activate your subscription to keep going.",pendH:"Your activation request is sent. It will be approved within 24 hours.",paidH:"Subscription active until {date}.",expH:"Your trial has ended. Activate your subscription to keep using SallPro.",
+choosePlan:"Choose your plan",monthly:"Monthly",yearly:"Yearly",twoFree:"2 months free",mo:"month",yr:"year",planCoach:"1 coach · up to 80 students",planSalle:"Up to 5 coaches · unlimited students",
+payHow:"Pay",m_vir:"Bank transfer",m_cash:"CashPlus / Wafacash",m_card:"Card",virT:"Transfer to the SallPro account",benef:"Beneficiary",motif:"Reference",cashT:"CashPlus or Wafacash transfer",phoneL:"Phone",cashS:"Keep the transfer code, it is on the receipt.",cardT2:"Card payment",cardSoon:"Coming soon: your subscription will activate on its own after payment.",
+sendProof:"Send the receipt",proofS:"A photo of the transfer or CashPlus receipt is enough.",addPhoto:"Add the receipt photo",total:"Total",sendReq:"Send activation request",needProof:"Add the receipt photo.",
+reqSent:"Request sent",planL:"Plan",methodL:"Payment",sentOn:"Sent on",receiptL:"Receipt",reqWait:"We check the payment and activate your account. You will get a confirmation on WhatsApp.",sendWa:"Also send on WhatsApp",waReq:"Hello, I paid the SallPro subscription for {c} ({a} MAD). Here is the receipt.",demoApprove:"Simulate approval (demo)",activated:"Subscription activated",dash:"Dashboard",moreL:"More",findSport:"Search a sport…",otherSport:"Another sport? Type its name",level:"Level",dTot:"Total collected this month",dCot:"Fees",dIns:"Insurance",dReg:"Memberships",
+  cPaid:"Up to date",cUnp:"To pay / late",cIns:"Insurance paid",cReg:"Memberships paid",
+  stud:"students",exp:"expected",clickHint:"Click a card to see the list.",six:"Collected over the last 6 months",byCoach:"By coach",
+  payT:"Collect",payWhat:"What the student pays today",cotL:"This month's fee",insL:"Insurance (1 year)",regL:"Yearly membership",confirm:"Confirm payment",
+  setFees:"Prices",insFee:"Insurance (MAD / year)",regFee:"Membership (MAD / year)",list:"List",paidOn:"Paid on",amount:"Amount"}};
+for(const k in T2){Object.assign(T[k],T2[k]);T[k].nav.dash=T2[k].dash}
+let DQ="";
+const COL={cot:"var(--ok)",ins:"var(--warn)",reg:"var(--sky)"};
+function monthPays(m0){return S.data.payments.filter(p=>p.date.slice(0,7)===m0)}
+function tDash(){const L=t(),act=S.data.members.filter(m=>!m.frozen),mp=monthPays(MONTH);
+ const sum=ty=>mp.filter(p=>(p.type||"cot")===ty).reduce((a,p)=>a+ +p.amount,0);
+ const ids=ty=>[...new Set(mp.filter(p=>(p.type||"cot")===ty).map(p=>p.mid))];
+ const paidIds=act.filter(m=>stage(m)==="paid").map(m=>m.id),unp=act.filter(m=>["unpaid","late"].includes(stage(m))),insIds=ids("ins"),regIds=ids("reg");
+ const tot=sum("cot")+sum("ins")+sum("reg");
+ const cards=[["paid","g",L.cPaid,paidIds.length,sum("cot")+" "+L.dh+" "+L.collected],["unp","r",L.cUnp,unp.length,unp.reduce((a,m)=>a+ +m.fee,0)+" "+L.dh+" "+L.exp],["ins","a",L.cIns,insIds.length,sum("ins")+" "+L.dh],["reg","s",L.cReg,regIds.length,sum("reg")+" "+L.dh]];
+ let list="";
+ if(DQ){const pick={paid:paidIds,ins:insIds,reg:regIds}[DQ];const ms=DQ==="unp"?unp:S.data.members.filter(m=>pick.includes(m.id));const ty={paid:"cot",ins:"ins",reg:"reg"}[DQ];
+  list=`<div class="panel" style="margin-bottom:16px"><h3>${cards.find(c=>c[0]===DQ)[2]} <span class="pill p-sky num">${ms.length}</span></h3>${ms.length?ms.map(m=>{const p=DQ==="paid"?lastPay(m.id):ty&&mp.filter(x=>x.mid===m.id&&(x.type||"cot")===ty).pop();
+   return `<div class="lrow"><div class="av">${ini(m.name)}</div><div class="who"><b>${esc(m.name)}</b><span>${catName(m.sport,m.cat)}${isSalle()?" · "+esc(coachOf(m.coach).name):""}</span></div>${p?`<span class="note num">${L.paidOn} ${fmt(p.date)}</span><b class="num">${p.amount} ${L.dh}</b>`:`${statusPill(m)}<b class="num">${m.fee} ${L.dh}</b><a class="btn btn-sm btn-g" target="_blank" rel="noopener" href="${waLink(m)}" aria-label="WhatsApp">${ic.wa}</a><button class="btn btn-sm btn-p" data-act="pay" data-id="${m.id}">${L.markPaid}</button>`}</div>`}).join(""):`<div class="empty">—</div>`}</div>`}
+ const months=[];for(let i=5;i>=0;i--){const d=new Date(now.getFullYear(),now.getMonth()-i,1);months.push(d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0"))}
+ const mt=months.map(m0=>{const p=monthPays(m0);return {m0,cot:p.filter(x=>(x.type||"cot")==="cot").reduce((a,x)=>a+ +x.amount,0),ins:p.filter(x=>x.type==="ins").reduce((a,x)=>a+ +x.amount,0),reg:p.filter(x=>x.type==="reg").reduce((a,x)=>a+ +x.amount,0)}});
+ const max=Math.max(1,...mt.map(x=>x.cot+x.ins+x.reg));
+ const chart=`<div class="chart">${mt.map(x=>{const tt=x.cot+x.ins+x.reg;return `<div class="c"><em class="num">${tt.toLocaleString()}</em><div class="stk" style="height:${Math.round(tt/max*120)}px">${["cot","ins","reg"].map(k=>`<i style="height:${tt?x[k]/tt*100:0}%;background:${COL[k]}"></i>`).join("")}</div><small>${t().months[+x.m0.slice(5)-1].slice(0,4)}</small></div>`}).join("")}</div>`;
+ const legend=`<div class="total" style="background:var(--surface);color:var(--fg);border:1px solid var(--line);margin:0;border-radius:0;border-width:1px 0 0"><div class="parts">${[["cot",L.dCot],["ins",L.dIns],["reg",L.dReg]].map(([k,n])=>`<span><i style="background:${COL[k]}"></i>${n}</span>`).join("")}</div></div>`;
+ const byC=S.data.coachs.map(c=>{const ms=S.data.members.filter(m=>m.coach===c.id);const col=mp.filter(p=>ms.some(m=>m.id===p.mid)).reduce((a,p)=>a+ +p.amount,0);const exp=ms.filter(m=>!m.frozen).reduce((a,m)=>a+ +m.fee,0);
+  return `<div class="ccrow"><b>${esc(c.name)} <span class="note">${lab(SP[c.sport].name)}</span></b><b class="num">${col.toLocaleString()} ${L.dh}</b><div class="bar" style="grid-column:1/-1;margin:0"><i style="width:${exp?Math.min(100,Math.round(col/exp*100)):0}%"></i></div></div>`}).join("");
+ return `<div class="total"><div><div style="font-weight:700;opacity:.9">${L.dTot} · ${monthName()}</div><b class="num">${tot.toLocaleString()} ${L.dh}</b></div>
+  <div class="parts">${[["cot",L.dCot],["ins",L.dIns],["reg",L.dReg]].map(([k,n])=>`<span><i style="background:#fff;opacity:${k==="cot"?1:k==="ins"?.7:.45}"></i>${n} : <span class="num">${sum(k).toLocaleString()}</span></span>`).join("")}</div></div>
+ <div class="dcards">${cards.map(c=>`<button class="dc ${c[1]} ${DQ===c[0]?"on":""}" data-act="dc" data-id="${c[0]}"><small>${c[2]}</small><b class="num">${c[3]}</b><span class="num">${c[4]}</span><em>${L.list} →</em></button>`).join("")}</div>
+ ${list||`<p class="note" style="margin:-6px 0 14px">${L.clickHint}</p>`}
+ <div class="grid2"><div class="panel"><h3>${L.six}</h3>${chart}${legend}</div><div class="panel"><h3>${isSalle()?L.byCoach:L.dCot}</h3>${byC}</div></div>`}
+
+function openPay(id){const L=t(),m=S.data.members.find(x=>x.id===id);if(!m)return;
+ const insDue=insState(m.ins),regDue=m.reg&&diffDays(m.reg,TODAY)<=30;
+ const row=(k,title,sub,amt,on)=>`<label class="payopt"><input type="checkbox" id="pp-${k}" ${on?"checked":""}><span><b>${title}</b><small>${sub}</small></span><input type="number" id="pa-${k}" min="0" step="10" value="${amt}" aria-label="${L.amount}"></label>`;
+ const ov=modal(L.payT+" · "+esc(m.name),`<p class="note full" style="margin:12px 0 0">${L.payWhat}</p><div class="paygrid">
+  ${row("cot",L.cotL,stage(m)==="paid"?L.paidS:L.due+" : "+fmt(dueOf(m)),m.fee,stage(m)!=="paid")}
+  ${row("ins",L.insL,m.ins?L.ins+" : "+fmt(m.ins):"—",S.setup.insFee,insDue&&insDue[0]!=="p-ok")}
+  ${row("reg",L.regL,m.reg?L.reg+" : "+fmt(m.reg):"—",S.setup.regFee,regDue)}</div>`,
+  (v,ov)=>{const g=k=>ov.querySelector("#pp-"+k).checked,a=k=>+ov.querySelector("#pa-"+k).value||0;let any=false;
+   if(g("cot")){S.data.payments.push({id:uid(),mid:id,type:"cot",date:TODAY,amount:a("cot")});m.frozen=false;any=true}
+   if(g("ins")){S.data.payments.push({id:uid(),mid:id,type:"ins",date:TODAY,amount:a("ins")});m.ins=plusDays(m.ins&&m.ins>TODAY?m.ins:TODAY,365);any=true}
+   if(g("reg")){S.data.payments.push({id:uid(),mid:id,type:"reg",date:TODAY,amount:a("reg")});m.reg=plusDays(m.reg&&m.reg>TODAY?m.reg:TODAY,365);any=true}
+   if(!any)return false});
+ ov.querySelector(".modal-f .btn-p").textContent=L.confirm;}
+
+
+const MAIN0=["dash","today","students","pay"];
+const MAIN_=()=>hasClasses()?MAIN0:["dash","students","pay","auto"];
+function navMobile(){const L=t();const more=!MAIN_().includes(S.tab);
+ return MAIN_().map(k=>`<button class="nav-i ${S.tab===k?"on":""}" data-tab="${k}">${ic[k]}<span>${L.nav[k]}</span></button>`).join("")+
+ `<button class="nav-i ${more?"on":""}" data-act="more"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg><span>${more?L.nav[S.tab]:L.moreL}</span></button>`}
+function openMore(){const L=t();const ov=document.createElement("div");ov.className="ov sheet";ov.id="ov";
+ ov.innerHTML=`<div class="modal"><div class="modal-h"><h3>${esc(S.setup.club)}</h3><button type="button" class="xb" data-act="close" aria-label="${L.cancel}">×</button></div>
+ <div class="more">${tabs().filter(k=>!MAIN_().includes(k)).map(k=>`<button class="more-i ${S.tab===k?"on":""}" data-tab="${k}">${ic[k]}<span>${L.nav[k]}</span></button>`).join("")}</div>
+ <div class="modal-f" style="justify-content:space-between">${langSw()}<button class="btn btn-sm" data-act="theme">☾ / ☀</button></div></div>`;
+ ov.addEventListener("click",e=>{if(e.target===ov)ov.remove()});document.body.appendChild(ov)}
+
+
+function openCard(id){const L=t(),m=S.data.members.find(x=>x.id===id);if(!m)return;const sp=SP[m.sport],st=stage(m),x=insState(m.ins);
+ const hist=S.data.payments.filter(p=>p.mid===id).sort((a,b)=>b.date.localeCompare(a.date)).slice(0,6);
+ const tl={cot:L.dCot,ins:L.dIns,reg:L.dReg};
+ const ov=document.createElement("div");ov.className="ov";ov.id="ov";
+ ov.innerHTML=`<div class="modal fiche"><div class="modal-h"><div><h3>${L.cardT}</h3><span class="note">${L.cardS}</span></div><button type="button" class="xb" data-act="close" aria-label="${L.cancel}">×</button></div>
+ <div class="phonecard"><div class="pc-top"><div class="pc-url num">🔒 ${cardURL(m)}</div><b>${esc(S.setup.club)}</b><span>${sp.ic} ${esc(lab(sp.name))}</span></div>
+  <div class="pc-body"><div class="pc-name"><div class="av" style="width:48px;height:48px;font-size:16px">${ini(m.name)}</div><div><b>${esc(m.name)}</b><span class="note">${catName(m.sport,m.cat)} · ${detail(m)}</span></div></div>
+  <div class="pc-status ${st}"><small>${L.status}</small><b>${st==="paid"?L.paidS:st==="late"?L.lateS:st==="frozen"?L.frozenS:L.unpaidS}</b><span class="num">${L.due} : ${fmt(dueOf(m))} · ${m.fee} ${L.dh}</span></div>
+  <div class="pc-grid"><div><small>${L.ins}</small><b class="num">${m.ins?fmt(m.ins):"—"}</b>${x?`<span class="pill ${x[0]}">${x[1]}</span>`:""}</div><div><small>${L.reg}</small><b class="num">${m.reg?fmt(m.reg):"—"}</b></div></div>
+  <h4>${L.hist}</h4>${hist.length?hist.map(p=>`<div class="pc-h"><span class="num">${fmt(p.date)}</span><span>${tl[p.type||"cot"]}</span><b class="num">${p.amount} ${L.dh}</b></div>`).join(""):`<p class="note">—</p>`}
+  <a class="btn btn-g" style="width:100%;margin-top:12px" target="_blank" rel="noopener" href="https://wa.me/${waNum(coachPhone())}">${ic.wa} ${L.contactClub}</a></div></div>
+ <div class="modal-f"><span class="note" style="margin-inline-end:auto">${L.cardNote}</span><button class="btn btn-sm" data-act="copy" data-v="${cardURL(m)}">${L.copyL}</button></div></div>`;
+ ov.addEventListener("click",e=>{if(e.target===ov)ov.remove()});document.body.appendChild(ov)}
+const coachPhone=()=>S.setup.phone||"0600000000";
+
+
+function netBadge(){const L=t(),on=navigator.onLine;return `<span class="net ${on?"on":"off"}" title="${on?L.online:L.offline}"><i></i>${on?(S.mode==="live"&&pendingCount()?L.online+" · ⟳ "+pendingCount():L.online):L.offline+(pendingCount()?` · ${pendingCount()} ${L.pendingL}`:"")}</span>${S.pin?`<button class="btn btn-sm" data-act="lock" aria-label="${L.lockL}">🔒</button>`:""}`}
+function vLock(){const L=t();const dots=[0,1,2,3].map(i=>`<span class="${i<PINBUF.length?"f":""}"></span>`).join("");
+ return `<div class="auth"><div class="card lock"><div class="logo"><span class="mark"><i></i></span><span>Sall<b class="pro">Pro</b></span></div>
+ <h2>${esc(S.setup?.club||"SallPro")}</h2><p class="note">${L.pinEnter}</p>
+ <div class="dots">${dots}</div><div class="err" id="pin-err" style="text-align:center"></div>
+ <div class="pad">${["1","2","3","4","5","6","7","8","9","","0","del"].map(d=>d===""?"<span></span>":`<button type="button" data-act="pin" data-d="${d}" aria-label="${d==="del"?L.del:d}">${d==="del"?"⌫":d}</button>`).join("")}</div>
+ <p class="note" style="text-align:center;margin-top:14px"><span class="net ${navigator.onLine?"on":"off"}"><i></i>${navigator.onLine?L.online:L.offline}</span></p>
+ <div class="row-end" style="justify-content:center"><button class="btn btn-sm" data-act="logout">${L.logout}</button></div></div></div>`}
+addEventListener("online",()=>{const n=S.pending;S.pending=0;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){};render();if(n)toast(t().synced.replace("{n}",n))});
+addEventListener("offline",()=>render());
+
+
+/* ---------- abonnement & activation ---------- */
+const SALAPRO_WA="212600000000";
+const BILL={plan:null,per:"m",method:"vir",file:null,fileName:""};
+const PRICES={coach:{m:99,y:990},salle:{m:199,y:1990}};
+function subState(){const st=S.setup;if(st.paidUntil&&st.paidUntil>=TODAY)return{k:"paid",d:diffDays(st.paidUntil,TODAY)};if(st.request&&st.request.status==="pending")return{k:"pending"};const d=diffDays(st.trialEnds||TODAY,TODAY);return d>=0?{k:"trial",d}:{k:"expired"}}
+function subBadge(){const L=t(),x=subState();const map={trial:["p-warn",L.trialL+" · J-"+x.d],pending:["p-sky",L.pendingSub],paid:["p-ok",L.activeL],expired:["p-bad",L.expiredL]};return `<button class="pill ${map[x.k][0]}" style="border:0;cursor:pointer" data-tab="billing">${map[x.k][1]}</button>`}
+function tBilling(){const L=t(),st=S.setup,x=subState();if(!BILL.plan)BILL.plan=st.role==="coach"?"coach":"salle";
+ const price=PRICES[BILL.plan][BILL.per];
+ const head={trial:[L.trialH.replace("{d}",x.d).replace("{date}",fmt(st.trialEnds)),"var(--warn-soft)","var(--warn)"],pending:[L.pendH,"var(--sky-soft)","var(--sky-d)"],paid:[L.paidH.replace("{date}",fmt(st.paidUntil||TODAY)),"var(--ok-soft)","var(--ok)"],expired:[L.expH,"var(--bad-soft)","var(--bad)"]}[x.k];
+ const method={vir:`<div class="pay-info"><b>${L.virT}</b><div class="kv"><span>${L.benef}</span><b>SallPro SARL</b></div><div class="kv"><span>RIB</span><b class="num">000 000 0000000000000000 00</b></div><div class="kv"><span>${L.motif}</span><b>${esc(st.club)} · ${esc(st.phone||"")}</b></div></div>`,
+  cash:`<div class="pay-info"><b>${L.cashT}</b><div class="kv"><span>${L.benef}</span><b>Nom Prénom</b></div><div class="kv"><span>${L.phoneL}</span><b class="num">+212 6 00 00 00 00</b></div><p class="note" style="margin:6px 0 0">${L.cashS}</p></div>`,
+  card:`<div class="pay-info"><b>${L.cardT2}</b><p class="note" style="margin:4px 0 0">${L.cardSoon}</p></div>`}[BILL.method];
+ const req=st.request;
+ return `<div class="sub-head" style="background:${head[1]};color:${head[2]}"><b>${head[0]}</b></div>
+ ${req&&req.status==="pending"?`<div class="panel" style="padding:18px;margin-bottom:14px"><h3 style="margin:0 0 6px;padding:0;border:0">${L.reqSent}</h3>
+  <div class="kv"><span>${L.planL}</span><b>${req.plan==="coach"?"Coach":"Salle"} · ${req.per==="m"?L.monthly:L.yearly}</b></div><div class="kv"><span>${L.amount}</span><b class="num">${req.amount} DH</b></div><div class="kv"><span>${L.methodL}</span><b>${L["m_"+req.method]}</b></div><div class="kv"><span>${L.sentOn}</span><b class="num">${fmt(req.date)}</b></div>
+  ${req.receipt?`<img src="${req.receipt}" alt="${L.receiptL}" style="max-width:220px;border-radius:10px;margin-top:10px;border:1px solid var(--line)">`:""}
+  <p class="note">${L.reqWait}</p><div class="acts" style="flex-wrap:wrap"><a class="btn btn-g" target="_blank" rel="noopener" href="https://wa.me/${SALAPRO_WA}?text=${encodeURIComponent(L.waReq.replace("{c}",st.club).replace("{a}",req.amount))}">${ic.wa} ${L.sendWa}</a><button class="btn" data-act="bill-cancel">${L.cancel}</button>${S.mode==="live"?"":`<button class="btn" data-act="bill-demo">${L.demoApprove}</button>`}</div></div>`:""}
+ ${req&&req.status==="pending"?"":`<div class="bill-grid"><div class="panel" style="padding:18px"><h3 style="margin:0 0 4px;padding:0;border:0">1 · ${L.choosePlan}</h3>
+  <div class="seg" style="margin:10px 0">${[["m",L.monthly],["y",L.yearly+" · "+L.twoFree]].map(v=>`<button data-act="bill-per" data-v="${v[0]}" class="${BILL.per===v[0]?"on":""}">${v[1]}</button>`).join("")}</div>
+  <div class="plans">${[["coach","Coach",L.planCoach],["salle","Salle",L.planSalle]].map(p=>`<button class="plan ${BILL.plan===p[0]?"on":""}" data-act="bill-plan" data-v="${p[0]}"><b>${p[1]}</b><span class="amt num">${PRICES[p[0]][BILL.per]} <small>DH / ${BILL.per==="m"?L.mo:L.yr}</small></span><span class="note">${p[2]}</span></button>`).join("")}</div></div>
+ <div class="panel" style="padding:18px"><h3 style="margin:0 0 4px;padding:0;border:0">2 · ${L.payHow}</h3>
+  <div class="methods">${[["vir",L.m_vir],["cash",L.m_cash],["card",L.m_card]].map(m=>`<button class="mth ${BILL.method===m[0]?"on":""}" data-act="bill-m" data-v="${m[0]}">${m[1]}</button>`).join("")}</div>${method}</div>
+ <div class="panel" style="padding:18px"><h3 style="margin:0 0 4px;padding:0;border:0">3 · ${L.sendProof}</h3><p class="note" style="margin:0 0 10px">${L.proofS}</p>
+  <label class="drop" for="bill-file">${BILL.file?`<img src="${BILL.file}" alt="${L.receiptL}">`:`<span>📷 ${L.addPhoto}</span>`}</label><input id="bill-file" type="file" accept="image/*,application/pdf" hidden>
+  <div class="kv" style="margin-top:12px"><span>${L.total}</span><b class="num" style="font-size:20px">${price} DH</b></div>
+  <button class="btn btn-p" style="width:100%;margin-top:10px" data-act="bill-send" ${BILL.method==="card"?"disabled":""}>${L.sendReq}</button><div class="err" id="bill-err"></div></div></div>`}`}
+function sendRequest(){const L=t();if(!BILL.file){document.getElementById("bill-err").textContent=L.needProof;return}
+ S.setup.request={status:"pending",plan:BILL.plan,per:BILL.per,amount:PRICES[BILL.plan][BILL.per],method:BILL.method,date:TODAY,receipt:BILL.file.length<400000?BILL.file:null};BILL.file=null;save();render();toast(L.reqSent)}
+function demoApprove(){const r=S.setup.request;if(!r)return;let d=TODAY;const n=r.per==="m"?1:12;for(let i=0;i<n;i++)d=plusMonth(d);S.setup.paidUntil=d;S.setup.plan=r.plan;S.setup.request=null;save();render();toast(t().activated)}
+document.addEventListener("change",e=>{if(e.target.id==="bill-file"){const f=e.target.files[0];if(!f)return;BILL.fileName=f.name;
+ if(!f.type.startsWith("image/")){BILL.file="data:,pdf";render();return}
+ const rd=new FileReader();rd.onload=()=>{const img=new Image();img.onload=()=>{const c=document.createElement("canvas"),k=Math.min(1,700/Math.max(img.width,img.height));c.width=img.width*k;c.height=img.height*k;c.getContext("2d").drawImage(img,0,0,c.width,c.height);BILL.file=c.toDataURL("image/jpeg",.7);render()};img.src=rd.result};rd.readAsDataURL(f)}});
+
+/* ================= SYNC SUPABASE ================= */
+const T_SYNC={fr:{signup:"Créer un compte",signin:"Se connecter",checkMail:"Compte créé. Ouvrez l'e-mail de confirmation, puis connectez-vous ici.",badCreds:"E-mail ou mot de passe incorrect.",pass6:"Le mot de passe doit contenir au moins 6 caractères.",loading:"Chargement…",syncErr:"Synchronisation impossible pour le moment. Vos données restent sur cet appareil.",noNet:"Pas de connexion. Réessayez quand internet revient.",haveAcc:"Déjà un compte ? Se connecter",noAcc:"Pas encore de compte ? Créer un compte",saving:"Création de votre espace…"},
+ ar:{signup:"إنشاء حساب",signin:"تسجيل الدخول",checkMail:"تمّ إنشاء الحساب. افتح رسالة التأكيد في بريدك، ثم سجّل الدخول هنا.",badCreds:"البريد أو كلمة المرور غير صحيحة.",pass6:"يجب أن تتكوّن كلمة المرور من 6 أحرف على الأقل.",loading:"جارٍ التحميل…",syncErr:"تعذّرت المزامنة حاليًا. تبقى بياناتك على هذا الجهاز.",noNet:"لا يوجد اتصال. أعد المحاولة عند عودة الإنترنت.",haveAcc:"لديك حساب؟ سجّل الدخول",noAcc:"ليس لديك حساب؟ أنشئ حسابًا",saving:"جارٍ إنشاء فضائك…"},
+ en:{signup:"Create account",signin:"Log in",checkMail:"Account created. Open the confirmation email, then log in here.",badCreds:"Wrong email or password.",pass6:"The password must be at least 6 characters.",loading:"Loading…",syncErr:"Can't sync right now. Your data stays on this device.",noNet:"No connection. Try again when internet is back.",haveAcc:"Already have an account? Log in",noAcc:"No account yet? Create one",saving:"Creating your space…"}};
+for(const k in T_SYNC)Object.assign(T[k],T_SYNC[k]);
+let AUTHMODE="signin",BUSY=false;
+
+/* ---- local state -> table rows ---- */
+function rowsNow(){const c=S.clubId,d=S.data,st=S.setup;
+ const R={clubs:[{id:c,name:st.club,role_type:st.role,sports:st.sports,default_fee:+st.fee||0,ins_fee:+st.insFee||0,reg_fee:+st.regFee||0,msg_lang:st.msgLang||"both",auto_cot:!!st.autoRules?.cot,auto_ins:!!st.autoRules?.ins,auto_reg:!!st.autoRules?.reg,owner_phone:st.phone||null,whatsapp:st.phone||null,city:st.city||null,address:st.addr||null,last_active_at:new Date().toISOString()}],
+  staff:d.coachs.map(x=>({id:x.id,club_id:c,name:x.name,sport:x.sport})),
+  students:d.members.map(m=>({id:m.id,club_id:c,coach_id:m.coach||null,name:m.name,phone:m.phone||null,parent_phone:m.parent||null,sport:m.sport,category:+m.cat||0,belt:+m.belt||0,position:+m.pos||0,weight:+m.weight||0,formula:+m.formule||0,fee:+m.fee||0,insurance_until:m.ins||null,membership_until:m.reg||null,frozen:!!m.frozen,joined_on:m.joined||TODAY})),
+  sessions:d.sessions.map(x=>({id:x.id,club_id:c,coach_id:x.coach||null,sport:x.sport,category:+x.cat||0,weekday:+x.day,starts_at:x.start,ends_at:x.end})),
+  payments:d.payments.map(p=>({id:p.id,club_id:c,student_id:p.mid,type:p.type||"cot",amount:+p.amount||0,paid_on:p.date})),
+  session_plans:Object.entries(d.plans||{}).filter(([k])=>d.sessions.some(x=>x.id===k.split("|")[1])).flatMap(([k,items])=>{const [day,sid]=k.split("|");return items.map((i,n)=>({id:i.id,club_id:c,session_id:sid,day,label:i.t,done:!!i.done,position:n}))}),
+  leads:d.leads.map(l=>({id:l.id,club_id:c,name:l.name,phone:l.phone||null,sport:l.sport||null,stage:l.stage}))};
+ R.clubs[0].last_active_at=undefined;return R}
+const ORDER=["clubs","staff","students","sessions","payments","session_plans","leads"];
+function diff(){const R=rowsNow(),snap=S.snap||{},ops=[];
+ ORDER.forEach(tb=>{const cur={};R[tb].forEach(r=>{cur[r.id]=JSON.stringify(r)});const old=snap[tb]||{};
+  const up=R[tb].filter(r=>old[r.id]!==cur[r.id]);const del=Object.keys(old).filter(id=>!(id in cur));
+  if(up.length)ops.push({tb,kind:"up",rows:up});if(del.length)ops.push({tb,kind:"del",ids:del});});
+ return {ops,R}}
+function pendingCount(){if(S.mode!=="live"||!S.data)return 0;try{return diff().ops.reduce((a,o)=>a+(o.rows?o.rows.length:o.ids.length),0)}catch(e){return 0}}
+let FT=null,FLUSHING=false;
+function queueFlush(){clearTimeout(FT);FT=setTimeout(flush,700)}
+async function flush(){if(FLUSHING||!sb||S.mode!=="live"||!S.clubId||!S.data||!navigator.onLine)return;FLUSHING=true;
+ try{const {ops,R}=diff();const before=pendingCount();
+  const ups=ops.filter(o=>o.kind==="up"),dels=ops.filter(o=>o.kind==="del").reverse();
+  for(const o of ups){let r;
+   if(o.tb==="clubs"){const row={...o.rows[0]};delete row.id;r=await sb.from("clubs").update(row).eq("id",S.clubId)}
+   else if(o.tb==="payments")r=await sb.from("payments").upsert(o.rows,{onConflict:"id",ignoreDuplicates:true});
+   else r=await sb.from(o.tb).upsert(o.rows,{onConflict:"id"});
+   if(r.error)throw r.error;
+   S.snap[o.tb]=S.snap[o.tb]||{};o.rows.forEach(x=>{S.snap[o.tb][x.id]=JSON.stringify(x)});}
+  for(const o of dels){const r=await sb.from(o.tb).delete().in("id",o.ids);if(r.error)throw r.error;o.ids.forEach(id=>delete S.snap[o.tb][id]);}
+  try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
+  S.syncErr=null;if(before&&document.querySelector(".net"))render();
+ }catch(e){console.warn("sync",e);S.syncErr=String(e.message||e)}finally{FLUSHING=false}}
+
+/* ---- table rows -> local state ---- */
+async function pull(){const c=S.clubId;
+ const q=tb=>sb.from(tb).select("*").eq("club_id",c);
+ const [cl,st,stu,ses,pay,pl,ld,req]=await Promise.all([sb.from("clubs").select("*").eq("id",c).single(),q("staff"),q("students"),q("sessions"),q("payments"),q("session_plans"),q("leads"),sb.from("activation_requests").select("*").eq("club_id",c).eq("status","pending").order("created_at",{ascending:false}).limit(1)]);
+ for(const r of [cl,st,stu,ses,pay,pl,ld]) if(r.error)throw r.error;
+ const k=cl.data,me=(st.data||[]).find(x=>x.user_id===S.uid);
+ (k.sports||[]).forEach(x=>{if(String(x).startsWith("c:"))regCustom(x)});
+ const prevReq=S.setup&&S.setup.request;
+ S.setup={role:k.role_type,sports:k.sports||[],club:k.name,you:me?me.name:"",phone:k.owner_phone||k.whatsapp||"",city:k.city||"",addr:k.address||"",plan:k.plan,trialEnds:k.trial_ends_at,paidUntil:k.paid_until,fee:k.default_fee,insFee:k.ins_fee,regFee:k.reg_fee,msgLang:k.msg_lang,autoRules:{cot:k.auto_cot,ins:k.auto_ins,reg:k.auto_reg},
+  request:(req.data&&req.data[0])?{status:"pending",plan:req.data[0].plan,per:req.data[0].period==="year"?"y":"m",amount:req.data[0].amount,method:req.data[0].method==="virement"?"vir":"cash",date:req.data[0].created_at.slice(0,10),receipt:prevReq&&prevReq.receipt||null}:null};
+ const plans={};(pl.data||[]).sort((a,b)=>a.position-b.position).forEach(p=>{const key=p.day+"|"+p.session_id;(plans[key]=plans[key]||[]).push({id:p.id,t:p.label,done:p.done})});
+ S.data={coachs:(st.data||[]).map(x=>({id:x.id,name:x.name,sport:x.sport,owner:x.role==="owner"})),
+  members:(stu.data||[]).map(m=>({id:m.id,name:m.name,phone:m.phone||"",parent:m.parent_phone||"",coach:m.coach_id,sport:m.sport,cat:m.category,belt:m.belt,pos:m.position,weight:m.weight,formule:m.formula,fee:m.fee,ins:m.insurance_until||"",reg:m.membership_until||"",frozen:m.frozen,joined:m.joined_on})),
+  sessions:(ses.data||[]).map(x=>({id:x.id,day:x.weekday,start:String(x.starts_at).slice(0,5),end:String(x.ends_at).slice(0,5),coach:x.coach_id,sport:x.sport,cat:x.category})),
+  payments:(pay.data||[]).map(p=>({id:p.id,mid:p.student_id,type:p.type,date:p.paid_on,amount:p.amount})),
+  plans,leads:(ld.data||[]).map(l=>({id:l.id,name:l.name,phone:l.phone||"",sport:l.sport,stage:l.stage}))};
+ S.snap={};const R=rowsNow();ORDER.forEach(tb=>{S.snap[tb]={};R[tb].forEach(r=>{S.snap[tb][r.id]=JSON.stringify(r)})});
+ try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+
+/* ---- session start ---- */
+async function afterLogin(user){S.uid=user.id;S.user=user.email;S.mode="live";
+ if(!navigator.onLine&&S.data&&S.clubId){save();render();return}
+ const r=await sb.from("staff").select("club_id,role").eq("user_id",user.id).limit(1);
+ if(r.error)throw r.error;
+ if(r.data&&r.data.length){S.clubId=r.data[0].club_id;await pull();if(!S.tab)S.tab="dash"}
+ else{S.clubId=null;S.setup=null;S.data=null;S.ob=S.ob&&S.ob.step?S.ob:{step:1,role:"salle",sports:["tkd"]}}
+ save();render()}
+async function liveOnboard(){const o=S.ob;const L=t();
+ const err=m=>{const e=document.getElementById("ob3-err");if(e)e.textContent=m};
+ if(!navigator.onLine){err(L.noNet);return}
+ BUSY=true;err(L.saving);
+ try{const r=await sb.rpc("create_club",{p_name:o.club||"Ma salle",p_role:o.role,p_sports:o.sports,p_fee:+o.fee||150,p_owner_name:o.you||"Coach"});
+  if(r.error)throw r.error;S.clubId=r.data;
+  const u=await sb.from("clubs").update({owner_phone:o.phone||null,whatsapp:o.phone||null,city:o.city||null,address:o.addr||null}).eq("id",S.clubId);if(u.error)throw u.error;
+  await pull();S.tab="dash";BUSY=false;save();render()}
+ catch(e){BUSY=false;err(String(e.message||e))}}
+
+/* ---- auth form ---- */
+function vAuth(){const L=t(),up=AUTHMODE==="signup";return `<div class="auth"><form class="card" id="authF" novalidate>
+ <div class="logo"><span class="mark"><i></i></span><span>Sall<b class="pro">Pro</b></span></div><h2>${up?L.signup:L.signin}</h2>
+ <div class="fld"><label for="au-e">${L.email}</label><input id="au-e" type="email" autocomplete="email" placeholder="coach@salle.ma" value="${esc(S.lastEmail||"")}"></div>
+ <div class="fld"><label for="au-p">${L.pass}</label><input id="au-p" type="password" autocomplete="${up?"new-password":"current-password"}"></div>
+ <div class="err" id="au-err"></div>
+ <button class="btn btn-p" style="width:100%" type="submit">${up?L.signup:L.signin}</button>
+ <button class="btn" style="width:100%;margin-top:8px" type="button" data-act="authmode">${up?L.haveAcc:L.noAcc}</button>
+ <div class="row-end" style="margin-top:14px"><button class="btn btn-sm" type="button" data-act="demo">${L.demo}</button>${langSw()}</div></form></div>`}
+async function authSubmit(){const L=t(),em=document.getElementById("au-e").value.trim(),pw=document.getElementById("au-p").value,out=document.getElementById("au-err");
+ S.lastEmail=em;
+ if(!/^\S+@\S+\.\S+$/.test(em)){out.textContent=L.bad;return}if(pw.length<6){out.textContent=L.pass6;return}
+ if(!navigator.onLine){out.textContent=L.noNet;return}
+ out.style.color="var(--muted)";out.textContent=L.loading;
+ try{if(AUTHMODE==="signup"){const r=await sb.auth.signUp({email:em,password:pw});if(r.error)throw r.error;
+    if(!r.data.session){AUTHMODE="signin";render();const o=document.getElementById("au-err");o.style.color="var(--ok)";o.textContent=L.checkMail;return}
+    await afterLogin(r.data.user)}
+  else{const r=await sb.auth.signInWithPassword({email:em,password:pw});if(r.error){out.style.color="";out.textContent=/invalid/i.test(r.error.message)?L.badCreds:r.error.message;return}
+    await afterLogin(r.data.user)}}
+ catch(e){out.style.color="";out.textContent=String(e.message||e)}}
+
+/* ---- activation request (live) ---- */
+async function liveRequest(){const L=t();if(!BILL.file){document.getElementById("bill-err").textContent=L.needProof;return}
+ if(!navigator.onLine){document.getElementById("bill-err").textContent=L.noNet;return}
+ const r=await sb.from("activation_requests").insert({club_id:S.clubId,plan:BILL.plan,period:BILL.per==="y"?"year":"month",amount:PRICES[BILL.plan][BILL.per],method:BILL.method==="vir"?"virement":"cashplus"});
+ if(r.error){document.getElementById("bill-err").textContent=r.error.message;return}
+ S.setup.request={status:"pending",plan:BILL.plan,per:BILL.per,amount:PRICES[BILL.plan][BILL.per],method:BILL.method,date:TODAY,receipt:BILL.file.length<400000?BILL.file:null};BILL.file=null;save();render();toast(L.reqSent)}
+
+addEventListener("online",()=>{if(S.mode==="live"){flush().then(()=>{if(S.clubId)pull().then(render).catch(()=>{})})}});
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&S.mode==="live"&&navigator.onLine&&S.clubId&&!pendingCount())pull().then(render).catch(()=>{})});
+
+/* ---------- actions ---------- */
+function pay(id){const m=S.data.members.find(x=>x.id===id);if(!m||stage(m)==="paid")return;S.data.payments.push({id:uid(),mid:id,date:TODAY,amount:m.fee});m.frozen=false;save();render();toast(t().paidT+fmt(dueOf(m)))}
+function unpay(id){const lp=lastPay(id);if(lp)S.data.payments=S.data.payments.filter(p=>p!==lp)}
+function setStage(id,k){const m=S.data.members.find(x=>x.id===id);if(!m)return;if(k==="paid"){pay(id);return}
+ if(k==="frozen"){m.frozen=true}else{m.frozen=false;if(stage(m)==="paid")unpay(id)}save();render()}
+function finishOnboard(){const o=S.ob;S.setup={role:o.role,sports:o.sports.slice(),club:o.club||"Salle Atlas",you:o.you||"Karim",phone:o.phone||"",city:o.city||"",addr:o.addr||"",plan:"trial",trialEnds:plusDays(TODAY,7),paidUntil:null,request:null,fee:+o.fee||150,autoRules:{cot:true,ins:true,reg:true},insFee:100,regFee:200};S.data=buildData(S.setup);S.tab="dash";save();render()}
+function readOb3(){const g=id=>document.getElementById(id)?.value;if(document.getElementById("ob-club"))Object.assign(S.ob,{club:g("ob-club"),you:g("ob-you"),fee:g("ob-fee"),phone:g("ob-phone"),city:g("ob-city"),addr:g("ob-addr")})}
+
+document.addEventListener("click",e=>{
+ const el=e.target.closest("[data-act],[data-tab],[data-st],[data-ml],[data-lang],[data-themeset],[data-role],[data-sp],[data-rm],[data-reuse],[data-tplk]");if(!el)return;
+ const L=t();
+ if(el.dataset.tab){document.getElementById("ov")?.remove();S.tab=el.dataset.tab;Q.q="";save();render();return}
+ if(el.dataset.st){Q.st=el.dataset.st;render();return}
+ if(el.dataset.ml){S.setup.msgLang=el.dataset.ml;save();render();return}
+ if(el.dataset.lang){document.getElementById("ov")?.remove();readOb3();S.lang=el.dataset.lang;save();render();return}
+ if(el.dataset.themeset){S.theme=el.dataset.themeset;save();render();return}
+ if(el.dataset.role){S.ob.role=el.dataset.role;save();render();return}
+ if(el.dataset.sp){const k=el.dataset.sp,a=S.ob.sports;S.ob.sports=a.includes(k)?a.filter(x=>x!==k):[...a,k];save();render();return}
+ if(el.dataset.rm){e.preventDefault();const [d,sid,iid]=el.dataset.rm.split("|");const k=d+"|"+sid;S.data.plans[k]=(S.data.plans[k]||[]).filter(i=>i.id!==iid);save();render();return}
+ if(el.dataset.tplk){const k=el.dataset.tplk;(S.data.plans[k]=S.data.plans[k]||[]).push({id:uid(),t:el.dataset.tplv,done:false});save();render();return}
+ if(el.dataset.reuse){const sid=el.dataset.reuse,k=TODAY+"|"+sid;const prev=Object.keys(S.data.plans).filter(x=>x.endsWith("|"+sid)&&x!==k).sort().pop();
+  const kind=SP[S.data.sessions.find(s=>s.id===sid).sport].kind;const src=prev?S.data.plans[prev].map(i=>i.t):TPL[kind][S.lang];
+  const cur=S.data.plans[k]||[];S.data.plans[k]=[...cur,...src.filter(x=>!cur.some(i=>i.t===x)).map(x=>({id:uid(),t:x,done:false}))];save();render();return}
+ const a=el.dataset.act,id=el.dataset.id;
+ if(a==="demo"){S.mode="demo";S.clubId=null;S.user="demo@sallpro.ma";S.ob={step:1,role:"salle",sports:["tkd","foot","muscu"],club:"Salle Atlas",you:"Karim",fee:150,phone:"0661000001",city:"Oujda",addr:"Hay Al Qods"};finishOnboard();S.setup.trialEnds=plusDays(TODAY,5);save();render()}
+ else if(a==="ob-next"){if(S.ob.step===2&&!S.ob.sports.length){document.getElementById("ob-err").textContent=L.pick;return}if(S.ob.step<3){S.ob.step++;save();render()}else{readOb3();if(!S.ob.phone||!S.ob.city){document.getElementById("ob3-err").textContent=L.needInfo;return}if(S.mode==="live"){if(!BUSY)liveOnboard()}else finishOnboard()}}
+ else if(a==="ob-back"){readOb3();S.ob.step--;save();render()}
+ else if(a==="lang-cycle"){S.lang=S.lang==="fr"?"ar":S.lang==="ar"?"en":"fr";save();render()}
+ else if(a==="theme"){const dark=document.documentElement.dataset.theme==="dark"||(S.theme==="auto"&&matchMedia("(prefers-color-scheme: dark)").matches);S.theme=dark?"light":"dark";save();render()}
+ else if(a==="logout"){const wasLive=S.mode==="live";S.user=null;S.pin=null;UNLOCK=false;S.mode=null;S.setup=null;S.data=null;S.snap=null;S.clubId=null;S.ob={step:1,role:"salle",sports:["tkd"]};save();if(wasLive&&sb)sb.auth.signOut().catch(()=>{});render()}
+ else if(a==="authmode"){AUTHMODE=AUTHMODE==="signup"?"signin":"signup";render()}
+ else if(a==="lock"){UNLOCK=false;PINBUF="";render()}
+ else if(a==="set-pin"){const v=(document.getElementById("s-pin").value||"").trim();if(!/^\d{4}$/.test(v)){toast(L.pinBad);return}S.pin=v;UNLOCK=true;save();render();toast(L.pinOn)}
+ else if(a==="del-pin"){S.pin=null;save();render()}
+ else if(a==="pin"){const d=el.dataset.d;if(d==="del")PINBUF=PINBUF.slice(0,-1);else if(PINBUF.length<4)PINBUF+=d;if(PINBUF.length===4){if(PINBUF===S.pin){UNLOCK=true;PINBUF="";render();return}PINBUF="";render();document.getElementById("pin-err").textContent=L.pinWrong;return}render()}
+ else if(a==="reset"){S.setup=null;S.data=null;S.ob={step:1,role:"salle",sports:["tkd"]};save();render()}
+ else if(a==="close")document.getElementById("ov")?.remove();
+ else if(a==="more")openMore();
+ else if(a==="bill-plan"){BILL.plan=el.dataset.v;render()}
+ else if(a==="bill-per"){BILL.per=el.dataset.v;render()}
+ else if(a==="bill-m"){BILL.method=el.dataset.v;render()}
+ else if(a==="bill-send"){S.mode==="live"?liveRequest():sendRequest()}
+ else if(a==="bill-cancel"){S.setup.request=null;save();render()}
+ else if(a==="bill-demo"){demoApprove()}
+ else if(a==="card")openCard(id);
+ else if(a==="copy"){const v=el.dataset.v;navigator.clipboard?.writeText(v).then(()=>toast(L.copied),()=>toast(v));}
+ else if(a==="add-st")openStudent();
+ else if(a==="edit-st")openStudent(id);
+ else if(a==="add-sess")openSession();
+ else if(a==="edit-sess")openSession(id);
+ else if(a==="add-coach")openCoach();
+ else if(a==="add-lead")openLead();
+ else if(a==="coach-view"){Q.coach=id;S.tab="students";render()}
+ else if(a==="pay")openPay(id);
+ else if(a==="dc"){DQ=DQ===id?"":id;render()}
+ else if(a==="unpay"){unpay(id);save();render()}
+ else if(a==="freeze"){const m=S.data.members.find(x=>x.id===id);setStage(id,m.frozen?"unpaid":"frozen")}
+ else if(a==="del-st"||a==="del-sess"){if(!arm){arm=true;el.textContent=L.sure;return}
+  if(a==="del-st"){S.data.members=S.data.members.filter(x=>x.id!==id);S.data.payments=S.data.payments.filter(p=>p.mid!==id)}else S.data.sessions=S.data.sessions.filter(x=>x.id!==id);
+  document.getElementById("ov")?.remove();save();render()}
+ else if(a==="convert"){const l=S.data.leads.find(x=>x.id===id);l.stage="won";const c=S.data.coachs.find(c=>c.sport===l.sport)||S.data.coachs[0];
+  S.data.members.unshift({id:uid(),name:l.name,phone:l.phone,parent:l.phone,coach:c.id,sport:l.sport,cat:0,belt:0,pos:0,weight:0,formule:0,fee:S.setup.fee,ins:"",reg:plusDays(TODAY,365),joined:TODAY,frozen:false});save();render();toast(L.saved)}
+ else if(a==="del-lead"){S.data.leads=S.data.leads.filter(x=>x.id!==id);save();render()}
+});
+document.addEventListener("change",e=>{
+ if(e.target.dataset.chk){const [d,sid,iid]=e.target.dataset.chk.split("|");const it=(S.data.plans[d+"|"+sid]||[]).find(i=>i.id===iid);if(it){it.done=e.target.checked;save();render()}}
+ if(e.target.dataset.rule){S.setup.autoRules[e.target.dataset.rule]=e.target.checked;save();render()}
+ if(e.target.id==="f-coach"){Q.coach=e.target.value;render()}
+ if(e.target.id==="f-cat"){Q.cat=e.target.value;render()}
+});
+document.addEventListener("input",e=>{
+ if(e.target.id==="q"){Q.q=e.target.value;document.getElementById("content").innerHTML=S.tab==="students"?tStudents():tPay();bindDnD()}
+ if(e.target.id==="ob-q"){S.ob.q=e.target.value;const pos=e.target.selectionStart;render();const i=document.getElementById("ob-q");i.focus();i.setSelectionRange(pos,pos)}
+ if(e.target.id==="s-club"){S.setup.club=e.target.value;save()}
+ ["you","phone","city","addr"].forEach(k=>{if(e.target.id==="s-"+k){S.setup[k]=e.target.value;save()}});
+ if(e.target.id==="s-fee"){S.setup.fee=+e.target.value||0;save()}
+ if(e.target.id==="s-insfee"){S.setup.insFee=+e.target.value||0;save()}
+ if(e.target.id==="s-regfee"){S.setup.regFee=+e.target.value||0;save()}
+});
+document.addEventListener("submit",e=>{if(e.target.id==="ob-custom"){e.preventDefault();const v=document.getElementById("ob-cname").value.trim();if(!v)return;const k=addCustomSport(v);S.customs=[...(S.customs||[]),{k,name:v}];S.ob.sports.push(k);S.ob.q="";save();render();return}
+ const f=e.target.closest("[data-addto]");if(!f)return;e.preventDefault();const v=f.querySelector("input").value.trim();if(!v)return;const k=f.dataset.addto;(S.data.plans[k]=S.data.plans[k]||[]).push({id:uid(),t:v,done:false});save();render();document.querySelector(`[data-addto="${k}"] input`)?.focus()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")document.getElementById("ov")?.remove()});
+function bindDnD(){
+ document.querySelectorAll("[data-drag],[data-ldrag]").forEach(c=>c.addEventListener("dragstart",e=>e.dataTransfer.setData("text",(c.dataset.drag?"m:":"l:")+(c.dataset.drag||c.dataset.ldrag))));
+ document.querySelectorAll("[data-drop],[data-ldrop]").forEach(z=>{z.addEventListener("dragover",e=>{e.preventDefault();z.classList.add("over")});z.addEventListener("dragleave",()=>z.classList.remove("over"));
+  z.addEventListener("drop",e=>{e.preventDefault();z.classList.remove("over");const [k,id]=e.dataTransfer.getData("text").split(":");
+   if(k==="m"&&z.dataset.drop)setStage(id,z.dataset.drop==="late"?"unpaid":z.dataset.drop);
+   if(k==="l"&&z.dataset.ldrop){const l=S.data.leads.find(x=>x.id===id);if(l){l.stage=z.dataset.ldrop;save();render()}}})});
+}
+function render(){applyPrefs();const r=document.getElementById("root");
+  if(!S.user&&sb){r.innerHTML=vAuth();document.getElementById("authF").addEventListener("submit",e=>{e.preventDefault();authSubmit()});return}
+ if(!S.user){r.innerHTML=vLogin();document.getElementById("loginF").addEventListener("submit",e=>{e.preventDefault();const em=document.getElementById("lg-e").value.trim(),pw=document.getElementById("lg-p").value;
+  if(!/^\S+@\S+\.\S+$/.test(em)||pw.length<4){document.getElementById("lg-err").textContent=t().bad;return}S.user=em;save();render()});return}
+ if(S.pin&&!UNLOCK){r.innerHTML=vLock();return}
+ if(!S.setup||!S.data){r.innerHTML=vOnboard();return}
+ if(!S.setup.autoRules)S.setup.autoRules={cot:true,ins:true,reg:true};
+ if(!S.setup.trialEnds){S.setup.trialEnds=plusDays(TODAY,5);S.setup.plan="trial"}
+ if(!tabs().includes(S.tab))S.tab="dash";if(!S.setup.insFee){S.setup.insFee=100;S.setup.regFee=200}
+ r.innerHTML=vApp();bindDnD();
+ const q=document.getElementById("q");if(q&&Q.q){q.focus();q.setSelectionRange(q.value.length,q.value.length)}}
+if(sb){sb.auth.getSession().then(({data})=>{const ses=data&&data.session;
+  if(ses&&ses.user){S.uid=ses.user.id;S.user=ses.user.email;S.mode="live";render();
+   if(navigator.onLine)afterLogin(ses.user).catch(e=>{console.warn(e)});}
+  else if(S.mode==="live"&&navigator.onLine){S.user=null;render()}
+ }).catch(()=>render());}
+render();
+</script>
+
+<script>if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("/sw.js").catch(()=>{}));</script>
+</body></html>

@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SallPro Admin</title><meta name="robots" content="noindex">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&family=Barlow+Condensed:wght@700;800&family=Manrope:wght@400;600;700;800&display=swap">
+<style>
+/* Layout: platform owner console — KPI row, trial pipeline, sortable/filterable table of all gyms */
+:root{--sky:#0b8fd6;--sky-d:#0873ad;--sky-soft:#e3f4fd;--pale:#f4faff;--bg:#f4faff;--surface:#fff;--line:#d7e9f5;--fg:#0c2a3e;--muted:#587389;
+ --ok:#14915a;--ok-soft:#e3f6ec;--bad:#d23b3b;--bad-soft:#fde8e8;--warn:#b7790a;--warn-soft:#fff3dc;--wa:#1fa855;
+ --f-d:"Barlow Condensed","Arial Narrow",sans-serif;--f-b:"Manrope","Segoe UI",system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--sky:#38bdf8;--sky-d:#7dd3fc;--sky-soft:#0d2e44;--pale:#0b1f2e;--bg:#06141f;--surface:#0b1f2e;--line:#173449;--fg:#e6f4fc;--muted:#8fb0c6;--ok:#3ccf8a;--ok-soft:#0f2e22;--bad:#ff6b6b;--bad-soft:#3a1618;--warn:#f2b441;--warn-soft:#33270b;color-scheme:dark}}
+:root[data-theme="dark"]{--sky:#38bdf8;--sky-d:#7dd3fc;--sky-soft:#0d2e44;--pale:#0b1f2e;--bg:#06141f;--surface:#0b1f2e;--line:#173449;--fg:#e6f4fc;--muted:#8fb0c6;--ok:#3ccf8a;--ok-soft:#0f2e22;--bad:#ff6b6b;--bad-soft:#3a1618;--warn:#f2b441;--warn-soft:#33270b;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-b);font-size:14px;line-height:1.5}
+button,input,select{font:inherit;color:inherit}
+.num{font-variant-numeric:tabular-nums}
+header{background:#0b8fd6;color:#fff;padding-block:14px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.w{max-width:1200px;margin:0 auto}
+header .w{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:10px;font-family:var(--f-d);font-weight:800;font-size:26px}
+.mark{width:34px;height:34px;border-radius:9px;background:#fff;display:grid;place-items:center}.mark i{display:block;width:19px;height:5px;border-radius:2px;background:#0c2a3e;box-shadow:0 -6px 0 #0b8fd6,0 6px 0 #0b8fd6}
+.badge{background:#fff;color:#0873ad;font-weight:800;font-size:12px;border-radius:999px;padding:3px 10px}
+header .sp{margin-inline-start:auto;font-size:13px;color:#e3f4fd}
+main{padding-block:22px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:16px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;text-align:start;cursor:pointer}
+.kpi.on{border:2px solid var(--sky)}
+.kpi small{color:var(--muted);font-weight:700;font-size:12px;display:block}
+.kpi b{font-family:var(--f-d);font-size:34px;line-height:1.1;display:block}
+.kpi span{font-size:12px;color:var(--muted)}
+.k-ok b{color:var(--ok)}.k-warn b{color:var(--warn)}.k-bad b{color:var(--bad)}.k-sky b{color:var(--sky)}
+.row{display:grid;grid-template-columns:1.2fr 1fr;gap:16px;margin-bottom:16px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden;min-width:0}
+.panel h3{margin:0;padding:12px 16px;font-size:14px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:8px;align-items:center}
+.chart{display:flex;align-items:flex-end;gap:10px;height:170px;padding:16px}
+.chart div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:6px;height:100%}
+.chart i{display:block;width:100%;max-width:38px;border-radius:6px 6px 0 0;background:var(--sky)}
+.chart div:last-child i{background:var(--ok)}
+.chart small{font-size:11px;color:var(--muted);font-weight:700}.chart em{font-style:normal;font-size:11px;font-weight:800}
+.lrow{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--line)}.lrow:last-child{border-bottom:0}
+.lrow .who{flex:1;min-width:0}.lrow .who b{display:block}.lrow .who span{color:var(--muted);font-size:12px}
+.pill{display:inline-flex;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:800;white-space:nowrap}
+.p-ok{background:var(--ok-soft);color:var(--ok)}.p-warn{background:var(--warn-soft);color:var(--warn)}.p-bad{background:var(--bad-soft);color:var(--bad)}.p-sky{background:var(--sky-soft);color:var(--sky-d)}
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:8px;padding:5px 10px;font-weight:700;font-size:12px;background:var(--surface);cursor:pointer;text-decoration:none;color:var(--fg)}
+.btn-g{background:var(--wa);border-color:var(--wa);color:#fff}
+.tools{display:flex;gap:8px;flex-wrap:wrap;padding:12px 16px;border-bottom:1px solid var(--line)}
+.tools input,.tools select{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:7px 10px}
+.tools input{flex:1;min-width:160px}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:900px}
+th,td{padding:10px 14px;border-bottom:1px solid var(--line);text-align:start;white-space:nowrap}
+th{font-size:12px;color:var(--muted);background:var(--pale);cursor:pointer;user-select:none}
+tr:last-child td{border-bottom:0}
+.note{color:var(--muted);font-size:12px;margin-top:12px}
+
+.reqs{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;padding:14px 16px}
+.req{border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px;background:var(--bg)}
+.req.done{opacity:.6}
+.req-h{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.req-h b{display:block}.req-h span{color:var(--muted);font-size:12px}
+.rcpt{display:flex;gap:12px;align-items:center}
+.rcpt svg{flex:none;border-radius:8px;border:1px solid var(--line);background:#fff}
+.kv{display:flex;justify-content:space-between;gap:8px;font-size:13px}.kv span{color:var(--muted)}
+.acts{display:flex;gap:8px;flex-wrap:wrap}
+.btn-p{background:var(--sky);border-color:var(--sky);color:#fff}
+@media (max-width:1100px){.kpis{grid-template-columns:repeat(3,1fr)}.row{grid-template-columns:1fr}}
+@media (max-width:560px){.kpis{grid-template-columns:repeat(2,1fr)}.kpi b{font-size:28px}}
+.mark{background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2216%22%20fill%3D%22%23ffffff%22/%3E%3Ccircle%20cx%3D%2217%22%20cy%3D%2217%22%20r%3D%224.5%22%20fill%3D%22none%22%20stroke%3D%22%230b8fd6%22%20stroke-width%3D%223%22/%3E%3Cpath%20d%3D%22M20%2020.5%20L24%2024.5%22%20stroke%3D%22%230b8fd6%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22/%3E%3Cpath%20d%3D%22M30%2019%20H52%20a3%203%200%200%201%203%203%20v7%20a3%203%200%200%201%20-3%203%20H44%20A15%2015%200%201%201%2030%2019%20Z%22%20fill%3D%22%230b8fd6%22/%3E%3Crect%20x%3D%2234%22%20y%3D%2222.5%22%20width%3D%226%22%20height%3D%224%22%20rx%3D%221.5%22%20fill%3D%22%23ffffff%22/%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2235%22%20r%3D%225.5%22%20fill%3D%22%230c2a3e%22/%3E%3C/svg%3E") center/100% no-repeat!important;box-shadow:none!important;border-radius:9px}
+.mark i{display:none!important}
+.card .mark{background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2216%22%20fill%3D%22%230b8fd6%22/%3E%3Ccircle%20cx%3D%2217%22%20cy%3D%2217%22%20r%3D%224.5%22%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-width%3D%223%22/%3E%3Cpath%20d%3D%22M20%2020.5%20L24%2024.5%22%20stroke%3D%22%23ffffff%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22/%3E%3Cpath%20d%3D%22M30%2019%20H52%20a3%203%200%200%201%203%203%20v7%20a3%203%200%200%201%20-3%203%20H44%20A15%2015%200%201%201%2030%2019%20Z%22%20fill%3D%22%23ffffff%22/%3E%3Crect%20x%3D%2234%22%20y%3D%2222.5%22%20width%3D%226%22%20height%3D%224%22%20rx%3D%221.5%22%20fill%3D%22%230b8fd6%22/%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2235%22%20r%3D%225.5%22%20fill%3D%22%230c2a3e%22/%3E%3C/svg%3E")!important}
+.logo{font-family:"Poppins","Manrope",system-ui,sans-serif!important;font-weight:700!important;letter-spacing:-.5px;font-size:24px!important}
+.logo b.pro{color:#bfe6fb;font-weight:800}
+.card .logo b.pro{color:var(--sky)}
+
+
+.center{min-height:60vh;display:grid;place-items:center;text-align:center;color:var(--muted)}
+.btn[disabled]{opacity:.5;cursor:wait}
+.empty{padding:20px 16px;color:var(--muted)}
+.ref{font-size:12px;color:var(--muted)}
+</style></head><body>
+<header><div class="w"><div class="logo"><span class="mark"><i></i></span><span>Sall<b class="pro">Pro</b></span></div><span class="badge">Admin</span><span class="sp num" id="today"></span>
+<a class="btn" style="background:#fff;margin-inline-start:10px" href="/app">Application</a><button class="btn" style="background:#fff" id="refresh">Actualiser</button></div></header>
+<main><div class="w" id="main"><div class="center">Chargement…</div></div></main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+const sb=window.supabase.createClient("https://bqaabislojlebfpuvtxq.supabase.co","sb_publishable_e-ibQ_7thrb3sRV2EmqPsw_oXbOy2XI");
+const PRICE={coach:99,salle:199};const M=document.getElementById("main");
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmt=s=>{if(!s)return"—";const d=new Date(s);return String(d.getDate()).padStart(2,"0")+"/"+String(d.getMonth()+1).padStart(2,"0")+"/"+d.getFullYear()};
+const wa=p=>{let d=String(p||"").replace(/\D/g,"");if(d.startsWith("0"))d="212"+d.slice(1);return d};
+const meth={virement:"Virement",cashplus:"CashPlus / Wafacash",wafacash:"Wafacash",card:"Carte"};
+document.getElementById("today").textContent=new Date().toLocaleDateString("fr-FR",{weekday:"long",day:"2-digit",month:"2-digit",year:"numeric"});
+let C=[],REQ=[],F={q:"",s:""};
+async function load(){
+ const {data:{session}}=await sb.auth.getSession();
+ if(!session){M.innerHTML='<div class="center"><div><p>Connectez-vous d\'abord dans l\'application avec votre compte admin.</p><a class="btn btn-p" href="/app">Ouvrir l\'application</a></div></div>';return}
+ const a=await sb.rpc("is_platform_admin");
+ if(a.error||!a.data){M.innerHTML='<div class="center"><p>Ce compte ('+esc(session.user.email)+') n\'a pas accès à l\'espace admin.</p></div>';return}
+ const [c,r]=await Promise.all([sb.rpc("admin_clubs"),sb.rpc("admin_requests")]);
+ if(c.error||r.error){M.innerHTML='<div class="center"><p>Erreur : '+esc((c.error||r.error).message)+'</p></div>';return}
+ C=c.data||[];REQ=r.data||[];draw()}
+function draw(){
+ const paid=C.filter(c=>c.status==="paid"),trial=C.filter(c=>c.status==="trial"),exp=C.filter(c=>c.status==="expired");
+ const mrr=paid.reduce((a,c)=>a+(PRICE[c.plan]||0),0),stu=C.reduce((a,c)=>a+Number(c.students||0),0);
+ const pend=REQ.filter(r=>r.status==="pending");
+ const k=[["","k-sky","Salles inscrites",C.length,"au total"],["paid","k-ok","Payantes",paid.length,"actives"],["trial","k-warn","En essai",trial.length,"7 jours gratuits"],["expired","k-bad","Expirées",exp.length,"à relancer"],["","","Revenu mensuel",mrr.toLocaleString("fr-FR")+" DH","abonnements actifs"],["","","Élèves gérés",stu.toLocaleString("fr-FR"),"dans toutes les salles"]];
+ const today=new Date();today.setHours(0,0,0,0);
+ const trials=trial.slice().sort((a,b)=>String(a.trial_ends_at).localeCompare(String(b.trial_ends_at)));
+ let rows=C.filter(c=>(!F.q||(c.name+" "+(c.city||"")).toLowerCase().includes(F.q))&&(!F.s||c.status===F.s));
+ const st={paid:["p-ok","Payante"],trial:["p-warn","En essai"],expired:["p-bad","Expirée"]};
+ M.innerHTML=`<div class="kpis">${k.map(x=>`<button class="kpi ${x[1]} ${F.s&&F.s===x[0]?"on":""}" data-s="${x[0]}"><small>${x[2]}</small><b class="num">${x[3]}</b><span>${x[4]}</span></button>`).join("")}</div>
+ <div class="panel" style="margin-bottom:16px"><h3>Demandes d'activation <span class="pill ${pend.length?"p-warn":"p-ok"} num">${pend.length} en attente</span></h3>
+  ${REQ.length?`<div class="reqs">${REQ.map(r=>`<div class="req ${r.status!=="pending"?"done":""}"><div class="req-h"><div><b>${esc(r.club_name)}</b><span>${esc(r.city||"")} · ${fmt(r.created_at)}</span></div>${r.status==="pending"?'<span class="pill p-warn">À vérifier</span>':r.status==="approved"?'<span class="pill p-ok">Activée</span>':'<span class="pill p-bad">Refusée</span>'}</div>
+   <div class="kv"><span>Formule</span><b>${r.plan==="coach"?"Coach":"Salle"} · ${r.period==="year"?"annuel":"mensuel"}</b></div><div class="kv"><span>Montant</span><b class="num">${Number(r.amount).toLocaleString("fr-FR")} DH</b></div><div class="kv"><span>Paiement</span><b>${meth[r.method]||r.method}</b></div>
+   <p class="ref">Vérifiez le reçu reçu sur WhatsApp avant d'activer.</p>
+   ${r.status==="pending"?`<div class="acts"><button class="btn btn-p" data-ok="${r.id}">Activer</button><button class="btn" data-no="${r.id}">Refuser</button>${r.whatsapp?`<a class="btn btn-g" target="_blank" rel="noopener" href="https://wa.me/${wa(r.whatsapp)}">WhatsApp</a>`:""}</div>`:""}</div>`).join("")}</div>`:'<div class="empty">Aucune demande pour le moment. Elles apparaîtront ici dès qu\'une salle enverra son reçu.</div>'}</div>
+ <div class="row"><div class="panel"><h3>Essais en cours <span class="pill p-warn num">${trials.length}</span></h3>${trials.length?trials.map(c=>{const d=Math.round((new Date(c.trial_ends_at)-today)/864e5);return `<div class="lrow"><div class="who"><b>${esc(c.name)}</b><span>${esc(c.city||"")} · ${c.students} élèves · fin le ${fmt(c.trial_ends_at)}</span></div><span class="pill ${d<=2?"p-bad":"p-warn"} num">J-${d}</span>${c.whatsapp?`<a class="btn btn-g" target="_blank" rel="noopener" href="https://wa.me/${wa(c.whatsapp)}?text=${encodeURIComponent("Bonjour, votre essai SallPro se termine le "+fmt(c.trial_ends_at)+". On active votre abonnement ?")}">WhatsApp</a>`:""}</div>`}).join(""):'<div class="empty">Aucun essai en cours.</div>'}</div>
+  <div class="panel"><h3>Activité</h3><div class="lrow"><div class="who"><b>Encaissé par les salles ce mois</b><span>toutes salles confondues</span></div><b class="num">${C.reduce((a,c)=>a+Number(c.collected_month||0),0).toLocaleString("fr-FR")} DH</b></div><div class="lrow"><div class="who"><b>Nouvelles salles (7 jours)</b></div><b class="num">${C.filter(c=>Date.now()-new Date(c.created_at)<7*864e5).length}</b></div><div class="lrow"><div class="who"><b>Actives aujourd'hui</b></div><b class="num">${C.filter(c=>c.last_active_at&&Date.now()-new Date(c.last_active_at)<864e5).length}</b></div></div></div>
+ <div class="panel"><h3>Toutes les salles <span class="ref num">${rows.length} salles</span></h3>
+  <div class="tools"><input id="q" placeholder="Rechercher une salle ou une ville…" value="${esc(F.q)}" aria-label="Rechercher"><select id="fs" aria-label="Statut"><option value="">Tous les statuts</option><option value="paid" ${F.s==="paid"?"selected":""}>Payante</option><option value="trial" ${F.s==="trial"?"selected":""}>En essai</option><option value="expired" ${F.s==="expired"?"selected":""}>Expirée</option></select></div>
+  ${rows.length?`<div class="tw"><table><thead><tr><th>Salle</th><th>Ville</th><th>Sports</th><th>Formule</th><th>Statut</th><th>Élèves</th><th>Encaissé ce mois</th><th>Inscrite le</th><th>Actif jusqu'au</th><th></th></tr></thead><tbody>${rows.map(c=>`<tr><td><b>${esc(c.name)}</b></td><td>${esc(c.city||"—")}</td><td>${esc((c.sports||[]).map(s=>String(s).replace(/^c:/,"")).join(", "))}</td><td>${c.plan==="trial"?"Essai":c.plan==="coach"?"Coach · 99 DH":"Salle · 199 DH"}</td><td><span class="pill ${st[c.status][0]}">${st[c.status][1]}</span></td><td class="num">${c.students}</td><td class="num">${Number(c.collected_month||0).toLocaleString("fr-FR")} DH</td><td class="num">${fmt(c.created_at)}</td><td class="num">${fmt(c.paid_until)}</td><td>${c.whatsapp?`<a class="btn btn-g" target="_blank" rel="noopener" href="https://wa.me/${wa(c.whatsapp)}">WhatsApp</a>`:""}</td></tr>`).join("")}</tbody></table></div>`:'<div class="empty">Aucune salle ne correspond.</div>'}</div>`;
+ const q=document.getElementById("q");if(q&&F.q){q.focus();q.setSelectionRange(q.value.length,q.value.length)}}
+document.addEventListener("input",e=>{if(e.target.id==="q"){F.q=e.target.value.toLowerCase();draw()}if(e.target.id==="fs"){F.s=e.target.value;draw()}});
+document.addEventListener("click",async e=>{const k=e.target.closest(".kpi");if(k){F.s=F.s===k.dataset.s?"":k.dataset.s;draw();return}
+ const ok=e.target.closest("[data-ok]"),no=e.target.closest("[data-no]");const b=ok||no;if(!b)return;
+ b.disabled=true;b.textContent=ok?"Activation…":"…";
+ const r=await sb.rpc(ok?"approve_request":"reject_request",{p_id:b.dataset.ok||b.dataset.no});
+ if(r.error){b.disabled=false;b.textContent="Erreur : "+r.error.message;return}await load()});
+document.getElementById("refresh").addEventListener("click",load);
+load();
+</script></body></html>
