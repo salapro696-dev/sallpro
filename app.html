@@ -922,11 +922,11 @@ document.addEventListener("change",e=>{if(e.target.id==="bill-file"){const f=e.t
  const rd=new FileReader();rd.onload=()=>{const img=new Image();img.onload=()=>{const c=document.createElement("canvas"),k=Math.min(1,700/Math.max(img.width,img.height));c.width=img.width*k;c.height=img.height*k;c.getContext("2d").drawImage(img,0,0,c.width,c.height);BILL.file=c.toDataURL("image/jpeg",.7);render()};img.src=rd.result};rd.readAsDataURL(f)}});
 
 /* ================= SYNC SUPABASE ================= */
-const T_SYNC={fr:{signup:"Créer un compte",signin:"Se connecter",checkMail:"Compte créé. Ouvrez l'e-mail de confirmation, puis connectez-vous ici.",badCreds:"E-mail ou mot de passe incorrect.",pass6:"Le mot de passe doit contenir au moins 6 caractères.",loading:"Chargement…",syncErr:"Synchronisation impossible pour le moment. Vos données restent sur cet appareil.",noNet:"Pas de connexion. Réessayez quand internet revient.",haveAcc:"Déjà un compte ? Se connecter",noAcc:"Pas encore de compte ? Créer un compte",saving:"Création de votre espace…"},
- ar:{signup:"إنشاء حساب",signin:"تسجيل الدخول",checkMail:"تمّ إنشاء الحساب. افتح رسالة التأكيد في بريدك، ثم سجّل الدخول هنا.",badCreds:"البريد أو كلمة المرور غير صحيحة.",pass6:"يجب أن تتكوّن كلمة المرور من 6 أحرف على الأقل.",loading:"جارٍ التحميل…",syncErr:"تعذّرت المزامنة حاليًا. تبقى بياناتك على هذا الجهاز.",noNet:"لا يوجد اتصال. أعد المحاولة عند عودة الإنترنت.",haveAcc:"لديك حساب؟ سجّل الدخول",noAcc:"ليس لديك حساب؟ أنشئ حسابًا",saving:"جارٍ إنشاء فضائك…"},
- en:{signup:"Create account",signin:"Log in",checkMail:"Account created. Open the confirmation email, then log in here.",badCreds:"Wrong email or password.",pass6:"The password must be at least 6 characters.",loading:"Loading…",syncErr:"Can't sync right now. Your data stays on this device.",noNet:"No connection. Try again when internet is back.",haveAcc:"Already have an account? Log in",noAcc:"No account yet? Create one",saving:"Creating your space…"}};
+const T_SYNC={fr:{signup:"Créer un compte",signin:"Se connecter",checkMail:"Compte créé. Ouvrez l'e-mail de confirmation, puis connectez-vous ici.",badCreds:"E-mail ou mot de passe incorrect.",pass6:"Le mot de passe doit contenir au moins 6 caractères.",loading:"Chargement…",syncErr:"Synchronisation impossible pour le moment. Vos données restent sur cet appareil.",noNet:"Pas de connexion. Réessayez quand internet revient.",haveAcc:"Déjà un compte ? Se connecter",noAcc:"Pas encore de compte ? Créer un compte",saving:"Création de votre espace…",forgot:"Mot de passe oublié ?",forgotT:"Mot de passe oublié",forgotGo:"Envoyer le lien",forgotSent:"C'est envoyé. Ouvrez l'e-mail et cliquez sur le lien pour choisir un nouveau mot de passe.",back:"Retour",newPass:"Nouveau mot de passe",newPassT:"Choisir un nouveau mot de passe",newPassOk:"Mot de passe changé.",save:"Enregistrer"},
+ ar:{signup:"إنشاء حساب",signin:"تسجيل الدخول",checkMail:"تمّ إنشاء الحساب. افتح رسالة التأكيد في بريدك، ثم سجّل الدخول هنا.",badCreds:"البريد أو كلمة المرور غير صحيحة.",pass6:"يجب أن تتكوّن كلمة المرور من 6 أحرف على الأقل.",loading:"جارٍ التحميل…",syncErr:"تعذّرت المزامنة حاليًا. تبقى بياناتك على هذا الجهاز.",noNet:"لا يوجد اتصال. أعد المحاولة عند عودة الإنترنت.",haveAcc:"لديك حساب؟ سجّل الدخول",noAcc:"ليس لديك حساب؟ أنشئ حسابًا",saving:"جارٍ إنشاء فضائك…",forgot:"نسيت كلمة المرور؟",forgotT:"نسيت كلمة المرور",forgotGo:"إرسال الرابط",forgotSent:"تمّ الإرسال. افتح بريدك واضغط على الرابط لاختيار كلمة مرور جديدة.",back:"رجوع",newPass:"كلمة المرور الجديدة",newPassT:"اختر كلمة مرور جديدة",newPassOk:"تمّ تغيير كلمة المرور.",save:"حفظ"},
+ en:{signup:"Create account",signin:"Log in",checkMail:"Account created. Open the confirmation email, then log in here.",badCreds:"Wrong email or password.",pass6:"The password must be at least 6 characters.",loading:"Loading…",syncErr:"Can't sync right now. Your data stays on this device.",noNet:"No connection. Try again when internet is back.",haveAcc:"Already have an account? Log in",noAcc:"No account yet? Create one",saving:"Creating your space…",forgot:"Forgot password?",forgotT:"Forgot password",forgotGo:"Send the link",forgotSent:"Sent. Open the email and click the link to choose a new password.",back:"Back",newPass:"New password",newPassT:"Choose a new password",newPassOk:"Password changed.",save:"Save"}};
 for(const k in T_SYNC)Object.assign(T[k],T_SYNC[k]);
-let AUTHMODE="signin",BUSY=false;
+let AUTHMODE=/type=recovery/.test(location.hash)?"reset":"signin",BUSY=false;
 
 /* ---- local state -> table rows ---- */
 function rowsNow(){const c=S.clubId,d=S.data,st=S.setup;
@@ -999,15 +999,38 @@ async function liveOnboard(){const o=S.ob;const L=t();
  catch(e){BUSY=false;err(String(e.message||e))}}
 
 /* ---- auth form ---- */
-function vAuth(){const L=t(),up=AUTHMODE==="signup";return `<div class="auth"><form class="card" id="authF" novalidate>
+function vAuth(){const L=t(),up=AUTHMODE==="signup";
+ if(AUTHMODE==="forgot"||AUTHMODE==="reset"){const fg=AUTHMODE==="forgot";return `<div class="auth"><form class="card" id="authF" novalidate>
+ <div class="logo"><span class="mark"><i></i></span><span>Sall<b class="pro">Pro</b></span></div><h2>${fg?L.forgotT:L.newPassT}</h2>
+ ${fg?`<div class="fld"><label for="au-e">${L.email}</label><input id="au-e" type="email" autocomplete="email" placeholder="coach@salle.ma" value="${esc(S.lastEmail||"")}"></div>`
+ :`<div class="fld"><label for="au-p">${L.newPass}</label><input id="au-p" type="password" autocomplete="new-password"></div>`}
+ <div class="err" id="au-err"></div>
+ <button class="btn btn-p" style="width:100%" type="submit">${fg?L.forgotGo:L.save}</button>
+ ${fg?`<button class="btn" style="width:100%;margin-top:8px" type="button" data-act="authback">${L.back}</button>`:""}
+ <div class="row-end" style="margin-top:14px">${langSw()}</div></form></div>`}
+ return `<div class="auth"><form class="card" id="authF" novalidate>
  <div class="logo"><span class="mark"><i></i></span><span>Sall<b class="pro">Pro</b></span></div><h2>${up?L.signup:L.signin}</h2>
  <div class="fld"><label for="au-e">${L.email}</label><input id="au-e" type="email" autocomplete="email" placeholder="coach@salle.ma" value="${esc(S.lastEmail||"")}"></div>
  <div class="fld"><label for="au-p">${L.pass}</label><input id="au-p" type="password" autocomplete="${up?"new-password":"current-password"}"></div>
  <div class="err" id="au-err"></div>
  <button class="btn btn-p" style="width:100%" type="submit">${up?L.signup:L.signin}</button>
+ ${up?"":`<button class="btn btn-sm" style="margin-top:8px;border:0;background:none;color:var(--p,#0b8fd6);padding:4px 0" type="button" data-act="forgot">${L.forgot}</button>`}
  <button class="btn" style="width:100%;margin-top:8px" type="button" data-act="authmode">${up?L.haveAcc:L.noAcc}</button>
  <div class="row-end" style="margin-top:14px"><button class="btn btn-sm" type="button" data-act="demo">${L.demo}</button>${langSw()}</div></form></div>`}
-async function authSubmit(){const L=t(),em=document.getElementById("au-e").value.trim(),pw=document.getElementById("au-p").value,out=document.getElementById("au-err");
+async function authSubmit(){const L=t(),out=document.getElementById("au-err");
+ if(AUTHMODE==="forgot"){const em=document.getElementById("au-e").value.trim();S.lastEmail=em;
+  if(!/^\S+@\S+\.\S+$/.test(em)){out.textContent=L.bad;return}if(!navigator.onLine){out.textContent=L.noNet;return}
+  out.style.color="var(--muted)";out.textContent=L.loading;
+  const r=await sb.auth.resetPasswordForEmail(em,{redirectTo:location.origin+"/app"});
+  if(r.error){out.style.color="";out.textContent=r.error.message;return}
+  out.style.color="var(--ok)";out.textContent=L.forgotSent;return}
+ if(AUTHMODE==="reset"){const pw=document.getElementById("au-p").value;if(pw.length<6){out.textContent=L.pass6;return}
+  if(!navigator.onLine){out.textContent=L.noNet;return}
+  out.style.color="var(--muted)";out.textContent=L.loading;
+  const r=await sb.auth.updateUser({password:pw});if(r.error){out.style.color="";out.textContent=r.error.message;return}
+  AUTHMODE="signin";history.replaceState(null,"",location.pathname);const u=r.data&&r.data.user;
+  if(u){S.uid=u.id;S.user=u.email;S.mode="live";render();toast&&typeof toast==="function"&&toast(L.newPassOk);afterLogin(u).catch(e=>console.warn(e))}else render();return}
+ const em=document.getElementById("au-e").value.trim(),pw=document.getElementById("au-p").value;
  S.lastEmail=em;
  if(!/^\S+@\S+\.\S+$/.test(em)){out.textContent=L.bad;return}if(pw.length<6){out.textContent=L.pass6;return}
  if(!navigator.onLine){out.textContent=L.noNet;return}
@@ -1060,6 +1083,8 @@ document.addEventListener("click",e=>{
  else if(a==="theme"){const dark=document.documentElement.dataset.theme==="dark"||(S.theme==="auto"&&matchMedia("(prefers-color-scheme: dark)").matches);S.theme=dark?"light":"dark";save();render()}
  else if(a==="logout"){const wasLive=S.mode==="live";S.user=null;S.pin=null;UNLOCK=false;S.mode=null;S.setup=null;S.data=null;S.snap=null;S.clubId=null;S.ob={step:1,role:"salle",sports:["tkd"]};save();if(wasLive&&sb)sb.auth.signOut().catch(()=>{});render()}
  else if(a==="authmode"){AUTHMODE=AUTHMODE==="signup"?"signin":"signup";render()}
+ else if(a==="forgot"){const e=document.getElementById("au-e");if(e)S.lastEmail=e.value.trim();AUTHMODE="forgot";render()}
+ else if(a==="authback"){AUTHMODE="signin";render()}
  else if(a==="lock"){UNLOCK=false;PINBUF="";render()}
  else if(a==="set-pin"){const v=(document.getElementById("s-pin").value||"").trim();if(!/^\d{4}$/.test(v)){toast(L.pinBad);return}S.pin=v;UNLOCK=true;save();render();toast(L.pinOn)}
  else if(a==="del-pin"){S.pin=null;save();render()}
@@ -1119,7 +1144,7 @@ function bindDnD(){
    if(k==="l"&&z.dataset.ldrop){const l=S.data.leads.find(x=>x.id===id);if(l){l.stage=z.dataset.ldrop;save();render()}}})});
 }
 function render(){applyPrefs();const r=document.getElementById("root");
-  if(!S.user&&sb){r.innerHTML=vAuth();document.getElementById("authF").addEventListener("submit",e=>{e.preventDefault();authSubmit()});return}
+  if(sb&&(!S.user||AUTHMODE==="reset")){r.innerHTML=vAuth();document.getElementById("authF").addEventListener("submit",e=>{e.preventDefault();authSubmit()});return}
  if(!S.user){r.innerHTML=vLogin();document.getElementById("loginF").addEventListener("submit",e=>{e.preventDefault();const em=document.getElementById("lg-e").value.trim(),pw=document.getElementById("lg-p").value;
   if(!/^\S+@\S+\.\S+$/.test(em)||pw.length<4){document.getElementById("lg-err").textContent=t().bad;return}S.user=em;save();render()});return}
  if(S.pin&&!UNLOCK){r.innerHTML=vLock();return}
@@ -1129,7 +1154,8 @@ function render(){applyPrefs();const r=document.getElementById("root");
  if(!tabs().includes(S.tab))S.tab="dash";if(!S.setup.insFee){S.setup.insFee=100;S.setup.regFee=200}
  r.innerHTML=vApp();bindDnD();
  const q=document.getElementById("q");if(q&&Q.q){q.focus();q.setSelectionRange(q.value.length,q.value.length)}}
-if(sb){sb.auth.getSession().then(({data})=>{const ses=data&&data.session;
+if(sb){sb.auth.onAuthStateChange(ev=>{if(ev==="PASSWORD_RECOVERY"&&AUTHMODE!=="reset"){AUTHMODE="reset";render()}});
+ sb.auth.getSession().then(({data})=>{const ses=data&&data.session;if(AUTHMODE==="reset"){render();return}
   if(ses&&ses.user){S.uid=ses.user.id;S.user=ses.user.email;S.mode="live";render();
    if(navigator.onLine)afterLogin(ses.user).catch(e=>{console.warn(e)});}
   else if(S.mode==="live"&&navigator.onLine){S.user=null;render()}
