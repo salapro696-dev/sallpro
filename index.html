@@ -272,6 +272,22 @@ footer button{background:none;border:0;color:#fff;cursor:pointer;text-decoration
 .logo b.pro{color:#bfe6fb;font-weight:800}
 .card .logo b.pro{color:var(--sky)}
 
+
+/* lighter look: white app section everywhere, white hero text on phones */
+.hero{background:var(--sky-pale);background-image:none;color:var(--ink)}
+.hero .eyebrow{color:var(--sky)!important}.hero h2{color:var(--ink)!important}
+.hero p{color:var(--muted)}
+.trust{color:var(--ink)}.trust span::before{color:var(--sky)}
+.sports span{background:var(--bg);border:1px solid var(--line);color:var(--sky-d)}
+@media (max-width:640px){
+ .ph,.ph-in{background:var(--bg)}.ph{color:var(--ink)}
+ .ph h1{color:var(--ink)}.ph h1 span{background:none;color:var(--sky);padding:0}
+ .ph p{color:var(--muted)}
+ .ph .chip{background:var(--sky-soft);border-color:transparent;color:var(--sky-d)}.ph .chip b{background:var(--sky);color:#fff}
+ .ph .btn-w{background:var(--sky);color:#fff}
+ .ph .btn-o{border-color:var(--sky);color:var(--sky);background:transparent}
+}
+
 </style>
 
 <div id="app"></div>
@@ -434,7 +450,7 @@ function render(){
   const ph=t.ph;
   document.getElementById("app").innerHTML=`
 <header class="top" id="top"><div class="w">
-  <a class="logo" href="#hero"><span class="mark"><i></i></span><span>Sall<b class="pro">Pro</b></span><small>.ma</small></a>
+  <a class="logo" href="#hero"><span class="mark"><i></i></span><span>Sall<b class="pro">Pro</b></span></a>
   <nav class="links">${["demo","problemes","tarifs","faq"].map((id,i)=>`<a href="#${id}">${t.nav[i]}</a>`).join("")}</nav>
   <div class="langs" role="group" aria-label="Langue">${[["fr","FR"],["ar","ع"],["en","EN"]].map(([k,v])=>`<button data-lang="${k}" class="${lang===k?"on":""}">${v}</button>`).join("")}</div>
 </div></header>
