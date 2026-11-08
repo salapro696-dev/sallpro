@@ -278,7 +278,7 @@ footer button{background:none;border:0;color:#fff;cursor:pointer;text-decoration
 
 <script>
 /* ===== Config: bddel had les numéros ===== */
-const CONTACT={wa:"212600000000",waShow:"+212 6 00 00 00 00",tg:"sallpro",mail:"contact@sallpro.ma"};
+const CONTACT={wa:"212600000000",waShow:"+212 6 00 00 00 00",tg:"sallpro",mail:"salapro696@gmail.com"};
 const DEMO="/app";
 
 const zel=(()=>{const s=`<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'><g fill='none' stroke='white' stroke-opacity='.11' stroke-width='1.5'><path d='M40 8l9 23 23 9-23 9-9 23-9-23-23-9 23-9z'/><path d='M40 18l16 6 6 16-6 16-16 6-16-6-6-16 6-16z'/><circle cx='0' cy='0' r='12'/><circle cx='80' cy='0' r='12'/><circle cx='0' cy='80' r='12'/><circle cx='80' cy='80' r='12'/></g></svg>`;return `url("data:image/svg+xml,${encodeURIComponent(s)}")`})();
@@ -526,8 +526,8 @@ function render(){
 
 <section class="band final"><div class="w">
   <h2 class="rv">${t.fnT}</h2><p class="lead rv">${t.fnL}</p>
-  <div class="cta rv"><a class="btn btn-wa" href="${waURL()}" target="_blank" rel="noopener">${waIco} ${t.wa}</a><a class="btn btn-w" href="https://t.me/${CONTACT.tg}" target="_blank" rel="noopener">${t.tgL}</a></div>
-  <p class="contacts num">WhatsApp ${CONTACT.waShow} · Telegram @${CONTACT.tg} · ${CONTACT.mail}</p>
+  <div class="cta rv"><a class="btn btn-wa" href="${waURL()}" target="_blank" rel="noopener">${waIco} ${t.wa}</a></div>
+  <p class="contacts num">WhatsApp ${CONTACT.waShow} · ${CONTACT.mail}</p>
 </div></section>
 
 <footer><div class="w"><span>${t.foot}</span><div class="fl">${t.pol.map((p,i)=>`<button data-pol="${i}">${p}</button>`).join("")}</div></div></footer>
