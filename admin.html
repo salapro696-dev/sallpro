@@ -85,7 +85,7 @@ tr:last-child td{border-bottom:0}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 const sb=window.supabase.createClient("https://bqaabislojlebfpuvtxq.supabase.co","sb_publishable_e-ibQ_7thrb3sRV2EmqPsw_oXbOy2XI");
-const PRICE={coach:99,salle:199};const M=document.getElementById("main");
+const PRICE={coach:25,salle:25};const M=document.getElementById("main");
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fmt=s=>{if(!s)return"—";const d=new Date(s);return String(d.getDate()).padStart(2,"0")+"/"+String(d.getMonth()+1).padStart(2,"0")+"/"+d.getFullYear()};
 const wa=p=>{let d=String(p||"").replace(/\D/g,"");if(d.startsWith("0"))d="212"+d.slice(1);return d};
