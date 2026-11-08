@@ -889,7 +889,7 @@ addEventListener("offline",()=>render());
 
 
 /* ---------- abonnement & activation ---------- */
-const SALAPRO_WA="212600000000";
+const SALAPRO_WA="212695179817";
 const BILL={plan:null,per:"m",method:"vir",file:null,fileName:""};
 const PRICES={coach:{m:299,y:299},salle:{m:299,y:299}};
 function subState(){const st=S.setup;if(st.paidUntil&&st.paidUntil>=TODAY)return{k:"paid",d:diffDays(st.paidUntil,TODAY)};if(st.request&&st.request.status==="pending")return{k:"pending"};if(S.mode==="live")return{k:"expired"};const d=diffDays(st.trialEnds||TODAY,TODAY);return d>=0?{k:"trial",d}:{k:"expired"}}
