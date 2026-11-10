@@ -995,7 +995,7 @@ function tBilling(){const L=t(),st=S.setup,x=subState();BILL.plan=st.role==="coa
   <div class="kv" style="margin-top:12px"><span>${L.total}</span><b class="num" style="font-size:20px">${price} DH</b></div>
   <button class="btn btn-p" style="width:100%;margin-top:10px" data-act="bill-send" ${BILL.method==="card"?"disabled":""}>${L.sendReq}</button><div class="err" id="bill-err"></div></div></div>`}`}
 function sendRequest(){const L=t();if(!BILL.file){document.getElementById("bill-err").textContent=L.needProof;return}
- S.setup.request={status:"pending",plan:BILL.plan,per:BILL.per,amount:PRICES[BILL.plan][BILL.per],method:BILL.method,date:TODAY,receipt:BILL.file.length<400000?BILL.file:null};BILL.file=null;save();render();toast(L.reqSent);window.px&&px("Lead",{value:299,currency:"MAD"})}
+ S.setup.request={status:"pending",plan:BILL.plan,per:BILL.per,amount:PRICES[BILL.plan][BILL.per],method:BILL.method,date:TODAY,receipt:BILL.file.length<400000?BILL.file:null};BILL.file=null;save();render();toast(L.reqSent)}
 function demoApprove(){const r=S.setup.request;if(!r)return;let d=TODAY;const n=r.per==="m"?1:12;for(let i=0;i<n;i++)d=plusMonth(d);S.setup.paidUntil=d;S.setup.plan=r.plan;S.setup.request=null;save();render();toast(t().activated)}
 document.addEventListener("change",e=>{if(e.target.id==="bill-file"){const f=e.target.files[0];if(!f)return;BILL.fileName=f.name;
  if(!f.type.startsWith("image/")){BILL.file="data:,pdf";render();return}
