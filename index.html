@@ -460,7 +460,7 @@ function render(){
     <span class="chip"><b>${t.chip[1]}</b>${t.chip[0]}</span>
     <h1>${t.h1[0]} <span>${t.h1[1]}</span></h1>
     <p>${t.sub}</p>
-    <div class="cta"><a class="btn btn-w" href="${DEMO}" target="_blank" rel="noopener">${t.c1}</a><a class="btn btn-o" href="${DEMO}" target="_blank" rel="noopener">${t.c2} →</a></div>
+    <div class="cta"><a class="btn btn-w" href="${DEMO}?signup" target="_blank" rel="noopener">${t.c1}</a><a class="btn btn-o" href="${DEMO}?demo" target="_blank" rel="noopener">${t.c2} →</a></div>
 </div></div></section>
 <section class="hero"><div class="w hero-g">
   <div class="rv">
@@ -486,7 +486,7 @@ function render(){
   <div class="eyebrow rv">${t.vE}</div><h2 class="rv">${t.vT}</h2><p class="lead rv">${t.vL}</p>
   <div class="vtabs" role="tablist">${t.vids.map((v,i)=>`<button role="tab" class="vtab ${VI===i?"on":""}" data-vi="${i}" aria-selected="${VI===i}"><b>${i+1}</b><span>${v[0]}</span></button>`).join("")}</div>
   <div class="vstage"><div class="vdev ${isPhone()?"ph":"pc"}"><video id="vid" muted autoplay loop playsinline controls preload="metadata" poster="/${VK[VI]}-${isPhone()?"phone":"pc"}.jpg" src="/${VK[VI]}-${isPhone()?"phone":"pc"}.mp4"></video></div>
-   <div class="vside"><h3>${t.vids[VI][0]}</h3><p>${t.vids[VI][1]}</p><p class="note">${isPhone()?t.vPh:t.vPc}</p><a class="btn btn-s" href="${DEMO}" target="_blank" rel="noopener">${t.c2} →</a></div></div>
+   <div class="vside"><h3>${t.vids[VI][0]}</h3><p>${t.vids[VI][1]}</p><p class="note">${isPhone()?t.vPh:t.vPc}</p><a class="btn btn-s" href="${DEMO}?demo" target="_blank" rel="noopener">${t.c2} →</a></div></div>
 </div></section>
 <section class="band"><div class="w">
   <div class="eyebrow rv">${t.sE}</div><h2 class="rv">${t.sT}</h2><p class="lead rv">${t.sL}</p>
@@ -531,7 +531,7 @@ function render(){
 
 <section class="band" id="tarifs"><div class="w">
   <div class="eyebrow rv">${t.prE}</div><h2 class="rv">${t.prT}</h2><p class="lead rv">${t.prL}</p>
-  <div class="prices">${t.plans.map(p=>`<div class="price rv ${p[4]?"hot":""}">${p[4]?`<span class="badge">${p[4]}</span>`:""}<h3>${p[0]}</h3><p class="for">${p[1]}</p><div class="amt num"><span data-count="${p[2]}">${p[2]}</span> <small>${t.per}</small></div><ul class="ck">${p[3].map(x=>`<li>${x}</li>`).join("")}</ul><a class="btn ${p[4]?"btn-s":"btn-w"}" style="${p[4]?"":"border-color:var(--sky);color:var(--sky);background:transparent"}" href="${DEMO}" target="_blank" rel="noopener">${t.go}</a></div>`).join("")}</div>
+  <div class="prices">${t.plans.map(p=>`<div class="price rv ${p[4]?"hot":""}">${p[4]?`<span class="badge">${p[4]}</span>`:""}<h3>${p[0]}</h3><p class="for">${p[1]}</p><div class="amt num"><span data-count="${p[2]}">${p[2]}</span> <small>${t.per}</small></div><ul class="ck">${p[3].map(x=>`<li>${x}</li>`).join("")}</ul><a class="btn ${p[4]?"btn-s":"btn-w"}" style="${p[4]?"":"border-color:var(--sky);color:var(--sky);background:transparent"}" href="${DEMO}?signup" target="_blank" rel="noopener">${t.go}</a></div>`).join("")}</div>
   <p class="yr">${t.yr}</p>
 </div></section>
 
