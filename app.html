@@ -6,6 +6,8 @@
 <link rel="icon" href="/icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/icon-512.png">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','2369325976805958');fbq('track','PageView');window.px=function(e,p){try{fbq('track',e,p||{})}catch(_){}};</script>
+<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=2369325976805958&ev=PageView&noscript=1" alt=""></noscript>
 </head><body>
 <title>SallPro</title>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -993,7 +995,7 @@ function tBilling(){const L=t(),st=S.setup,x=subState();BILL.plan=st.role==="coa
   <div class="kv" style="margin-top:12px"><span>${L.total}</span><b class="num" style="font-size:20px">${price} DH</b></div>
   <button class="btn btn-p" style="width:100%;margin-top:10px" data-act="bill-send" ${BILL.method==="card"?"disabled":""}>${L.sendReq}</button><div class="err" id="bill-err"></div></div></div>`}`}
 function sendRequest(){const L=t();if(!BILL.file){document.getElementById("bill-err").textContent=L.needProof;return}
- S.setup.request={status:"pending",plan:BILL.plan,per:BILL.per,amount:PRICES[BILL.plan][BILL.per],method:BILL.method,date:TODAY,receipt:BILL.file.length<400000?BILL.file:null};BILL.file=null;save();render();toast(L.reqSent)}
+ S.setup.request={status:"pending",plan:BILL.plan,per:BILL.per,amount:PRICES[BILL.plan][BILL.per],method:BILL.method,date:TODAY,receipt:BILL.file.length<400000?BILL.file:null};BILL.file=null;save();render();toast(L.reqSent);window.px&&px("Lead",{value:299,currency:"MAD"})}
 function demoApprove(){const r=S.setup.request;if(!r)return;let d=TODAY;const n=r.per==="m"?1:12;for(let i=0;i<n;i++)d=plusMonth(d);S.setup.paidUntil=d;S.setup.plan=r.plan;S.setup.request=null;save();render();toast(t().activated)}
 document.addEventListener("change",e=>{if(e.target.id==="bill-file"){const f=e.target.files[0];if(!f)return;BILL.fileName=f.name;
  if(!f.type.startsWith("image/")){BILL.file="data:,pdf";render();return}
@@ -1116,7 +1118,7 @@ async function authSubmit(){const L=t(),out=document.getElementById("au-err");
  if(!/^\S+@\S+\.\S+$/.test(em)){out.textContent=L.bad;return}if(pw.length<6){out.textContent=L.pass6;return}
  if(!navigator.onLine){out.textContent=L.noNet;return}
  out.style.color="var(--muted)";out.textContent=L.loading;
- try{if(AUTHMODE==="signup"){const r=await sb.auth.signUp({email:em,password:pw});if(r.error)throw r.error;
+ try{if(AUTHMODE==="signup"){const r=await sb.auth.signUp({email:em,password:pw});if(r.error)throw r.error;window.px&&px("CompleteRegistration",{content_name:"SallPro"});
     if(!r.data.session){AUTHMODE="signin";render();const o=document.getElementById("au-err");o.style.color="var(--ok)";o.textContent=L.checkMail;return}
     await afterLogin(r.data.user)}
   else{const r=await sb.auth.signInWithPassword({email:em,password:pw});if(r.error){out.style.color="";out.textContent=/invalid/i.test(r.error.message)?L.badCreds:r.error.message;return}
@@ -1128,7 +1130,7 @@ async function liveRequest(){const L=t();if(!BILL.file){document.getElementById(
  if(!navigator.onLine){document.getElementById("bill-err").textContent=L.noNet;return}
  const r=await sb.from("activation_requests").insert({club_id:S.clubId,plan:BILL.plan,period:BILL.per==="y"?"year":"month",amount:PRICES[BILL.plan][BILL.per],method:BILL.method==="vir"?"virement":"cashplus"});
  if(r.error){document.getElementById("bill-err").textContent=r.error.message;return}
- S.setup.request={status:"pending",plan:BILL.plan,per:BILL.per,amount:PRICES[BILL.plan][BILL.per],method:BILL.method,date:TODAY,receipt:BILL.file.length<400000?BILL.file:null};BILL.file=null;save();render();toast(L.reqSent)}
+ S.setup.request={status:"pending",plan:BILL.plan,per:BILL.per,amount:PRICES[BILL.plan][BILL.per],method:BILL.method,date:TODAY,receipt:BILL.file.length<400000?BILL.file:null};BILL.file=null;save();render();toast(L.reqSent);window.px&&px("Lead",{value:299,currency:"MAD"})}
 
 addEventListener("online",()=>{if(S.mode==="live"){flush().then(()=>{if(S.clubId)pull().then(render).catch(()=>{})})}});
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&S.mode==="live"&&navigator.onLine&&S.clubId&&!pendingCount())pull().then(render).catch(()=>{})});
@@ -1157,7 +1159,7 @@ document.addEventListener("click",e=>{
   const kind=SP[S.data.sessions.find(s=>s.id===sid).sport].kind;const src=prev?S.data.plans[prev].map(i=>i.t):TPL[kind][S.lang];
   const cur=S.data.plans[k]||[];S.data.plans[k]=[...cur,...src.filter(x=>!cur.some(i=>i.t===x)).map(x=>({id:uid(),t:x,done:false}))];save();render();return}
  const a=el.dataset.act,id=el.dataset.id;
- if(a==="demo"){S.mode="demo";S.clubId=null;S.user="demo@sallpro.ma";S.ob={step:1,role:"salle",sports:["tkd","foot","muscu"],club:"Salle Atlas",you:"Karim",fee:150,phone:"0661000001",city:"Oujda",addr:"Hay Al Qods"};finishOnboard();S.setup.trialEnds=plusDays(TODAY,5);save();render()}
+ if(a==="demo"){window.px&&px("ViewContent",{content_name:"Demo"});S.mode="demo";S.clubId=null;S.user="demo@sallpro.ma";S.ob={step:1,role:"salle",sports:["tkd","foot","muscu"],club:"Salle Atlas",you:"Karim",fee:150,phone:"0661000001",city:"Oujda",addr:"Hay Al Qods"};finishOnboard();S.setup.trialEnds=plusDays(TODAY,5);save();render()}
  else if(a==="ob-next"){if(S.ob.step===2&&!S.ob.sports.length){document.getElementById("ob-err").textContent=L.pick;return}if(S.ob.step<3){S.ob.step++;save();render()}else{readOb3();if(!S.ob.phone||!S.ob.city){document.getElementById("ob3-err").textContent=L.needInfo;return}if(S.mode==="live"){if(!BUSY)liveOnboard()}else finishOnboard()}}
  else if(a==="ob-back"){readOb3();S.ob.step--;save();render()}
  else if(a==="lang-cycle"){S.lang=S.lang==="fr"?"ar":S.lang==="ar"?"en":"fr";save();render()}
