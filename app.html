@@ -299,7 +299,7 @@ td .sm{display:none}
 <script>
 const SB_URL="https://bqaabislojlebfpuvtxq.supabase.co",SB_KEY="sb_publishable_e-ibQ_7thrb3sRV2EmqPsw_oXbOy2XI";
 const sb=(window.supabase&&window.supabase.createClient)?window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true}}):null;
-const SITE="https://claude.ai/artifact/4DRrtyMHPDNpY8N64YDjhd";
+const SITE="/";
 const KEY="sallpro_live_v1";
 
 const MART=[{fr:"Poussins",ar:"الكتاكيت",en:"Little kids"},{fr:"Benjamins",ar:"الصغار",en:"Kids"},{fr:"Minimes",ar:"الفتيان",en:"Minimes"},{fr:"Cadets",ar:"الشبان",en:"Cadets"},{fr:"Juniors",ar:"الأواسط",en:"Juniors"},{fr:"Seniors",ar:"الكبار",en:"Seniors"}];
@@ -403,7 +403,7 @@ fr:{dir:"ltr",
  addCoach:"Ajouter un coach",collected:"encaissé",expected:"attendu",
  leadCols:{trial:"Séance d'essai",contact:"Recontacté",won:"Inscrit",lost:"Perdu"},addLead:"Nouveau prospect",convert:"Inscrire",
  setClub:"Club",setSports:"Sports",setLang:"Langue",setTheme:"Thème",light:"Jour",dark:"Nuit",auto:"Auto",logout:"Déconnexion",reset:"Recommencer la configuration",
- demoNote:"Démo : les données restent dans ce navigateur. La version en ligne synchronisera téléphone et PC et enverra les messages via WhatsApp Business.",
+ liveNote:"Vos données sont enregistrées en ligne et synchronisées entre votre téléphone et votre ordinateur.",demoNote:"Démo : les données restent dans ce navigateur. La version en ligne synchronisera téléphone et PC et enverra les messages via WhatsApp Business.",
  saved:"Enregistré",paidT:"Paiement encaissé · prochaine échéance le ",dh:"DH",ex:"Exemples",
  months:["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"],
  autoIntro:"Chaque élève a sa propre date d'échéance : le jour où il a payé, chaque mois. Le message part tout seul : à l'adhérent pour les adultes, au parent pour les enfants.",
@@ -434,7 +434,7 @@ ar:{dir:"rtl",
  addCoach:"إضافة مدرّب",collected:"محصَّل",expected:"منتظر",
  leadCols:{trial:"حصة تجربة",contact:"تمّ الاتصال",won:"مسجَّل",lost:"لم يلتحق"},addLead:"زائر جديد",convert:"تسجيل",
  setClub:"النادي",setSports:"الرياضات",setLang:"اللغة",setTheme:"المظهر",light:"نهاري",dark:"ليلي",auto:"تلقائي",logout:"تسجيل الخروج",reset:"إعادة الإعداد",
- demoNote:"عرض تجريبي: تبقى البيانات في هذا المتصفح. ستربط النسخة الإلكترونية بين الهاتف والحاسوب وترسل الرسائل عبر واتساب للأعمال.",
+ liveNote:"بياناتك محفوظة على الإنترنت ومتزامنة بين هاتفك وحاسوبك.",demoNote:"عرض تجريبي: تبقى البيانات في هذا المتصفح. ستربط النسخة الإلكترونية بين الهاتف والحاسوب وترسل الرسائل عبر واتساب للأعمال.",
  saved:"تمّ الحفظ",paidT:"تمّ التحصيل · الاستحقاق القادم يوم ",dh:"درهم",ex:"أمثلة",
  months:["يناير","فبراير","مارس","أبريل","ماي","يونيو","يوليوز","غشت","شتنبر","أكتوبر","نونبر","دجنبر"],
  autoIntro:"لكل تلميذ تاريخ استحقاق خاص به: يوم أدائه، كل شهر. وتُرسَل الرسالة وحدها: إلى المنخرط إن كان راشدًا، وإلى الوالد إن كان طفلًا.",
@@ -465,7 +465,7 @@ en:{dir:"ltr",
  addCoach:"Add a coach",collected:"collected",expected:"expected",
  leadCols:{trial:"Trial session",contact:"Followed up",won:"Signed up",lost:"Lost"},addLead:"New prospect",convert:"Sign up",
  setClub:"Club",setSports:"Sports",setLang:"Language",setTheme:"Theme",light:"Light",dark:"Dark",auto:"Auto",logout:"Log out",reset:"Restart setup",
- demoNote:"Demo: data stays in this browser. The online version will sync phone and computer and send messages through WhatsApp Business.",
+ liveNote:"Your data is saved online and synced between your phone and computer.",demoNote:"Demo: data stays in this browser. The online version will sync phone and computer and send messages through WhatsApp Business.",
  saved:"Saved",paidT:"Payment collected · next due on ",dh:"MAD",ex:"Examples",
  months:["January","February","March","April","May","June","July","August","September","October","November","December"],
  autoIntro:"Each student has their own due date: the day they paid, every month. The message goes out on its own: to the member for adults, to the parent for children.",
@@ -759,7 +759,7 @@ function tAuto(){const L=t(),A=S.setup.autoRules,{past,fut}=messages();
  <div class="rules">${rule("cot",L.rCot,L.rCotS)}${rule("ins",L.rIns,L.rInsS)}${rule("reg",L.rReg,L.rRegS)}</div>
  <div class="grid2 eq"><div class="panel"><h3>${L.sent} <span class="pill p-ok num">${past.length}</span></h3>${past.length?past.slice(0,25).map(x=>mRow(x,true)).join(""):`<div class="empty">${L.noMsg}</div>`}</div>
  <div class="panel"><h3>${L.sched} <span class="pill p-sky num">${fut.length}</span></h3>${fut.length?fut.slice(0,25).map(x=>mRow(x,false)).join(""):`<div class="empty">${L.noMsg}</div>`}</div></div>
- <p class="note" style="margin-top:14px">${L.demoNote}</p>`}
+ ${S.mode==="live"?"":`<p class="note" style="margin-top:14px">${L.demoNote}</p>`}`}
 
 /* ---------- sessions / coachs / leads / settings ---------- */
 function tSessions(){const L=t();return `<h3 style="margin:0 0 12px">${L.week}</h3><div class="week">${[1,2,3,4,5,6,0].map(d=>{const ss=S.data.sessions.filter(s=>s.day===d).sort((a,b)=>a.start.localeCompare(b.start));
@@ -783,7 +783,7 @@ function tSettings(){const L=t(),st=S.setup;return `<div class="set">
  <div class="panel"><h3>${L.pinT}</h3><p class="note" style="margin:0 0 6px">${L.pinS}</p><div class="add"><input id="s-pin" inputmode="numeric" maxlength="4" pattern="[0-9]*" placeholder="••••" value="" aria-label="${L.pinT}" style="max-width:140px;letter-spacing:6px;font-weight:800"><button class="btn btn-sm btn-p" data-act="set-pin">${S.pin?L.pinChange:L.pinSet}</button>${S.pin?`<button class="btn btn-sm" data-act="del-pin">${L.pinDel}</button>`:""}</div>${S.pin?`<p class="note" style="color:var(--ok);font-weight:700;margin:8px 0 0">✓ ${L.pinOn}</p>`:""}</div>
  <div class="panel"><h3>${L.setLang}</h3><div class="seg">${[["fr","Français"],["ar","العربية"],["en","English"]].map(x=>`<button data-lang="${x[0]}" class="${S.lang===x[0]?"on":""}">${x[1]}</button>`).join("")}</div></div>
  <div class="panel"><h3>${L.setTheme}</h3><div class="seg">${[["light",L.light],["dark",L.dark],["auto",L.auto]].map(x=>`<button data-themeset="${x[0]}" class="${S.theme===x[0]?"on":""}">${x[1]}</button>`).join("")}</div></div>
- <div class="panel"><p class="note" style="margin-top:0">${L.demoNote}</p><div class="acts" style="flex-wrap:wrap"><a class="btn" href="${SITE}" target="_blank" rel="noopener">${L.site}</a>${S.mode==="live"?"":`<button class="btn" data-act="reset">${L.reset}</button>`}<button class="btn" data-act="logout">${L.logout}</button></div></div></div>`}
+ <div class="panel"><p class="note" style="margin-top:0">${S.mode==="live"?L.liveNote:L.demoNote}</p><div class="acts" style="flex-wrap:wrap"><a class="btn" href="${SITE}" target="_blank" rel="noopener">${L.site}</a>${S.mode==="live"?"":`<button class="btn" data-act="reset">${L.reset}</button>`}<button class="btn" data-act="logout">${L.logout}</button></div></div></div>`}
 
 /* ---------- modals ---------- */
 let arm=false;
