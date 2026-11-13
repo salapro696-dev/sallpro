@@ -986,7 +986,7 @@ function subBadge(){const L=t(),x=subState();const map={trial:["p-sky",S.mode===
 function tBilling(){const L=t(),st=S.setup,x=subState();BILL.plan=st.role==="coach"?"coach":"salle";BILL.per="y";
  const price=PRICES[BILL.plan][BILL.per];
  const head={trial:[L.trialH.replace("{d}",x.d).replace("{date}",fmt(st.trialEnds)),"var(--warn-soft)","var(--warn)"],pending:[L.pendH,"var(--sky-soft)","var(--sky-d)"],paid:[L.paidH.replace("{date}",fmt(st.paidUntil||TODAY)),"var(--ok-soft)","var(--ok)"],expired:[L.expH,"var(--bad-soft)","var(--bad)"]}[x.k];
- const method={vir:`<div class="pay-info"><b>${L.virT}</b><div class="kv"><span>${L.benef}</span><b>SallPro</b></div><div class="kv"><span>RIB</span><b class="num">230 570 5233919211008400 44</b></div><div class="kv"><span>${L.motif}</span><b>Service · ${esc(st.club)}</b></div></div>`,
+ const method={vir:`<div class="pay-info"><b>${L.virT}</b><div class="kv"><span>${L.benef}</span><b>MOSTAFA AIT ALI</b></div><div class="kv"><span>RIB</span><b class="num">230 570 5233919211008400 44</b></div><div class="kv"><span>${L.motif}</span><b>Service · ${esc(st.club)}</b></div></div>`,
   cash:`<div class="pay-info"><b>${L.cashT}</b><div class="kv"><span>${L.benef}</span><b>Nom Prénom</b></div><div class="kv"><span>${L.phoneL}</span><b class="num">+212 6 00 00 00 00</b></div><p class="note" style="margin:6px 0 0">${L.cashS}</p></div>`,
   card:`<div class="pay-info"><b>${L.cardT2}</b><p class="note" style="margin:4px 0 0">${L.cardSoon}</p></div>`}[BILL.method];
  const req=st.request;
