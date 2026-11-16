@@ -618,7 +618,7 @@ function detail(m){const sp=SP[m.sport];if(!sp)return"—";
   return lab(PLANS[m.formule]||PLANS[0]);}
 const catName=(sid,k)=>lab((SP[sid]?.cats||[])[k]);
 function toast(x){const el=document.createElement("div");el.className="toast";el.textContent=x;document.body.appendChild(el);setTimeout(()=>el.remove(),2200)}
-const isSalle=()=>S.setup.role==="salle";
+const isSalle=()=>S.setup.role==="salle"||((S.data&&S.data.coachs)||[]).length>1;
 const isCoach=()=>S.mode==="live"&&S.role==="coach";
 const statusPill=m=>{const L=t(),s=stage(m);return s==="frozen"?`<span class="pill p-sky">${L.frozenS}</span>`:s==="paid"?`<span class="pill p-ok">${L.paidS}</span>`:s==="late"?`<span class="pill p-bad">${L.lateS}</span>`:`<span class="pill p-warn">${L.unpaidS}</span>`};
 
@@ -674,7 +674,7 @@ function vOnboard(){const L=t(),o=S.ob;
 const Q={q:"",coach:"",cat:"",st:"all"};
 const hasClasses=()=>S.setup.sports.some(k=>SP[k]&&!SP[k].open);
 const locked=()=>S.mode==="live"&&!!S.setup&&subState().k!=="paid";
-const tabs=()=>isCoach()?(locked()?["settings"]:[...(hasClasses()?["today"]:[]),"students",...(hasClasses()?["sessions"]:[]),"settings"]):locked()?["billing","settings"]:["dash",...(hasClasses()?["today"]:[]),"students","pay","auto",...(hasClasses()?["sessions"]:[]),...(isSalle()?["coachs"]:[]),"leads","billing","settings"];
+const tabs=()=>isCoach()?(locked()?["settings"]:[...(hasClasses()?["today"]:[]),"students",...(hasClasses()?["sessions"]:[]),"settings"]):locked()?["billing","settings"]:["dash",...(hasClasses()?["today"]:[]),"students","pay","auto",...(hasClasses()?["sessions"]:[]),"coachs","leads","billing","settings"];
 function navHTML(){const L=t();const un=S.data.members.filter(m=>["unpaid","late"].includes(stage(m))).length;
  return tabs().map(k=>`<button class="nav-i ${S.tab===k?"on":""}" data-tab="${k}">${ic[k]}<span>${L.nav[k]}</span>${k==="pay"&&un?`<span class="cnt num">${un}</span>`:""}</button>`).join("")}
 function vApp(){const L=t(),st=S.setup;if(!tabs().includes(S.tab))S.tab=tabs()[0];
