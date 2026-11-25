@@ -17,7 +17,7 @@ button,input,select{font:inherit;color:inherit}
 .num{font-variant-numeric:tabular-nums}
 header{background:#0b2530;color:#fff;padding-block:14px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 .w{max-width:1200px;margin:0 auto}
-header .w{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+header .hbtn{background:transparent!important;color:#fff!important;border:1.5px solid #ffffff55!important}header .hbtn:hover{border-color:#fff!important}header .w{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .logo{display:flex;align-items:center;gap:10px;font-family:var(--f-d);font-weight:800;font-size:26px}
 .mark{width:34px;height:34px;border-radius:9px;background:#fff;display:grid;place-items:center}.mark i{display:block;width:19px;height:5px;border-radius:2px;background:#0b2530;box-shadow:0 -6px 0 #0c8f61,0 6px 0 #0c8f61}
 .badge{background:#fff;color:#0a7350;font-weight:800;font-size:12px;border-radius:999px;padding:3px 10px}
@@ -80,7 +80,7 @@ tr:last-child td{border-bottom:0}
 .ref{font-size:12px;color:var(--muted)}
 </style></head><body>
 <header><div class="w"><div class="logo"><span class="mark"><i></i></span><span>Sall<b class="pro">Pro</b></span></div><span class="badge">Admin</span><span class="sp num" id="today"></span>
-<a class="btn" style="background:#fff;margin-inline-start:10px" href="/app">Application</a><button class="btn" style="background:#fff" id="refresh">Actualiser</button></div></header>
+<a class="btn hbtn" style="margin-inline-start:10px" href="/app">Application</a><button class="btn hbtn" id="refresh">Actualiser</button></div></header>
 <main><div class="w" id="main"><div class="center">Chargement…</div></div></main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
