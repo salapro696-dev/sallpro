@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SallPro · Gestion de salle de sport au Maroc</title>
+<meta name="description" content="SallPro envoie les rappels de cotisation aux parents sur WhatsApp, à votre place. 299 DH par an.">
+<meta name="theme-color" content="#fbf8f3">
+<link rel="icon" href="/icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="/icon-512.png">
+<script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','2369325976805958');fbq('track','PageView');window.px=function(e,p){try{fbq('track',e,p||{})}catch(_){}};</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@500;600;700&display=swap">
+<style>
+:root{--bg:#fbf8f3;--card:#ffffff;--ink:#15212b;--muted:#5d6b75;--line:#ebe4d8;--go:#12a150;--go-d:#0d8a43;--sun:#ffc83d;--sun-soft:#fff4d4;--wa:#25d366;--blue:#0b8fd6;
+ --f:"Manrope","Segoe UI",system-ui,sans-serif;--fa:"IBM Plex Sans Arabic","Segoe UI",Tahoma,sans-serif}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:500 17px/1.55 var(--f);-webkit-font-smoothing:antialiased;padding-bottom:84px}
+[dir=rtl] body,[dir=rtl] button,[dir=rtl] a{font-family:var(--fa)}
+.w{max-width:1040px;margin:0 auto;padding:0 18px}
+a{color:inherit}
+header{position:sticky;top:0;z-index:5;background:rgba(251,248,243,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+header .w{display:flex;align-items:center;justify-content:space-between;height:62px}
+.logo{display:flex;align-items:center;gap:9px;font-weight:800;font-size:21px;text-decoration:none}.logo img{width:34px;height:34px}
+.lang{display:flex;border:1.5px solid var(--line);border-radius:999px;overflow:hidden;background:#fff}
+.lang button{border:0;background:none;padding:7px 13px;font:700 14px var(--f);color:var(--muted);cursor:pointer}.lang button.on{background:var(--ink);color:#fff}
+.lang button[data-l=ar]{font-family:var(--fa)}
+.hero{padding-top:34px;padding-bottom:26px;display:grid;gap:30px;align-items:center}
+@media(min-width:880px){.hero{grid-template-columns:1.1fr .9fr;padding-top:64px;padding-bottom:50px}}
+h1{font-size:clamp(34px,8.5vw,56px);line-height:1.08;margin:0 0 16px;font-weight:800;letter-spacing:-.02em}
+h1 mark{background:linear-gradient(transparent 58%,var(--sun) 58%);color:inherit;padding:0 2px}
+[dir=rtl] h1{letter-spacing:0;line-height:1.3}
+.sub{font-size:19px;color:var(--muted);margin:0 0 20px;max-width:34em}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 24px}
+.chip{background:#fff;border:1.5px solid var(--line);border-radius:999px;padding:7px 14px;font-weight:700;font-size:15px}
+.btns{display:flex;flex-direction:column;gap:12px;max-width:420px}
+.btn{display:flex;align-items:center;justify-content:center;gap:10px;min-height:62px;border-radius:16px;font-weight:800;font-size:19px;text-decoration:none;border:0;cursor:pointer;padding:0 22px}
+.btn-go{background:var(--go);color:#fff;box-shadow:0 6px 0 var(--go-d)}.btn-go:active{transform:translateY(3px);box-shadow:0 3px 0 var(--go-d)}
+.btn-w{background:#fff;color:var(--ink);border:2px solid var(--ink)}
+.btn-wa{background:var(--wa);color:#fff}
+.btn small{font-weight:600;opacity:.85;font-size:15px}
+.note{font-size:14px;color:var(--muted);margin:10px 2px 0}
+.phone{justify-self:center;width:min(300px,78vw);aspect-ratio:9/16;border-radius:38px;border:10px solid var(--ink);overflow:hidden;background:#000;position:relative;box-shadow:0 30px 60px rgba(21,33,43,.18)}
+.phone video{width:100%;height:100%;object-fit:cover;display:block}
+.play{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;border:0;background:rgba(0,0,0,.28);color:#fff;font:800 18px var(--f);cursor:pointer}
+.play i{width:84px;height:84px;border-radius:50%;background:var(--sun);display:flex;align-items:center;justify-content:center}
+.play i:after{content:"";border-left:26px solid var(--ink);border-top:16px solid transparent;border-bottom:16px solid transparent;margin-left:7px}
+section{padding:46px 0}
+h2{font-size:clamp(27px,6.5vw,40px);line-height:1.15;margin:0 0 8px;font-weight:800;letter-spacing:-.01em}
+[dir=rtl] h2{letter-spacing:0;line-height:1.35}
+.lead{color:var(--muted);margin:0 0 26px;font-size:18px}
+.steps{display:grid;gap:14px}@media(min-width:760px){.steps{grid-template-columns:repeat(3,1fr)}}
+.step{background:var(--card);border:1.5px solid var(--line);border-radius:22px;padding:22px;display:flex;gap:16px;align-items:flex-start}
+@media(min-width:760px){.step{flex-direction:column}}
+.num{flex:none;width:58px;height:58px;border-radius:18px;background:var(--sun-soft);display:flex;align-items:center;justify-content:center;font-size:30px;position:relative}
+.num b{position:absolute;top:-8px;inset-inline-end:-8px;width:26px;height:26px;border-radius:50%;background:var(--ink);color:#fff;font-size:14px;display:flex;align-items:center;justify-content:center}
+.step h3{margin:2px 0 4px;font-size:20px}.step p{margin:0;color:var(--muted);font-size:16px}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(min-width:760px){.tiles{grid-template-columns:repeat(4,1fr)}}
+.tile{background:var(--card);border:1.5px solid var(--line);border-radius:20px;padding:18px}
+.tile span{font-size:32px;display:block;margin-bottom:6px}.tile h3{margin:0 0 4px;font-size:17px}.tile p{margin:0;color:var(--muted);font-size:14.5px;line-height:1.45}
+.price{background:var(--ink);color:#fff;border-radius:28px;padding:30px 24px;display:grid;gap:22px;align-items:center}
+@media(min-width:820px){.price{grid-template-columns:1fr 1fr;padding:44px}}
+.big{font-size:84px;font-weight:800;line-height:1;letter-spacing:-.03em;color:var(--sun)}.big small{font-size:26px;color:#fff;letter-spacing:0;margin-inline-start:6px}
+.price ul{list-style:none;padding:0;margin:0;display:grid;gap:10px}.price li{display:flex;gap:10px;font-weight:600}.price li:before{content:"✓";color:var(--sun);font-weight:800}
+.help{background:var(--sun-soft);border:2px solid var(--sun);border-radius:26px;padding:28px 22px;text-align:center}
+.help .btns{margin:18px auto 0}
+@media(min-width:620px){.help .btns{flex-direction:row;max-width:560px}.help .btn{flex:1}}
+footer{padding:26px 0 30px;color:var(--muted);font-size:14px;text-align:center}
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:6;background:rgba(251,248,243,.96);backdrop-filter:blur(8px);border-top:1px solid var(--line);padding:10px 14px calc(10px + env(safe-area-inset-bottom));display:flex;gap:10px}
+.bar .btn{min-height:56px;font-size:18px}.bar .btn-go{flex:1}.bar .btn-wa{width:62px;padding:0}
+@media(min-width:880px){.bar{display:none}body{padding-bottom:0}}
+.ic{width:24px;height:24px;flex:none}
+</style></head>
+<body>
+<header><div class="w"><a class="logo" href="/"><img src="/icon.svg" alt="">SallPro</a>
+<div class="lang"><button data-l="fr">FR</button><button data-l="ar">العربية</button></div></div></header>
+<main id="main"></main>
+<div class="bar"><a class="btn btn-go" href="/app?signup" data-go></a><a class="btn btn-wa" data-wa target="_blank" rel="noopener" aria-label="WhatsApp"></a></div>
+<script>
+const WA="212695179817",TEL="+212695179817";
+const WAI='<svg class="ic" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.2 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.1-4.5-3.9-4.7-4.1-.1-.2-1.1-1.5-1.1-2.8s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.3 0 .5l-.4.6-.4.4c-.1.2-.3.3-.1.6.2.3.8 1.4 1.8 2.2 1.2 1.1 2.3 1.4 2.6 1.6.3.1.5.1.7-.1l1-1.2c.2-.3.4-.2.7-.1l2 1c.3.1.5.2.5.3.1.1.1.7-.1 1.2z"/></svg>';
+const T={
+fr:{h1:"Vos élèves paient. <mark>Sans que vous réclamiez.</mark>",sub:"SallPro envoie les rappels de cotisation aux parents sur WhatsApp, à votre place. Tout se fait sur votre téléphone.",
+ chips:["💰 299 DH / an","📱 Sur votre téléphone","🇲🇦 Français et arabe"],go:"Créer mon compte",goSub:"1 minute",vid:"Voir la vidéo",vidSub:"1 min",note:"Inscription avec votre numéro de téléphone. Pas besoin d'e-mail.",
+ playL:"Comment ça marche ?",
+ howT:"Comment ça marche",howL:"Trois étapes, c'est tout.",
+ steps:[["📱","Inscrivez-vous","Avec votre numéro de téléphone et un mot de passe."],["👦","Ajoutez vos élèves","Le nom, le numéro du parent et la cotisation. Le parent peut même remplir lui-même."],["💬","SallPro réclame pour vous","Le jour du paiement, le parent reçoit un rappel WhatsApp. Vous voyez qui a payé."]],
+ getT:"Ce que vous avez",getL:"Tout ce qu'il faut pour gérer votre salle, sans cahier.",
+ tiles:[["💰","Cotisations","Qui a payé, qui n'a pas payé, sur un seul écran."],["💬","Rappels WhatsApp","Envoyés aux parents le jour du paiement."],["🪪","Cartes d'adhérent","Avec la photo de l'élève et le logo de votre club."],["📅","Séances et présence","Le planning et la présence de chaque séance."],["🛡️","Assurance","Une alerte avant la fin de l'assurance."],["🥋","Ceintures et catégories","Pour tous les sports, avec l'âge automatique."],["👥","Plusieurs coachs","Chaque coach voit ses élèves, pas votre argent."],["📶","Sans internet","Marche hors ligne, se synchronise après."]],
+ prT:"Un seul prix",per:"DH / an",perSub:"Soit 25 DH par mois. Paiement par virement, une fois par an.",pr:["Élèves et coachs illimités","Rappels WhatsApp automatiques","Cartes d'adhérent avec photo","Téléphone et ordinateur","Aide en français et en darija"],
+ helpT:"Vous préférez qu'on vous aide ?",helpL:"Appelez-nous ou écrivez sur WhatsApp : on crée votre compte avec vous, en 5 minutes.",call:"Appeler",wa:"WhatsApp",waMsg:"Bonjour, je veux créer mon compte SallPro. Vous pouvez m'aider ?",
+ foot:"© 2026 SallPro · Logiciel marocain de gestion de salles de sport",legal:"Mentions légales et confidentialité"},
+ar:{h1:"تلاميذك يؤدّون الواجب. <mark>بلا ما تطالبهم.</mark>",sub:"SallPro يرسل تذكير الواجب الشهري للآباء عبر واتساب، بدلاً منك. كل شيء من هاتفك.",
+ chips:["💰 299 درهم في السنة","📱 على هاتفك","🇲🇦 بالعربية والفرنسية"],go:"أنشئ حسابي",goSub:"دقيقة واحدة",vid:"شاهد الفيديو",vidSub:"دقيقة",note:"التسجيل برقم الهاتف. لا حاجة للبريد الإلكتروني.",
+ playL:"كيف يعمل؟",
+ howT:"كيف يعمل",howL:"ثلاث خطوات فقط.",
+ steps:[["📱","سجّل","برقم هاتفك وكلمة مرور."],["👦","أضف تلاميذك","الاسم، رقم الأب أو الأم، والواجب. ويمكن للأب أن يملأ المعلومات بنفسه."],["💬","SallPro يطالب بدلاً منك","يوم الأداء، يصل للأب تذكير على واتساب. وأنت ترى من أدّى."]],
+ getT:"ماذا ستجد",getL:"كل ما تحتاجه لتسيير قاعتك، بدون دفتر.",
+ tiles:[["💰","الواجبات","من أدّى ومن لم يؤدِّ، في شاشة واحدة."],["💬","تذكير واتساب","يُرسل للآباء يوم الأداء."],["🪪","بطاقة المنخرط","بصورة التلميذ وشعار ناديك."],["📅","الحصص والحضور","برنامج الحصص وحضور كل حصة."],["🛡️","التأمين","تنبيه قبل انتهاء التأمين."],["🥋","الأحزمة والفئات","لكل الرياضات، والفئة حسب السن تلقائياً."],["👥","عدة مدربين","كل مدرب يرى تلاميذه فقط، لا مداخيلك."],["📶","بدون إنترنت","يعمل بدون اتصال ويحفظ بعد ذلك."]],
+ prT:"ثمن واحد",per:"درهم / السنة",perSub:"أي 25 درهماً في الشهر. الأداء بتحويل بنكي مرة في السنة.",pr:["تلاميذ ومدربون بلا حدود","تذكير واتساب تلقائي","بطاقات منخرط بالصورة","على الهاتف والحاسوب","مساعدة بالدارجة والفرنسية"],
+ helpT:"تفضّل أن نساعدك؟",helpL:"اتصل بنا أو راسلنا على واتساب: ننشئ حسابك معك في 5 دقائق.",call:"اتصل",wa:"واتساب",waMsg:"السلام عليكم، بغيت نحل حساب SallPro. واش تقدرو تعاونوني؟",
+ foot:"© 2026 SallPro · برنامج مغربي لتسيير قاعات الرياضة",legal:"الشروط والخصوصية"}};
+let L=(()=>{try{return localStorage.getItem("sp-lang")}catch(e){return null}})()||((navigator.language||"").startsWith("ar")?"ar":"fr");
+function wa(t){return "https://wa.me/"+WA+"?text="+encodeURIComponent(t.waMsg)}
+function render(){const t=T[L];document.documentElement.lang=L;document.documentElement.dir=L==="ar"?"rtl":"ltr";
+ document.querySelectorAll(".lang button").forEach(b=>b.classList.toggle("on",b.dataset.l===L));
+ document.getElementById("main").innerHTML=`
+<div class="w hero"><div>
+ <h1>${t.h1}</h1><p class="sub">${t.sub}</p>
+ <div class="chips">${t.chips.map(c=>`<span class="chip">${c}</span>`).join("")}</div>
+ <div class="btns"><a class="btn btn-go" href="/app?signup" data-go>${t.go} <small>· ${t.goSub}</small></a>
+ <a class="btn btn-w" href="#video" data-vid>▶ ${t.vid} <small>· ${t.vidSub}</small></a></div>
+ <p class="note">${t.note}</p></div>
+ <div class="phone" id="video"><video id="tv" src="/tuto.mp4" poster="/tuto.jpg" playsinline preload="none"></video><button class="play" id="pl" aria-label="${t.playL}" style="background:rgba(0,0,0,.12);justify-content:flex-end;padding-bottom:22%"><i></i></button></div>
+</div>
+<section><div class="w"><h2>${t.howT}</h2><p class="lead">${t.howL}</p>
+ <div class="steps">${t.steps.map((s,i)=>`<div class="step"><div class="num">${s[0]}<b>${i+1}</b></div><div><h3>${s[1]}</h3><p>${s[2]}</p></div></div>`).join("")}</div>
+ <div class="btns" style="margin-top:24px"><a class="btn btn-go" href="/app?signup" data-go>${t.go}</a></div></div></section>
+<section style="padding-top:10px"><div class="w"><h2>${t.getT}</h2><p class="lead">${t.getL}</p>
+ <div class="tiles">${t.tiles.map(x=>`<div class="tile"><span>${x[0]}</span><h3>${x[1]}</h3><p>${x[2]}</p></div>`).join("")}</div></div></section>
+<section style="padding-top:10px"><div class="w"><div class="price"><div><h2 style="color:#fff">${t.prT}</h2><div class="big">299<small>${t.per}</small></div><p style="opacity:.8;margin:12px 0 0">${t.perSub}</p></div>
+ <div><ul>${t.pr.map(x=>`<li>${x}</li>`).join("")}</ul><div class="btns" style="margin-top:22px"><a class="btn btn-go" href="/app?signup" data-go>${t.go}</a></div></div></div></div></section>
+<section style="padding-top:10px"><div class="w"><div class="help"><h2>${t.helpT}</h2><p class="lead" style="margin:0">${t.helpL}</p>
+ <div class="btns"><a class="btn btn-w" href="tel:${TEL}">📞 ${t.call} · <span dir="ltr">06 95 17 98 17</span></a><a class="btn btn-wa" target="_blank" rel="noopener" href="${wa(t)}">${WAI} ${t.wa}</a></div></div></div></section>
+<footer><div class="w">${t.foot}<br><a href="/ancien.html">${t.legal}</a></div></footer>`;
+ document.querySelectorAll(".bar [data-go]").forEach(a=>a.textContent=t.go);
+ const bw=document.querySelector(".bar [data-wa]");bw.href=wa(t);bw.innerHTML=WAI;
+ const v=document.getElementById("tv"),pl=document.getElementById("pl");
+ const go=()=>{pl.style.display="none";v.controls=true;v.play();window.px&&px("ViewContent",{content_name:"tuto"})};
+ pl.onclick=go;document.querySelector("[data-vid]").onclick=e=>{e.preventDefault();document.getElementById("video").scrollIntoView({behavior:"smooth",block:"center"});setTimeout(go,350)};
+}
+document.querySelectorAll(".lang button").forEach(b=>b.onclick=()=>{L=b.dataset.l;try{localStorage.setItem("sp-lang",L)}catch(e){}render()});
+render();
+</script>
+</body></html>
