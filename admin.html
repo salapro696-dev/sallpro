@@ -89,7 +89,7 @@ const PRICE={coach:25,salle:25};const M=document.getElementById("main");
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fmt=s=>{if(!s)return"—";const d=new Date(s);return String(d.getDate()).padStart(2,"0")+"/"+String(d.getMonth()+1).padStart(2,"0")+"/"+d.getFullYear()};
 const wa=p=>{let d=String(p||"").replace(/\D/g,"");if(d.startsWith("0"))d="212"+d.slice(1);return d};
-const waMsg=c=>c.status==="paid"?"":"?text="+encodeURIComponent(`Salam 👋 Hada SallPro.\nCompte dyal « ${c.name} » wajed w kaytsennak, ba9i ghir l'activation.\n\nBach t7ello:\n1. Dkhol l sallpro.com/app\n2. Dir virement dyal 299 DH (l'RIB kayban lik f l'application)\n3. Sowwer l're9u w siftou men l'application\n\nGhir katsift l're9u, l'compte kayt7ell lik nichan l 3am kamel ✅\n\n🎥 Video kifach tkhdem (telephone w PC): sallpro.com/tuto\n\nIla 7tajiti chi 7aja, jawebni hna.`);
+const waMsg=c=>c.status==="paid"?"":"?text="+encodeURIComponent(`Salam, hada SallPro.\nCompte dyal « ${c.name} » wajed w kaytsennak, ba9i ghir l'activation.\n\nBach t7ello:\n1. Dkhol l sallpro.com/app\n2. Dir virement dyal 299 DH (l'RIB kayban lik f l'application)\n3. Sowwer l're9u w siftou men l'application\n\nGhir katsift l're9u, l'compte kayt7ell lik nichan l 3am kamel.\n\nVideo kifach tkhdem (telephone w PC): sallpro.com/tuto\n\nIla 7tajiti chi 7aja, jawebni hna.`);
 const meth={virement:"Virement",cashplus:"CashPlus / Wafacash",wafacash:"Wafacash",card:"Carte"};
 document.getElementById("today").textContent=new Date().toLocaleDateString("fr-FR",{weekday:"long",day:"2-digit",month:"2-digit",year:"numeric"});
 let C=[],REQ=[],F={q:"",s:""};
