@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SallPro · متابعة التلميذ</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0b2530">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@500;700&family=Manrope:wght@700;800&display=swap">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<style>
+:root{--dk:#0b2530;--ac:#3ddc97;--ok:#12a160;--bad:#e5484d;--line:#dfe8ea;--mut:#5b7079;--bg:#f4f7f7}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--dk);font:500 16px/1.6 "IBM Plex Sans Arabic",Tahoma,sans-serif}
+.top{background:radial-gradient(700px 300px at 85% -20%,#174a5c 0,transparent 60%),var(--dk);color:#fff;padding:22px 16px 60px}
+.w{max-width:620px;margin:0 auto}
+.club{display:flex;align-items:center;gap:12px}.club img{width:52px;height:52px;border-radius:14px;background:#fff;object-fit:contain;padding:3px}
+.club b{font-size:19px}.club span{display:block;color:#c3d4d9;font-size:14px}
+h1{font-size:28px;margin:18px 0 0}
+.card{background:#fff;border:1.5px solid var(--line);border-radius:20px;padding:18px;margin:-40px 16px 14px;position:relative}
+.card+.card{margin-top:0}
+.kp{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}.kp b{display:block;font:800 26px Manrope,sans-serif}.kp span{font-size:13px;color:var(--mut)}
+h2{font-size:18px;margin:0 0 10px}
+.row{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}.row:last-child{border:0}
+.pill{border-radius:999px;padding:2px 12px;font-weight:700;font-size:14px}.p{background:#e3f6ee;color:var(--ok)}.a{background:#fde8e8;color:var(--bad)}
+.mut{color:var(--mut)}.num{font-family:Manrope,sans-serif;direction:ltr;unicode-bidi:isolate}
+.empty{color:var(--mut);text-align:center;padding:30px 10px}
+footer{text-align:center;color:var(--mut);font-size:13px;padding:10px 16px 30px}footer a{color:var(--dk);font-weight:700;text-decoration:none}
+.wa{display:flex;align-items:center;justify-content:center;gap:8px;background:#25d366;color:#fff;border-radius:14px;min-height:52px;font-weight:700;text-decoration:none;margin-top:6px}
+</style></head><body>
+<div id="app"><div class="top"><div class="w"><p>... جاري التحميل</p></div></div></div>
+<script>
+const SB_URL="https://bqaabislojlebfpuvtxq.supabase.co",SB_KEY="sb_publishable_e-ibQ_7thrb3sRV2EmqPsw_oXbOy2XI";
+const esc=x=>String(x??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fmt=d=>{if(!d)return"—";const [y,m,j]=String(d).slice(0,10).split("-");return j+"/"+m+"/"+y};
+const TY={cot:"الواجب الشهري",ins:"التأمين",reg:"التسجيل"};
+async function go(){const k=new URLSearchParams(location.search).get("k");const A=document.getElementById("app");
+ if(!k){A.innerHTML=`<div class="top"><div class="w"><h1>الرابط غير صحيح</h1></div></div>`;return}
+ try{const sb=window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:false}});
+  const r=await sb.rpc("parent_view",{p_token:k});if(r.error)throw r.error;const d=r.data;
+  if(!d){A.innerHTML=`<div class="top"><div class="w"><h1>الرابط غير صحيح</h1><p>اطلب رابطاً جديداً من المدرب.</p></div></div>`;return}
+  const att=d.attendance||[],ab=att.filter(x=>x.status==="absent").length,pr=att.length-ab,rate=att.length?Math.round(pr*100/att.length):null;
+  const lastPay=(d.payments||[]).find(p=>p.type==="cot");
+  const phone=String(d.phone||"").replace(/\D/g,"").replace(/^0/,"212");
+  A.innerHTML=`<div class="top"><div class="w"><div class="club">${d.logo?`<img src="${d.logo}" alt="">`:""}<div><b>${esc(d.club)}</b><span>${esc(d.city||"")}</span></div></div><h1>${esc(d.name)}</h1></div></div>
+  <div class="w"><div class="card"><div class="kp"><div><b>${rate===null?"—":rate+"%"}</b><span>نسبة الحضور</span></div><div><b style="color:var(--ok)">${pr}</b><span>حضور</span></div><div><b style="color:var(--bad)">${ab}</b><span>غياب</span></div></div></div>
+  <div class="card"><h2>الأداءات</h2>
+   <div class="row"><span class="mut">آخر أداء للواجب</span><b>${lastPay?`<span class="num">${fmt(lastPay.date)}</span> · <span class="num">${lastPay.amount} DH</span>`:"—"}</b></div>
+   <div class="row"><span class="mut">التأمين صالح إلى</span><b class="num">${fmt(d.insurance_until)}</b></div>
+   <div class="row"><span class="mut">التسجيل صالح إلى</span><b class="num">${fmt(d.membership_until)}</b></div>
+   ${(d.payments||[]).slice(0,6).map(p=>`<div class="row"><span>${TY[p.type]||p.type} · <span class="num mut">${fmt(p.date)}</span></span><b class="num">${p.amount} DH</b></div>`).join("")}</div>
+  <div class="card"><h2>الحضور (آخر 4 أشهر)</h2>${att.length?att.slice(0,40).map(a=>`<div class="row"><span class="num">${fmt(a.day)} <span class="mut">${String(a.start||"").slice(0,5)}</span></span><span class="pill ${a.status==="absent"?"a":"p"}">${a.status==="absent"?"غائب":"حاضر"}</span></div>`).join(""):`<div class="empty">لم يُسجَّل الحضور بعد.</div>`}</div>
+  ${phone?`<div class="card"><a class="wa" target="_blank" rel="noopener" href="https://wa.me/${phone}">تواصل مع النادي على واتساب</a></div>`:""}</div>
+  <footer>هذه الصفحة خاصة بك. لا تشاركها مع الآخرين.<br>بواسطة <a href="https://sallpro.com">SallPro</a></footer>`;
+ }catch(e){A.innerHTML=`<div class="top"><div class="w"><h1>تعذّر التحميل</h1><p>تحقق من الإنترنت وأعد المحاولة.</p></div></div>`}}
+go();
+</script>
+</body></html>
