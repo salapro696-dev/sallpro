@@ -1172,8 +1172,9 @@ async function pull(){const c=S.clubId;
  try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 
 /* ---- session start ---- */
-async function afterLogin(user){S.uid=user.id;S.user=user.email;S.mode="live";
- if(!navigator.onLine&&S.data&&S.clubId){save();render();return}
+async function afterLogin(user){const same=S.uid===user.id;if(!same){S.setup=null;S.data=null;S.snap=null;S.clubId=null;S.role=null;S.staffId=null}
+ S.uid=user.id;S.user=user.email;S.mode="live";
+ if(!navigator.onLine&&same&&S.data&&S.clubId){save();render();return}
  const r=await sb.from("staff").select("id,club_id,role").eq("user_id",user.id).limit(1);
  if(r.error)throw r.error;S.role=null;S.staffId=null;
  if(r.data&&r.data.length){S.clubId=r.data[0].club_id;S.role=r.data[0].role;S.staffId=r.data[0].id;await pull();if(!S.tab)S.tab="dash"}
