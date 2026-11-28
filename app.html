@@ -1322,7 +1322,7 @@ document.addEventListener("click",e=>{
  else if(a==="edit-sess")openSession(id);
  else if(a==="add-coach")openCoach();
  else if(a==="coach-acc")openAccess(id);
- else if(a==="demo-exit"){S.mode=null;S.setup=null;S.data=null;S.snap=null;S.clubId=null;S.tab=null;S.ob={step:1,role:"salle",sports:["tkd"]};AUTHMODE="signup";save();location.replace(location.pathname+"?signup")}
+ else if(a==="demo-exit"){S.user=null;S.mode=null;S.setup=null;S.data=null;S.snap=null;S.clubId=null;S.tab=null;S.ob={step:1,role:"salle",sports:["tkd"]};AUTHMODE="signup";save();location.replace(location.pathname+"?signup")}
  else if(a==="exp-csv"){const n={st:"eleves",pay:"paiements",att:"presences"}[id];dl("sallpro-"+n+"-"+TODAY,expRows(id))}
  else if(a==="exp-prt"){const L2=t();prt({st:L2.nav.students,pay:L2.payList,att:L2.attT}[id],expRows(id))}
  else if(a==="att")openAtt(id,el.dataset.day);
