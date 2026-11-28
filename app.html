@@ -792,7 +792,8 @@ function tAuto(){const L=t(),A=S.setup.autoRules,{past,fut}=messages();
 
 /* ---------- sessions / coachs / leads / settings ---------- */
 function tSessions(){const L=t();return `<h3 style="margin:0 0 12px">${L.week}</h3><div class="week">${[1,2,3,4,5,6,0].map(d=>{const ss=S.data.sessions.filter(s=>s.day===d).sort((a,b)=>a.start.localeCompare(b.start));
- return `<div class="day ${d===now.getDay()?"today":""}"><div class="day-h"><span>${L.days[d]}</span><span class="note num">${ss.length}</span></div><div class="day-b">${ss.map(s=>`<button class="slot" data-act="edit-sess" data-id="${s.id}"><b class="num">${s.start}–${s.end}</b>${sessCatName(s)} · ${lab(SP[s.sport].name)}${isSalle()?`<br><span class="note">${esc(coachOf(s.coach).name)}</span>`:""}</button>`).join("")}</div></div>`}).join("")}</div>`}
+ return `<div class="day ${d===now.getDay()?"today":""}"><div class="day-h"><span>${L.days[d]}</span><span class="note num">${ss.length}</span></div><div class="day-b">${ss.map(s=>{const dd=new Date(now);dd.setDate(dd.getDate()-((now.getDay()-d+7)%7));const day=dd.getFullYear()+"-"+String(dd.getMonth()+1).padStart(2,"0")+"-"+String(dd.getDate()).padStart(2,"0");const a=(S.data.att||{})[day+"|"+s.id];
+ return `<div style="margin-bottom:8px"><button class="slot" style="margin-bottom:4px" data-act="edit-sess" data-id="${s.id}"><b class="num">${s.start}–${s.end}</b>${sessCatName(s)} · ${lab(SP[s.sport].name)}${isSalle()?`<br><span class="note">${esc(coachOf(s.coach).name)}</span>`:""}</button><button class="btn btn-sm ${a?"":"btn-p"}" style="width:100%;justify-content:center" data-act="att" data-id="${s.id}" data-day="${day}">${a?"✓ "+L.attDone:"📋 "+L.attBtn} · ${fmt(day).slice(0,5)}</button></div>`}).join("")}</div></div>`}).join("")}</div>`}
 function tCoachs(){const L=t();return `<div class="coachs">${S.data.coachs.map(c=>{const ms=S.data.members.filter(m=>m.coach===c.id&&!m.frozen);const col=S.data.payments.filter(p=>p.date.slice(0,7)===MONTH&&ms.some(m=>m.id===p.mid)).reduce((a,p)=>a+ +p.amount,0),exp=ms.reduce((a,m)=>a+ +m.fee,0);
  return `<div class="cc"><div style="display:flex;gap:10px;align-items:center"><div class="av">${ini(c.name)}</div><div><h3>${esc(c.name)}</h3><div class="sp">${SP[c.sport]?SP[c.sport].ic+" "+lab(SP[c.sport].name):t().allSports}</div></div></div>
  <div class="nums"><div><b class="num">${ms.length}</b><small>${L.students}</small></div><div><b class="num">${col.toLocaleString()}</b><small>${L.dh} ${L.collected}</small></div><div><b class="num">${exp.toLocaleString()}</b><small>${L.expected}</small></div></div>
@@ -1299,7 +1300,7 @@ document.addEventListener("click",e=>{
  else if(a==="edit-sess")openSession(id);
  else if(a==="add-coach")openCoach();
  else if(a==="coach-acc")openAccess(id);
- else if(a==="att")openAtt(id);
+ else if(a==="att")openAtt(id,el.dataset.day);
  else if(a==="coach-edit")openCoach(id);
  else if(a==="copy-rib"){const v="230570523391921100840044";(navigator.clipboard?navigator.clipboard.writeText(v):Promise.reject()).then(()=>toast(t().ribOk)).catch(()=>{prompt("RIB",v)})}
  else if(a==="logo-rm"){S.setup.logo="";save();render()}
